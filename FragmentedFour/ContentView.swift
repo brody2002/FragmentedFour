@@ -30,6 +30,8 @@ struct ContentView: View {
     @State private var sideBarDragOffset = CGSize.zero
     @State var shouldRestartLevel = false
     
+    @State private var foundAllQuartiles = false
+    
     let gridLayout = Array(repeating:  GridItem.init(.flexible(minimum: 50, maximum: 100)), count: 4)
     
     var dictionary: Set<String> = {
@@ -325,16 +327,25 @@ struct ContentView: View {
             groupQuartiles()
         }
     }
-    
+    //Todo: write script that verifies if all the levels are possible
     func submit() {
         withAnimation(.spring(response: 0.4, dampingFraction: 0.6)){
             foundWords.append(selectedTiles)
+            print(foundWords)
+            
             score += selectedTiles.score
             
             if selectedTiles.count == 4 {
                 foundQuartiles.append(contentsOf: selectedTiles)
             }
             
+           
+            if foundQuartiles.count / 4 == 5 && !foundAllQuartiles {
+                // Found all Quartiles
+                score += 40
+                foundAllQuartiles = true
+            }
+           
             selectedTiles.removeAll()
             groupQuartiles()
             
@@ -347,14 +358,15 @@ struct ContentView: View {
     
     func toggleGrouping(){
         withAnimation{
-            isGroupingQuartiles = true
-            
+            isGroupingQuartiles.toggle()
             if isGroupingQuartiles{
                 groupQuartiles()
             } else {
                 orderedTiles = tiles
             }
         }
+        
+        
     }
     
     func groupQuartiles(){
@@ -388,6 +400,7 @@ struct ContentView: View {
             foundQuartiles.removeAll()
             foundWords.removeAll()
             score = 0
+            foundAllQuartiles = false
         }
     }
     
