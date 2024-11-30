@@ -11,16 +11,19 @@ import SwiftData
 @Model
 class Level: Identifiable, ObservableObject{
     var level: Int
-    var words: [String]
+    var foundWords: [[String]]
+    var foundQuartiles: [String] // List of the individual quartiles that make up the whole word. So 1 word equal foundQuartiles.count -> 4
     var completed: Bool
     var rank: String
     var score: Int
     
-    init(level: Int, words: [String], completed: Bool, rank: String, score: Int) {
+    init(level: Int, foundWords: [[String]], foundQuartiles: [String], completed: Bool, rank: String, score: Int) {
         self.level = level
-        self.words = words
+        self.foundWords = foundWords
+        self.foundQuartiles = foundQuartiles
         self.completed = completed
         self.rank = rank
         self.score = score
     }
 }
+//TODO: Add functions that save to coreData

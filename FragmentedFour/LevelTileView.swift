@@ -38,6 +38,7 @@ struct LevelTileView: View {
                     .offset(y: 4)
             )
             
+            
                 
         } else{
             Text(String(level))

@@ -7,9 +7,12 @@
 
 //Video Progress -> 1:43:55
 
+import SwiftData
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(\.modelContext) var modelContext
+
     
     let levels: [[String]] = Bundle.main.decode("levels.txt")
     
@@ -17,12 +20,14 @@ struct ContentView: View {
     @State private var selectedTiles = [String]()
     @State private var orderedTiles = [String]()
     
-    @State private var foundWords = [[String]]()
-    @State private var foundQuartiles = [String]()
+    
     @State private var isGroupingQuartiles = true
     
-    @State private var score = 0
-    @State private var currentLevel = 0
+    // Pass through vals from LevelView
+    @State var score: Int
+    @State var currentLevel: Int
+    @State var foundWords: [[String]]
+    @State var foundQuartiles: [String]
     
     @State private var showWinScreenView = false
     
@@ -294,17 +299,23 @@ struct ContentView: View {
             .preferredColorScheme(.light)
             .task{
                 loadLevel()
+                if isGroupingQuartiles{
+                    groupQuartiles()
+                }
             }
             .onChange(of: shouldRestartLevel){
                 restartLevel()
             }
-        }
+            
+        }.navigationBarBackButtonHidden(true)
         
         
     }
     
     
     func loadLevel(){
+        // we want to start levels off of level 1 not 0
+        print("CurrentLevel: \(currentLevel - 1)")
         tiles = levels[currentLevel].shuffled()
         orderedTiles = tiles
     }
@@ -327,7 +338,8 @@ struct ContentView: View {
             groupQuartiles()
         }
     }
-    //Todo: write script that verifies if all the levels are possible
+    
+
     func submit() {
         withAnimation(.spring(response: 0.4, dampingFraction: 0.6)){
             foundWords.append(selectedTiles)
@@ -349,12 +361,29 @@ struct ContentView: View {
             selectedTiles.removeAll()
             groupQuartiles()
             
+            //Fetch Level from SwiftData and save it in its container
+            saveToSwiftData()
+            
+            
+            
             if score >= 100 {
                 showWinScreenView.toggle()
+                let currentLVL = fetchLevel(levelNumber: currentLevel, context: modelContext)!
+                currentLVL.completed = true
+                
                 
             }
         }
     }
+    func saveToSwiftData(){
+        let currentLVL = fetchLevel(levelNumber: currentLevel, context: modelContext)!
+        currentLVL.foundWords = foundWords
+        currentLVL.foundQuartiles = foundQuartiles
+        currentLVL.score = score
+        currentLVL.rank = Rank.name(for: score)
+    }
+    
+    
     
     func toggleGrouping(){
         withAnimation{
@@ -384,6 +413,10 @@ struct ContentView: View {
     }
     func restartLevel(){
         clearData()
+        saveToSwiftData()
+        let currentLVL = fetchLevel(levelNumber: currentLevel, context: modelContext)!
+        currentLVL.completed = false
+        
         // moves side bar out of view
         withAnimation(.easeOut(duration: 0.2)){
             sideBarDragOffset.width = -UIScreen.main.bounds.width
@@ -404,8 +437,22 @@ struct ContentView: View {
         }
     }
     
+    func fetchLevel(levelNumber: Int, context: ModelContext) -> Level? {
+        let descriptor = FetchDescriptor<Level>(
+            predicate: #Predicate { $0.level == levelNumber }
+        )
+        do {
+            let results = try context.fetch(descriptor)
+            return results.first // Return the first match, or nil if not found
+        } catch {
+            print("Failed to fetch level: \(error)")
+            return nil
+        }
+    }
+    
 }
 
 #Preview {
-    ContentView()
+    ContentView(score: 0, currentLevel: 3, foundWords: [[]], foundQuartiles: [])
+    
 }

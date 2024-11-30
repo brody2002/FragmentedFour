@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SideBarView: View {
     @Binding var shouldRestartLevel: Bool
+    @Environment(\.dismiss) var dismiss
     var body: some View {
         
         VStack(alignment: .center) {
@@ -53,6 +54,10 @@ struct SideBarView: View {
                         RoundedRectangle(cornerRadius: 10)
                             .fill(.quaternary)
                     )
+                    .onTapGesture {
+                        //dismiss back to LevelSelectView
+                        dismiss()
+                    }
                 Spacer()
                     .frame(height: 20)
                 
