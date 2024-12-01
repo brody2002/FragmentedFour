@@ -16,14 +16,16 @@ class Level: Identifiable, ObservableObject{
     var completed: Bool
     var rank: String
     var score: Int
+    var unlocked: Bool
     
-    init(level: Int, foundWords: [[String]], foundQuartiles: [String], completed: Bool, rank: String, score: Int) {
+    init(level: Int, foundWords: [[String]], foundQuartiles: [String], completed: Bool, rank: String, score: Int, unlocked: Bool) {
         self.level = level
         self.foundWords = foundWords
         self.foundQuartiles = foundQuartiles
         self.completed = completed
         self.rank = rank
         self.score = score
+        self.unlocked = unlocked
     }
 }
 //TODO: Add functions that save to coreData

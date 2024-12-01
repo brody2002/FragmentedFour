@@ -72,10 +72,11 @@ struct LevelView: View {
                     ScrollView{ // Add ScrollView for scrolling
                         LazyVGrid(columns: columns, spacing: 50) {
                             ForEach(levels, id: \.level){ level in
-                                LevelTileView(level: level.level, completed: level.completed)
+                                LevelTileView(level: level.level, completed: level.completed, unlocked: level.unlocked, score:  level.score)
                                     .onTapGesture {
                                         navPath.append(Destination.levelDestination(level: level))
                                     }
+                                    .disabled(!level.unlocked)
                             }
                         }
                         .padding(.leading, 40)
@@ -105,7 +106,12 @@ struct LevelView: View {
         print("Initializing app data for first launch...")
         let levels: [[String]] = Bundle.main.decode("levels.txt")
         for (index, _) in levels.enumerated() {
-            modelContext.insert(Level(level: index + 1, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Novice", score: 0))
+            print("inserting")
+            if index == 0 {
+                modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
+            } else {
+                modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
+            }
             print("Level \(index) inserted...")
         }
         // Save the context to persist the data
@@ -124,13 +130,13 @@ struct LevelView: View {
     do {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: Level.self, configurations: config)
-        container.mainContext.insert(Level(level: 1, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Novice", score: 0))
-        container.mainContext.insert(Level(level: 2, foundWords: [[]], foundQuartiles: [], completed: true, rank: "Master", score: 101))
-        container.mainContext.insert(Level(level: 3, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101))
-        container.mainContext.insert(Level(level: 4, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101))
-        container.mainContext.insert(Level(level: 5, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101))
-        container.mainContext.insert(Level(level: 6, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101))
-        container.mainContext.insert(Level(level: 7, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101))
+        container.mainContext.insert(Level(level: 1, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Novice", score: 0, unlocked: false))
+        container.mainContext.insert(Level(level: 2, foundWords: [[]], foundQuartiles: [], completed: true, rank: "Master", score: 101,unlocked: true))
+        container.mainContext.insert(Level(level: 3, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: true))
+        container.mainContext.insert(Level(level: 4, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: true))
+        container.mainContext.insert(Level(level: 5, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: true))
+        container.mainContext.insert(Level(level: 6, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: false))
+        container.mainContext.insert(Level(level: 7, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: false))
         return LevelView()
             .modelContainer(container)
     } catch {

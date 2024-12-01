@@ -20,6 +20,8 @@ struct ContentView: View {
     @State private var selectedTiles = [String]()
     @State private var orderedTiles = [String]()
     
+    @State private var fetchedLevel: Level? = nil
+    @State var scoreToBeat: Int?
     
     @State private var isGroupingQuartiles = true
     
@@ -164,7 +166,7 @@ struct ContentView: View {
                             VStack(spacing: 5){
                                 Text("Congratulations")
                                     .font(.title.bold())
-                                Text("You reached the highest rank")
+                                Text(score >= 100 ? "You reached the highest rank!" : "You score enough points!")
                                     .font(.body.bold())
                                     .foregroundColor(.black.opacity(0.5))
                                 Text("Proceed to the next level?")
@@ -186,6 +188,20 @@ struct ContentView: View {
                                     .padding(.horizontal)
                             })
                             Spacer()
+                            
+                            Button(action: {
+                                showWinScreenView.toggle()
+                            }, label:{
+                                Text("Continue Playing")
+                                    .font(.title3.bold())
+                                    .foregroundStyle(.white)
+                                    .frame(minWidth: 180, maxWidth: 240, maxHeight: 50)
+                                    .background(.blue)
+                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                                    .padding(.horizontal)
+                            })
+                            Spacer()
+                                .frame(minHeight: 80)
                                 .frame(minHeight: 80)
                         }
                         
@@ -298,6 +314,8 @@ struct ContentView: View {
             .font(.title2.bold())
             .preferredColorScheme(.light)
             .task{
+                fetchedLevel = fetchLevel(levelNumber: currentLevel, context: modelContext)!
+               
                 loadLevel()
                 if isGroupingQuartiles{
                     groupQuartiles()
@@ -315,7 +333,7 @@ struct ContentView: View {
     
     func loadLevel(){
         // we want to start levels off of level 1 not 0
-        print("CurrentLevel: \(currentLevel - 1)")
+        print("CurrentLevel: \(currentLevel + 1)")
         tiles = levels[currentLevel].shuffled()
         orderedTiles = tiles
     }
@@ -341,6 +359,7 @@ struct ContentView: View {
     
 
     func submit() {
+        scoreToBeat = fetchedLevel!.score >= 15 ? 100 : 15
         withAnimation(.spring(response: 0.4, dampingFraction: 0.6)){
             foundWords.append(selectedTiles)
             print(foundWords)
@@ -366,12 +385,16 @@ struct ContentView: View {
             
             
             
-            if score >= 100 {
+            if score >= scoreToBeat! {
                 showWinScreenView.toggle()
                 let currentLVL = fetchLevel(levelNumber: currentLevel, context: modelContext)!
                 currentLVL.completed = true
-                
-                
+
+                if let nextLVL = fetchLevel(levelNumber: currentLevel + 1, context: modelContext) {
+                    nextLVL.unlocked = true
+                } else {
+                    print("There is no next level")
+                }
             }
         }
     }
@@ -403,7 +426,7 @@ struct ContentView: View {
         
         for quartile in foundQuartiles {
             orderedTiles.removeAll(where: quartile.contains)
-            orderedTiles.append(quartile)
+            orderedTiles.append(quartile) // Add them to the back of the list so it looks like they auto go to the bottom.
         }
     }
     
