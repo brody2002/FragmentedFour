@@ -11,9 +11,10 @@ struct SelectedTileView: View {
     var text:String
     @Binding var turnRed: Bool
     @Binding var turnGreen: Bool
+    
     var body: some View {
         Text(text)
-            .frame(minHeight: 44, maxHeight: 64)
+            .frame(minHeight: turnGreen ? 60: 44 , maxHeight: turnGreen ? 80: 64)
             .padding(.horizontal)
             .foregroundStyle(.white)
             .background(turnRed ? .red : turnGreen ? .green : .blue)
@@ -24,11 +25,11 @@ struct SelectedTileView: View {
                     .offset(y: 4)
             )
             .shakeEffect(
-                                trigger: turnRed,
-                                distance: 5,
-                                animationDuration: 0.05,
-                                initialDelay: 0.0
-                            )
+                trigger: turnRed,
+                distance: 5,
+                animationDuration: 0.05,
+                initialDelay: 0.0
+            )
 
         
     }

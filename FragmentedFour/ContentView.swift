@@ -23,6 +23,7 @@ struct ContentView: View {
     @State private var turnRed: Bool = false
     @State private var turnGreen: Bool = false
     @State private var showX: Bool = true
+    @State private var quartileAnimation: Bool = false
     
     
     @State private var fetchedLevel: Level? = nil
@@ -156,7 +157,7 @@ struct ContentView: View {
                 .padding()
                 .padding(.bottom, 60)
                 .foregroundStyle(.white)
-                .background(.blue)
+                .background(quartileAnimation ? .green : .blue)
                 
                 
                 ZStack(alignment: .top) {
@@ -236,6 +237,7 @@ struct ContentView: View {
                             if selectedTiles.isEmpty{
                                 // hidden tile so that the UI doesnt move...
                                 SelectedTileView(text: "aa", turnRed: $turnRed, turnGreen: $turnGreen)
+                                    
                                     .hidden()
                             } else {
                                 ForEach(selectedTiles, id:
@@ -380,28 +382,39 @@ struct ContentView: View {
             scoreToBeat = fetchedLevel!.score >= 15 ? 100 : 15
             withAnimation(.spring(response: 0.4, dampingFraction: 0.6)){
                 
-                // 1. Combine the words and turn it green
-                // 2. enlarge the tile a bit
-                // 3. submit it
-                // 4. if Quartile do something extra ....
+                
                 foundWords.append(selectedTiles)
-                print(foundWords)
                 
                 score += selectedTiles.score
                 
                 if selectedTiles.count == 4 {
                     foundQuartiles.append(contentsOf: selectedTiles)
+                    quartileAnimation = true
                 }
                 
-               
                 if foundQuartiles.count / 4 == 5 && !foundAllQuartiles {
                     // Found all Quartiles
                     score += 40
                     foundAllQuartiles = true
                 }
-               
+                
+                let joinedTile = selectedTiles.joined()
                 selectedTiles.removeAll()
+                
+                showX = false
+                withAnimation(.spring(response: 0.2, dampingFraction: 0.45)){
+                    selectedTiles.append(joinedTile)
+                    turnGreen = true
+                }
+                
+                
+                
+                
+                
+                
                 groupQuartiles()
+                
+                
                 
                 //Fetch Level from SwiftData and save it in its container
                 saveToSwiftData()
@@ -417,6 +430,15 @@ struct ContentView: View {
                         nextLVL.unlocked = true
                     } else {
                         print("There is no next level")
+                    }
+                }
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
+                    withAnimation(.spring(response: 0.2, dampingFraction: 0.45)){
+                        selectedTiles.removeAll()
+                        turnGreen = false
+                        showX = true
+                        quartileAnimation = false
                     }
                 }
             }

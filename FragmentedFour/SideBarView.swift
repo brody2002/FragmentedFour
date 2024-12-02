@@ -72,7 +72,7 @@ struct SideBarView: View {
                         .fill(.quaternary)
                 )
                 Spacer()
-                    .frame(minHeight: 10, maxHeight: 20 )
+                    .frame(minHeight: 70, maxHeight: 90 )
                  
             }
             
