@@ -29,11 +29,8 @@ struct SideBarView: View {
                 Spacer()
                     .frame(height: 20)
                 
-                Button(action: {
-                    shouldRestartLevel.toggle()
-                }, label:{
-                    Text("Restart")
-                        .font(.body.bold())
+                Button(action:{}, label:{
+                    Image(systemName: "house")
                         .foregroundStyle(.white)
                         .padding()
                         
@@ -44,7 +41,7 @@ struct SideBarView: View {
                 )
                 
                 Spacer()
-                    .frame(height: 20)
+                    .frame(height: 30)
                 
                 Text("Level Select")
                     .font(.body.bold())
@@ -59,10 +56,13 @@ struct SideBarView: View {
                         dismiss()
                     }
                 Spacer()
-                    .frame(height: 20)
+                    .frame(minHeight: 300)
                 
-                Button(action:{}, label:{
-                    Image(systemName: "house")
+                Button(action: {
+                    shouldRestartLevel.toggle()
+                }, label:{
+                    Text("Restart")
+                        .font(.body.bold())
                         .foregroundStyle(.white)
                         .padding()
                         
@@ -71,7 +71,9 @@ struct SideBarView: View {
                     RoundedRectangle(cornerRadius: 10)
                         .fill(.quaternary)
                 )
-                    
+                Spacer()
+                    .frame(minHeight: 10, maxHeight: 20 )
+                 
             }
             
             

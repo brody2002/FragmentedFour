@@ -13,14 +13,14 @@ struct LevelView: View {
     @State var navPath = NavigationPath()
     @Environment(\.modelContext) var modelContext
     @Query(sort: [SortDescriptor(\Level.level)]) var levels: [Level]
+    @Namespace private var transitionNamespace
     
     // Define the levels as a range for simplicity
     
     // Define the grid layout
     let columns = [
-            GridItem(.flexible(), spacing: 20), // Add horizontal spacing between columns
-            GridItem(.flexible(), spacing: 20),
-            GridItem(.flexible(), spacing: 20)
+            GridItem(.flexible(), spacing: 60), // Add horizontal spacing between columns
+            GridItem(.flexible(), spacing: 60),
     ]
     
     enum Destination: Hashable{
@@ -75,6 +75,7 @@ struct LevelView: View {
                                 LevelTileView(level: level.level, completed: level.completed, unlocked: level.unlocked, score:  level.score)
                                     .onTapGesture {
                                         navPath.append(Destination.levelDestination(level: level))
+                                            
                                     }
                                     .disabled(!level.unlocked)
                             }
@@ -88,6 +89,8 @@ struct LevelView: View {
                 switch dest{
                 case .levelDestination(let level):
                     ContentView(score: level.score, currentLevel: level.level, foundWords: level.foundWords, foundQuartiles: level.foundQuartiles)
+                        .navigationTransition(.zoom(sourceID: level.level, in: transitionNamespace))
+                        
                 }
             })
         }
@@ -130,13 +133,13 @@ struct LevelView: View {
     do {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: Level.self, configurations: config)
-        container.mainContext.insert(Level(level: 1, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Novice", score: 0, unlocked: false))
-        container.mainContext.insert(Level(level: 2, foundWords: [[]], foundQuartiles: [], completed: true, rank: "Master", score: 101,unlocked: true))
+        container.mainContext.insert(Level(level: 0, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Novice", score: 0, unlocked: false))
+        container.mainContext.insert(Level(level: 1, foundWords: [[]], foundQuartiles: [], completed: true, rank: "Master", score: 101,unlocked: true))
+        container.mainContext.insert(Level(level: 2, foundWords: [[]], foundQuartiles: [], completed: true, rank: "Wordsmith", score: 67, unlocked: true))
         container.mainContext.insert(Level(level: 3, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: true))
         container.mainContext.insert(Level(level: 4, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: true))
-        container.mainContext.insert(Level(level: 5, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: true))
+        container.mainContext.insert(Level(level: 5, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: false))
         container.mainContext.insert(Level(level: 6, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: false))
-        container.mainContext.insert(Level(level: 7, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: false))
         return LevelView()
             .modelContainer(container)
     } catch {

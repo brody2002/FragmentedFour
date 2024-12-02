@@ -29,15 +29,6 @@ def scoreCalc(inputLevel: list[str]) -> bool:
 
     totalScore = 0
 
-    # Fragments from the grid
-    # fragments = [
-    #     "mic", "ra", "sp", "pr",
-    #     "no", "le", "ca", "ous",
-    #     "ow", "eri", "lam", "ng",
-    #     "pa", "ust", "rs", "ell",
-    #     "bl", "it", "und", "bo"
-    # ]
-
     # Load a dictionary of valid English words
     with open("dictionary.txt") as f:
         dictionary = set(word.strip().lower() for word in f)

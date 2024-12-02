@@ -166,7 +166,7 @@ struct ContentView: View {
                             VStack(spacing: 5){
                                 Text("Congratulations")
                                     .font(.title.bold())
-                                Text(score >= 100 ? "You reached the highest rank!" : "You score enough points!")
+                                Text(score >= 100 ? "You reached the highest rank!" : "You scored enough points!")
                                     .font(.body.bold())
                                     .foregroundColor(.black.opacity(0.5))
                                 Text("Proceed to the next level?")
@@ -239,6 +239,7 @@ struct ContentView: View {
                                         deselect(tile)
                                     } label : {
                                         SelectedTileView(text: tile)
+                                        // make it green when correct
                                     }
                                 }
                                 Button("Clear", systemImage: "xmark.circle", action: clearSelected)
@@ -476,6 +477,20 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView(score: 0, currentLevel: 3, foundWords: [[]], foundQuartiles: [])
     
+    do {
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let container = try ModelContainer(for: Level.self, configurations: config)
+        container.mainContext.insert(Level(level: 0, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Novice", score: 0, unlocked: false))
+        container.mainContext.insert(Level(level: 1, foundWords: [[]], foundQuartiles: [], completed: true, rank: "Master", score: 101,unlocked: true))
+        container.mainContext.insert(Level(level: 2, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: true))
+        container.mainContext.insert(Level(level: 3, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: true))
+        container.mainContext.insert(Level(level: 4, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: true))
+        container.mainContext.insert(Level(level: 5, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: false))
+        container.mainContext.insert(Level(level: 6, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: false))
+        return ContentView(score: 0, currentLevel: 0, foundWords: [[String]](), foundQuartiles: [String]())
+            .modelContainer(container)
+    } catch {
+        return Text("Failed to create container: \(error.localizedDescription)")
+    }
 }
