@@ -23,8 +23,7 @@ struct ContentView: View {
     @State private var turnRed: Bool = false
     @State private var turnGreen: Bool = false
     @State private var showX: Bool = true
-    @State private var quartileAnimation: Bool = false
-    
+    @State private var quartileCount: Int = 1
     
     @State private var fetchedLevel: Level? = nil
     @State var scoreToBeat: Int?
@@ -157,7 +156,7 @@ struct ContentView: View {
                 .padding()
                 .padding(.bottom, 60)
                 .foregroundStyle(.white)
-                .background(quartileAnimation ? .green : .blue)
+                .background(turnGreen ? .green : .blue)
                 
                 
                 ZStack(alignment: .top) {
@@ -344,6 +343,7 @@ struct ContentView: View {
             }
             
         }.navigationBarBackButtonHidden(true)
+    
         
         
     }
@@ -375,10 +375,29 @@ struct ContentView: View {
         }
     }
     
+    func combineTiles(completion: @escaping () -> Void) {
+        guard selectedTiles.count > 1 else {
+            completion()
+            return
+        }
+        quartileCount += 1
+        let firstTwoCombined = selectedTiles[0] + selectedTiles[1]
+        selectedTiles.removeFirst(2)
+        
+       
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.4)){
+            selectedTiles.insert(firstTwoCombined, at: 0)
+        }
+      
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            self.combineTiles(completion: completion)
+        }
+    }
+    
 
     func submit() {
         if canSubmit {
-            print("can submit!")
+            
             scoreToBeat = fetchedLevel!.score >= 15 ? 100 : 15
             withAnimation(.spring(response: 0.4, dampingFraction: 0.6)){
                 
@@ -389,7 +408,6 @@ struct ContentView: View {
                 
                 if selectedTiles.count == 4 {
                     foundQuartiles.append(contentsOf: selectedTiles)
-                    quartileAnimation = true
                 }
                 
                 if foundQuartiles.count / 4 == 5 && !foundAllQuartiles {
@@ -398,49 +416,56 @@ struct ContentView: View {
                     foundAllQuartiles = true
                 }
                 
-                let joinedTile = selectedTiles.joined()
-                selectedTiles.removeAll()
+                // 1, 2, 3, 4
+                // 12, 3, 4
+                // 123, 4
+                // 1234
                 
-                showX = false
-                withAnimation(.spring(response: 0.2, dampingFraction: 0.45)){
-                    selectedTiles.append(joinedTile)
-                    turnGreen = true
-                }
-                
-                
-                
-                
-                
-                
-                groupQuartiles()
-                
-                
-                
-                //Fetch Level from SwiftData and save it in its container
-                saveToSwiftData()
-                
-                
-                
-                if score >= scoreToBeat! {
-                    showWinScreenView.toggle()
-                    let currentLVL = fetchLevel(levelNumber: currentLevel, context: modelContext)!
-                    currentLVL.completed = true
+//                let joinedTile = selectedTiles.joined()
+                combineTiles {
+                            // This block runs after all tiles are combined
+                            showX = false
+                            
+                            withAnimation(.spring(response: 0.2, dampingFraction: 0.45)) {
+                                if quartileCount == 4{
+                                    turnGreen = true
+                                }
+                            }
+                    
+                            groupQuartiles()
+                            
+                            
+                            
+                            //Fetch Level from SwiftData and save it in its container
+                            saveToSwiftData()
+                            
+                            
+                            
+                            if score >= scoreToBeat! {
+                                withAnimation(.spring(response: 1.0, dampingFraction: 0.4)){
+                                    showWinScreenView.toggle()
+                                }
+                                let currentLVL = fetchLevel(levelNumber: currentLevel, context: modelContext)!
+                                currentLVL.completed = true
 
-                    if let nextLVL = fetchLevel(levelNumber: currentLevel + 1, context: modelContext) {
-                        nextLVL.unlocked = true
-                    } else {
-                        print("There is no next level")
-                    }
-                }
+                                if let nextLVL = fetchLevel(levelNumber: currentLevel + 1, context: modelContext) {
+                                    nextLVL.unlocked = true
+                                } else {
+                                    print("There is no next level")
+                                }
+                            }
+                            
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
+                                withAnimation(.spring(response: 0.2, dampingFraction: 0.45)){
+                                    selectedTiles.removeAll()
+                                    turnGreen = false
+                                    quartileCount = 0
+                                    showX = true
+                                }
+                            }
+                        }
+               
                 
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
-                    withAnimation(.spring(response: 0.2, dampingFraction: 0.45)){
-                        selectedTiles.removeAll()
-                        turnGreen = false
-                        showX = true
-                        quartileAnimation = false
-                    }
-                }
             }
         } else {
             // Incorrect Word

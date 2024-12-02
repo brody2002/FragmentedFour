@@ -111,7 +111,7 @@ struct LevelTileView: View {
         )
         .frame(width: buttonWidth, height: buttonHeight)
         .task {
-            tiles = levels[level]
+            tiles = levels[level].shuffled()
         }
         
         
