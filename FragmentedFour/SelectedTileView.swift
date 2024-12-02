@@ -8,24 +8,39 @@
 import SwiftUI
 
 struct SelectedTileView: View {
-    
     var text:String
+    @Binding var turnRed: Bool
+    @Binding var turnGreen: Bool
     var body: some View {
         Text(text)
             .frame(minHeight: 44, maxHeight: 64)
             .padding(.horizontal)
             .foregroundStyle(.white)
-            .background(.blue)
+            .background(turnRed ? .red : turnGreen ? .green : .blue)
             .clipShape(.rect(cornerRadius: 10))
             .background(
                 RoundedRectangle(cornerRadius: 10)
-                    .fill(.blue.mix(with: .black, by: 0.25))
+                    .fill(turnRed ? .red.mix(with: .black, by: 0.25) : turnGreen ? .green.mix(with: .black, by: 0.25) : .blue.mix(with: .black, by: 0.25))
                     .offset(y: 4)
             )
+            .shakeEffect(
+                                trigger: turnRed,
+                                distance: 5,
+                                animationDuration: 0.05,
+                                initialDelay: 0.0
+                            )
+
         
     }
 }
 
+struct NoGrayOutButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .opacity(configuration.isPressed ? 1.0 : 1.0) // Optional visual feedback for pressing
+    }
+}
+
 #Preview {
-    SelectedTileView(text: "abc")
+    SelectedTileView(text: "abc", turnRed: .constant(false), turnGreen: .constant(false))
 }
