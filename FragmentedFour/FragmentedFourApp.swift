@@ -15,7 +15,7 @@ struct FragmentedFourApp: App {
     var body: some Scene {
         WindowGroup {
             LevelView()
-                .modelContainer(for: Level.self)
+                .modelContainer(for: [Level.self, UserData.self])
                 
         }
     }

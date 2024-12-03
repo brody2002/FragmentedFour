@@ -12,6 +12,8 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(\.modelContext) var modelContext
+    
+    
 
     
     let levels: [[String]] = Bundle.main.decode("levels.txt")
@@ -87,7 +89,7 @@ struct ContentView: View {
                                                 withAnimation(.easeOut(duration: 0.2)) {
                                                     sideBarDragOffset.width = -UIScreen.main.bounds.width
                                                     showSideBarView.toggle()
-                                                    print("showSideBarView -> \(showSideBarView)")
+//                                                    print("showSideBarView -> \(showSideBarView)")
                                                     
                                                 }
                                             } else {
@@ -416,12 +418,6 @@ struct ContentView: View {
                     foundAllQuartiles = true
                 }
                 
-                // 1, 2, 3, 4
-                // 12, 3, 4
-                // 123, 4
-                // 1234
-                
-//                let joinedTile = selectedTiles.joined()
                 combineTiles {
                             // This block runs after all tiles are combined
                             showX = false
@@ -431,6 +427,7 @@ struct ContentView: View {
                                     turnGreen = true
                                 }
                             }
+                            
                     
                             groupQuartiles()
                             
@@ -518,12 +515,11 @@ struct ContentView: View {
         
     }
     
-    func groupQuartiles(){
+    func groupQuartiles() {
         guard isGroupingQuartiles else { return }
-        
         for quartile in foundQuartiles {
-            orderedTiles.removeAll(where: quartile.contains)
-            orderedTiles.append(quartile) // Add them to the back of the list so it looks like they auto go to the bottom.
+            orderedTiles.removeAll(where: { $0 == quartile })
+            orderedTiles.append(quartile)
         }
     }
     
@@ -584,7 +580,7 @@ struct ContentView: View {
         container.mainContext.insert(Level(level: 4, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: true))
         container.mainContext.insert(Level(level: 5, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: false))
         container.mainContext.insert(Level(level: 6, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: false))
-        return ContentView(score: 0, currentLevel: 0, foundWords: [[String]](), foundQuartiles: [String]())
+        return ContentView(score: 0, currentLevel: 2, foundWords: [[String]](), foundQuartiles: [String]())
             .modelContainer(container)
     } catch {
         return Text("Failed to create container: \(error.localizedDescription)")

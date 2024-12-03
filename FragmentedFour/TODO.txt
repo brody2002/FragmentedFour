@@ -1,1 +1,27 @@
 
+Add sounds:
+- Quartile sound
+- Victory
+- incorrcet
+- correct
+- pops from wordle game...
+- Background music
+
+
+
+make an average rank calculator
+- Ask Kai for icons maybe? for each rank...
+
+Points system from the points cumulated from all levels...
+Use it to get to the next level?
+
+Color for each rank???
+
+Hold Preview on Each Level
+-expands view so that person can see view
+- maybe option to play level or to go back
+
+
+
+
+

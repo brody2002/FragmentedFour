@@ -10,9 +10,22 @@
 		96DD6D2A2CF672ED00E25B78 /* FragmentedFour.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FragmentedFour.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		964F1A5E2CFF9D7200E256B2 /* Exceptions for "FragmentedFour" folder in "FragmentedFour" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 96DD6D292CF672ED00E25B78 /* FragmentedFour */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		96DD6D2C2CF672ED00E25B78 /* FragmentedFour */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				964F1A5E2CFF9D7200E256B2 /* Exceptions for "FragmentedFour" folder in "FragmentedFour" target */,
+			);
 			path = FragmentedFour;
 			sourceTree = "<group>";
 		};
@@ -255,6 +268,7 @@
 				DEVELOPMENT_TEAM = L979M8V7RW;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FragmentedFour/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -284,6 +298,7 @@
 				DEVELOPMENT_TEAM = L979M8V7RW;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FragmentedFour/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

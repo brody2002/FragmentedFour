@@ -47,6 +47,7 @@ struct LevelTileView: View {
                         .resizable()
                         .frame(width: 40, height: 40)
                         .foregroundStyle(score >= 100 ?  .yellow.opacity(0.9): .white.opacity(0.7))
+                        .offset(y: 5)
                         .padding()
                     Text(String(level + 1))
                         .frame(maxWidth: .infinity, minHeight: 44, maxHeight: 64)
@@ -105,9 +106,9 @@ struct LevelTileView: View {
                 .fill(completed && score >= 100 ? .red : unlocked ? .blue : .gray)
         )
         .background(
-            RoundedRectangle(cornerRadius: 10)
-                .fill(.gray.opacity(0.5))
-                .offset(y: 4)
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(.gray.opacity(0.5))
+                    .offset(y: 4)
         )
         .frame(width: buttonWidth, height: buttonHeight)
         .task {

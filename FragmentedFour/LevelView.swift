@@ -13,9 +13,25 @@ struct LevelView: View {
     @State var navPath = NavigationPath()
     @Environment(\.modelContext) var modelContext
     @Query(sort: [SortDescriptor(\Level.level)]) var levels: [Level]
+    @State var userData: UserData?
+    
+    // FIGURE OUT FETCHING THE CLASS CORRECTLY
+
+    
     @Namespace private var transitionNamespace
     
-    // Define the levels as a range for simplicity
+    @State private var totalPts: Int = 0
+    @State private var levelsUnlocked: Int = 1
+    
+    func fetchUserData(){
+        let fetchDescriptor = FetchDescriptor<UserData>(
+            predicate: #Predicate { $0.id == "UserData" })
+        do {
+            userData = try? modelContext.fetch(fetchDescriptor)
+        } catch {
+            print("Failed to fetch: \(error)")
+        }
+    }
     
     // Define the grid layout
     let columns = [
@@ -41,24 +57,55 @@ struct LevelView: View {
                                 VStack{
                                     Text("Level Select")
                                         .foregroundStyle(.white)
-                                        .font(.title.bold())
+                                        .font(.system(size: 40).bold())
+                                        .offset(y: 13)
                                     
-                                    Image(systemName: "flag.2.crossed")
-                                        .resizable()
-                                        .frame(width: 140, height : 80)
-                                        .foregroundStyle(.white)
-                                    
+                                        
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .fill(AppColors.body)
+                                        .frame(width: UIScreen.main.bounds.width * 0.84, height: UIScreen.main.bounds.height * 0.10)
+                                        .overlay(
+                                            ZStack{
+                                                RoundedRectangle(cornerRadius: 10)
+                                                    .stroke(style: StrokeStyle(lineWidth: 5))
+                                                    .frame(width: UIScreen.main.bounds.width * 0.84, height: UIScreen.main.bounds.height * 0.10)
+                                                    .foregroundStyle(.gray.opacity(0.4))
+                                                
+                                                HStack(alignment: .top) {
+                                                    VStack(alignment: .leading) {
+                                                        Text("Avg Rank   ")
+                                                            .bold()
+                                                            .font(.system(size:14))
+                                                        + Text(String(userData.avgRank))
+                                                            .bold()
+                                                            .font(.system(size: 28))
+                                                            .foregroundStyle(Color.blue)
+                                                            
+                                                        Spacer()
+                                                            .frame(height: 10)
+                                                        Text("Total Pts") //place holder score for now
+                                                            .bold()
+                                                            .font(.system(size:14))
+                                                        + Text("   \(userData.totalPts) 💰")
+                                                            .bold()
+                                                            .foregroundColor(.blue)
+                                                            .font(.system(size: 23))
+                                                        Spacer()
+                                                    }
+                                                    .padding()
+                                                    Spacer()
+                                                        
+                                                    
+                                                }
+                                            }
+                                            
+                                        )
+                                        
                                 }
-                                HStack(alignment: .top){
-                                    Image(systemName: "equal")
-                                        .resizable()
-                                        .frame(width: 40, height: 20)
-                                        .foregroundStyle(.white)
-                                        .padding(.leading, 20)
-                                        .hidden()
-        
-                                    Spacer()
-                                }
+                                .padding(.bottom, 20)
+                                
+                                
+                                
                             }
                             
                         }
@@ -82,6 +129,7 @@ struct LevelView: View {
                         }
                         .padding(.leading, 40)
                         .padding(.trailing, 40)// Add padding around the grid
+                        
                     }
                 }
             }
@@ -102,6 +150,8 @@ struct LevelView: View {
                         // Set the flag to true so initialization doesn't run again
                         UserDefaults.standard.set(true, forKey: "firstLaunchEver")
                     }
+            userData.updatePtsAndRank(levels: levels)
+        
         }
     }
     
