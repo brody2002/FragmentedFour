@@ -105,11 +105,6 @@ struct LevelTileView: View {
             RoundedRectangle(cornerRadius: 10)
                 .fill(completed && score >= 100 ? AppColors.masterRed : unlocked ? AppColors.coreBlue : .gray)
         )
-        .background(
-                RoundedRectangle(cornerRadius: 10)
-                    .fill(.gray.opacity(0.5))
-                    .offset(y: 4)
-        )
         .frame(width: buttonWidth, height: buttonHeight)
         .task {
             tiles = levels[level].shuffled()

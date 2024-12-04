@@ -106,15 +106,20 @@ struct LevelView: View {
                         LazyVGrid(columns: columns, spacing: 50) {
                             ForEach(levels, id: \.level){ level in
                                 LevelTileView(level: level.level, completed: level.completed, unlocked: level.unlocked, score:  level.score)
+                                    
+                                    .matchedTransitionSource(id: level.level, in: animationNamespace)
+                                    
                                     .onTapGesture {
                                         navPath.append(Destination.levelDestination(level: level))
                                             
                                     }
-//                                    .matchedGeometryEffect(id: level.level, in: animationNamespace)
-                                    .matchedTransitionSource(id: level.level, in: animationNamespace)
-                                    
-                                    
                                     .disabled(!level.unlocked)
+                                    .background(
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .fill(.gray.opacity(0.5))
+                                                .offset(y: 4)
+                                                .frame(width: 120, height: 80)
+                                    )
                             }
                         }
                         .padding(.leading, 40)
