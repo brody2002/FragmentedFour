@@ -13,7 +13,7 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(\.modelContext) var modelContext
-    @EnvironmentObject var userData: UserData
+//    @EnvironmentObject var userData: UserData
     @Query var LevelClass: [Level]
 
     let levels: [[String]] = Bundle.main.decode("levels.txt")
@@ -27,6 +27,7 @@ struct ContentView: View {
     @State private var showX: Bool = true
     @State private var quartileCount: Int = 1
     @State private var submissionState: Bool = false
+    @State private var foundQuartile: Bool = false
     
     @State private var fetchedLevel: Level? = nil
     @State var scoreToBeat: Int?
@@ -46,8 +47,8 @@ struct ContentView: View {
     @State var shouldRestartLevel = false
     
     @State private var foundAllQuartiles = false
-    
     @State private var audioPlayer: AVAudioPlayer?
+    
     var bubbleSoundList: [String] = ["BubbleSound1", "BubbleSound2", "BubbleSound3", "BubbleSound4"]
 
     
@@ -163,7 +164,7 @@ struct ContentView: View {
                 .padding()
                 .padding(.bottom, 60)
                 .foregroundStyle(.white)
-                .background(turnGreen ? .green : .blue)
+                .background(foundQuartile ? .green : .blue)
                 
                 
                 ZStack(alignment: .top) {
@@ -250,7 +251,6 @@ struct ContentView: View {
                                             \.self) { tile in
                                     Button {
                                         deselect(tile)
-                                        playSound(for: "BackBubble")
                                     } label : {
                                         SelectedTileView(text: tile, turnRed: $turnRed, turnGreen: $turnGreen)
                                             
@@ -258,11 +258,15 @@ struct ContentView: View {
                                     }
                                 }
                                 
-                                Button("Clear", systemImage: "xmark.circle", action: clearSelected)
+                                Button("Clear", systemImage: "xmark.circle", action: {
+                                    clearSelected()
+                                    playSound(for: "BackBubble")
+                                })
                                     .opacity(showX ? 1.0 : 0.0)
                                     .animation(nil, value: showX)
                                     .labelStyle(.iconOnly)
                                     .symbolVariant(.fill)
+                                    .foregroundStyle(turnGreen ? .green : .blue)
                                     
                             }
                         }
@@ -273,7 +277,7 @@ struct ContentView: View {
                             ForEach(orderedTiles, id: \.self){ tile in
                                 Button {
                                     select(tile)
-                                    playSound(for: bubbleSoundList.randomElement())
+//                                    playSound(for: bubbleSoundList.randomElement())
                                 } label: {
                                     TileView(
                                         text: tile,
@@ -373,9 +377,11 @@ struct ContentView: View {
         guard selectedTiles.contains(tile) == false else { return }
         
         selectedTiles.append(tile)
+        playSound(for: bubbleSoundList.randomElement()!)
     }
     func deselect(_ tile: String){
         selectedTiles.removeAll { $0 == tile }
+        playSound(for: "BackBubble")
     }
     func shuffletiles() {
         withAnimation{
@@ -387,6 +393,7 @@ struct ContentView: View {
     
     func combineTiles(completion: @escaping () -> Void) {
         guard selectedTiles.count > 1 else {
+            playSound(for: "CorrectSound")
             completion()
             return
         }
@@ -416,10 +423,11 @@ struct ContentView: View {
                 
                 
                 foundWords.append(selectedTiles)
-                
+                turnGreen = true
                 score += selectedTiles.score
                 
                 if selectedTiles.count == 4 {
+    
                     foundQuartiles.append(contentsOf: selectedTiles)
                 }
                 
@@ -433,11 +441,14 @@ struct ContentView: View {
                     // This block runs after all tiles are combined
                     showX = false
                     
-                    withAnimation(.spring(response: 0.2, dampingFraction: 0.45)) {
-                        if quartileCount == 4{
-                            turnGreen = true
+                    
+                    if quartileCount == 4{
+                        withAnimation(.spring(response: 0.2)){
+                            foundQuartile = true
+                            
                         }
                     }
+                   
                     groupQuartiles()
                     
                     //Fetch Level from SwiftData and save it in its container
@@ -446,6 +457,7 @@ struct ContentView: View {
                     if score >= scoreToBeat! {
                         withAnimation(.spring(response: 1.0, dampingFraction: 0.4)){
                             showWinScreenView.toggle()
+                            playSound(for: "Victory")
                         }
                         let currentLVL = fetchLevel(levelNumber: currentLevel, context: modelContext)!
                         currentLVL.completed = true
@@ -463,6 +475,7 @@ struct ContentView: View {
                             turnGreen = false
                             quartileCount = 0
                             showX = true
+                            foundQuartile = false
                         }
                     }
                 }
@@ -507,7 +520,7 @@ struct ContentView: View {
         currentLVL.score = score
         currentLVL.rank = Rank.name(for: score)
         
-        userData.updatePtsAndRank(levels: LevelClass)
+//        userData.updatePtsAndRank(levels: LevelClass)
     }
     
     
@@ -528,9 +541,10 @@ struct ContentView: View {
     func groupQuartiles() {
         guard isGroupingQuartiles else { return }
         for quartile in foundQuartiles {
-            orderedTiles.removeAll(where: { $0 == quartile })
-            orderedTiles.append(quartile)
-        }
+            withAnimation{
+                orderedTiles.removeAll(where: { $0 == quartile })
+                orderedTiles.append(quartile)
+            }        }
     }
     
     func setupNextLevel() {
@@ -581,7 +595,6 @@ struct ContentView: View {
             do {
                 audioPlayer = try AVAudioPlayer(contentsOf: url)
                 audioPlayer?.play()
-                print("Audio Playing")
             } catch {
                 print("Couldn't play Audio")
             }
@@ -604,7 +617,7 @@ struct ContentView: View {
         container.mainContext.insert(Level(level: 4, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: true))
         container.mainContext.insert(Level(level: 5, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: false))
         container.mainContext.insert(Level(level: 6, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: false))
-        return ContentView(score: 0, currentLevel: 2, foundWords: [[String]](), foundQuartiles: [String]())
+        return ContentView(score: 0, currentLevel: 0, foundWords: [[String]](), foundQuartiles: [String]())
             .modelContainer(container)
     } catch {
         return Text("Failed to create container: \(error.localizedDescription)")

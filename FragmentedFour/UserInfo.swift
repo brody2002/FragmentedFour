@@ -25,8 +25,6 @@ class UserData: ObservableObject {
         self.totalPts = 0
         self.unlockedLevels = 1
         
-        
-        let levelsUnlocked = levels.count
         for level in levels {
             if level.unlocked {
                 self.totalPts += level.score
