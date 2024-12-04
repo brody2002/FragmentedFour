@@ -12,25 +12,24 @@ import Foundation
 class UserData: ObservableObject {
     var totalPts: Int
     var avgRank: String
-    var unlockedLevels: Int
+    var completedLevels: Int
     
     init() {
         self.totalPts = 0
         self.avgRank = "Novice"
-        self.unlockedLevels = 1
+        self.completedLevels = 0
     }
     
     func updatePtsAndRank(levels: [Level]) {
         //Restart values
         self.totalPts = 0
-        self.unlockedLevels = 1
+        self.completedLevels = 0
         for level in levels {
-            if level.unlocked {
+            if level.completed {
                 self.totalPts += level.score
-                self.unlockedLevels += 1
+                self.completedLevels += 1
             }
         }
-        unlockedLevels -= 1 
-        self.avgRank = Rank.name(for: totalPts / max(self.unlockedLevels, 1))
+        self.avgRank = Rank.name(for: totalPts / max(self.completedLevels, 1))
     }
 }

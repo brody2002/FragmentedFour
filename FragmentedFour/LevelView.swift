@@ -13,7 +13,7 @@ struct LevelView: View {
     @State var navPath = NavigationPath()
     @Environment(\.modelContext) var modelContext
     @Query(sort: [SortDescriptor(\Level.level)]) var levels: [Level]
-    @Namespace private var transitionNamespace
+    @Namespace private var animationNamespace
     @EnvironmentObject var userData: UserData
     @State private var audioPlayer: AVAudioPlayer?
     @State private var mainColor: Color = AppColors.coreBlue
@@ -45,7 +45,7 @@ struct LevelView: View {
                                     Text("Level Select")
                                         .foregroundStyle(.white)
                                         .font(.system(size: 40).bold())
-                                        .offset(y: 13)
+                                        .offset(y: 54)
                                     
                                         
                                     RoundedRectangle(cornerRadius: 10)
@@ -53,11 +53,6 @@ struct LevelView: View {
                                         .frame(width: UIScreen.main.bounds.width * 0.84, height: UIScreen.main.bounds.height * 0.10)
                                         .overlay(
                                             ZStack{
-                                                RoundedRectangle(cornerRadius: 10)
-                                                    .stroke(style: StrokeStyle(lineWidth: 5))
-                                                    .frame(width: UIScreen.main.bounds.width * 0.84, height: UIScreen.main.bounds.height * 0.10)
-                                                    .foregroundStyle(.gray.opacity(0.4))
-                                                
                                                 HStack(alignment: .top) {
                                                     VStack(alignment: .leading) {
                                                         Text("Avg Rank   ")
@@ -81,12 +76,16 @@ struct LevelView: View {
                                                     }
                                                     .padding()
                                                     Spacer()
-                                                        
-                                                    
                                                 }
                                             }
-                                            
                                         )
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .frame(width: UIScreen.main.bounds.width * 0.84, height: UIScreen.main.bounds.height * 0.10)
+                                                .foregroundStyle(.gray.opacity(0.4))
+                                                .offset(y:4)
+                                        )
+                                        .offset(y: 40)
                                         
                                 }
                                 .padding(.bottom, 20)
@@ -98,10 +97,10 @@ struct LevelView: View {
                         }
                         
                     }
-                    .frame(height: UIScreen.main.bounds.height * 0.18)
+                    .frame(height: UIScreen.main.bounds.height * 0.08)
                     
                     Spacer()
-                        .frame(minHeight: 50, maxHeight: 50)
+                        .frame(height: 100)
                     
                     ScrollView{ // Add ScrollView for scrolling
                         LazyVGrid(columns: columns, spacing: 50) {
@@ -111,6 +110,9 @@ struct LevelView: View {
                                         navPath.append(Destination.levelDestination(level: level))
                                             
                                     }
+                                    .matchedGeometryEffect(id: level.level, in: animationNamespace)
+                                    
+                                    
                                     .disabled(!level.unlocked)
                             }
                         }
@@ -122,8 +124,10 @@ struct LevelView: View {
             .navigationDestination(for: Destination.self, destination: { dest in
                 switch dest{
                 case .levelDestination(let level):
-                    ContentView(score: level.score, currentLevel: level.level, foundWords: level.foundWords, foundQuartiles: level.foundQuartiles)
-                        .navigationTransition(.zoom(sourceID: level, in: transitionNamespace))
+                    ContentView(score: level.score, currentLevel: level.level, foundWords: level.foundWords, foundQuartiles: level.foundQuartiles, animation: animationNamespace)
+                        .navigationTransition(.zoom(sourceID: level.level, in: animationNamespace))
+                        
+                        
                         
                 }
             })
@@ -133,38 +137,38 @@ struct LevelView: View {
             withAnimation(.spring(response: 0.3, dampingFraction: 0.6)){
                 userData.updatePtsAndRank(levels: levels)
             }
-//             Check if it's the first launch EVER
             if UserDefaults.standard.bool(forKey: "firstLaunchEver") == false {
-                initializeAppData()
-                // Set the flag to true so initialization doesn't run again
+                initializeAppData() // for first ever launch
                 UserDefaults.standard.set(true, forKey: "firstLaunchEver")
             }
             
-            
-            playSound(for: "BackgroundMusic")
-        
+            if GlobalAudioSettings.shared.audioOn{
+                print("audio is on")
+                GlobalAudioSettings.shared.playSound(for: "BackgroundMusic", backgroundMusic: true)
+            }
+            else { print("audio off ") }
             
             
         }
     }
     
-    func playSound(for soundName: String) {
-        // Safely unwrap the URL
-        guard let url = Bundle.main.url(forResource: soundName, withExtension: "m4a") else {
-            print("Error: Could not find the sound file named \(soundName).m4a in the bundle.")
-            return
-        }
-
-        do {
-            // Try to initialize the audio player
-            audioPlayer = try AVAudioPlayer(contentsOf: url)
-            audioPlayer?.numberOfLoops = -1 // Set your desired number of loops (-1 for infinite)
-            audioPlayer?.play()
-        } catch {
-            // Print an error message in case of failure
-            print("Error: Could not play the audio file. \(error.localizedDescription)")
-        }
-    }
+//    func playSound(for soundName: String) {
+//        // Safely unwrap the URL
+//        guard let url = Bundle.main.url(forResource: soundName, withExtension: "m4a") else {
+//            print("Error: Could not find the sound file named \(soundName).m4a in the bundle.")
+//            return
+//        }
+//
+//        do {
+//            // Try to initialize the audio player
+//            audioPlayer = try AVAudioPlayer(contentsOf: url)
+//            audioPlayer?.numberOfLoops = -1 // Set your desired number of loops (-1 for infinite)
+//            audioPlayer?.play()
+//        } catch {
+//            // Print an error message in case of failure
+//            print("Error: Could not play the audio file. \(error.localizedDescription)")
+//        }
+//    }
 
     
     

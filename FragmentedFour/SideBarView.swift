@@ -29,16 +29,43 @@ struct SideBarView: View {
                 Spacer()
                     .frame(height: 20)
                 
-                Button(action:{}, label:{
-                    Image(systemName: "house")
-                        .foregroundStyle(.white)
-                        .padding()
+                HStack{
+                    Button(action:{}, label:{
+                        Image(systemName: "house")
+                            .foregroundStyle(.white)
+                            .padding()
+                            .frame(width: 60, height: 50)
+                            
+                    })
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(.quaternary)
+                    )
+                    
+                    
+                    Button(action:{
+                        // Toggle Volume on and off
+                        GlobalAudioSettings.shared.audioOn.toggle()
                         
-                })
-                .background(
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(.quaternary)
-                )
+                        if GlobalAudioSettings.shared.audioOn == false {
+                            GlobalAudioSettings.shared.setVolume(forAll: 0.0)
+                        } else { GlobalAudioSettings.shared.setVolume(forAll: 1.0) }
+                        
+                    }, label:{
+                        Image(systemName: GlobalAudioSettings.shared.audioOn == true ? "speaker.wave.3.fill" : "speaker.slash.fill")
+                            .foregroundStyle(.white)
+                            .padding()
+                            .frame(width: 60, height: 50)
+                            
+                    })
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(.quaternary)
+                    )
+                    
+                    
+                }
+                
                 
                 Spacer()
                     .frame(height: 30)
@@ -82,7 +109,7 @@ struct SideBarView: View {
                 
             Spacer()
         }
-        .background(Color.blue)
+        .background(AppColors.coreBlue)
         .cornerRadius(10)
         .edgesIgnoringSafeArea(.all)
         

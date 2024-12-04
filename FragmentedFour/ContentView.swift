@@ -13,6 +13,7 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(\.modelContext) var modelContext
+    @Environment(\.dismiss) var Dismiss
 //    @EnvironmentObject var userData: UserData
     @Query var LevelClass: [Level]
 
@@ -49,7 +50,7 @@ struct ContentView: View {
     
     @State private var mainColor: Color = Color.gray
     
-//    var namespace: Namespace.ID
+    var animation: Namespace.ID
     
     var bubbleSoundList: [String] = ["BubbleSound1", "BubbleSound2", "BubbleSound3", "BubbleSound4"]
 
@@ -192,9 +193,9 @@ struct ContentView: View {
                             Spacer()
                                 .frame(height: 20)
                             Button(action: {
-                                setupNextLevel()
+                                Dismiss()
                             }, label:{
-                                Text("Next Level")
+                                Text("Back to Main Menu?")
                                     .font(.title2.bold())
                                     .foregroundStyle(.white)
                                     .frame(minWidth: 180, maxWidth: 240, maxHeight: 50)
@@ -357,12 +358,16 @@ struct ContentView: View {
                     groupQuartiles()
                 }
             }
+//            .matchedTransitionSource(id: currentLevel, in: animation)
             
             .onChange(of: shouldRestartLevel){
                 restartLevel()
             }
             
-        }.navigationBarBackButtonHidden(true)
+            
+        }
+        .navigationBarBackButtonHidden(true)
+        
             
     
         
@@ -431,7 +436,7 @@ struct ContentView: View {
     func winScreen(level: Level){
         print("level threshhold: \(level.levelThreshhold)")
         if level.levelThreshhold == 15 && score >= 15{
-            withAnimation(.spring(response: 1.0, dampingFraction: 0.4)){
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.5)){
                 showWinScreenView.toggle()
             }
             level.completed = true
@@ -480,7 +485,7 @@ struct ContentView: View {
                         
                     }
                     
-                    winScreen(level: currentLVL!)
+                    
                     
                     // Reset values
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
@@ -491,6 +496,11 @@ struct ContentView: View {
                             foundQuartile = false
                         }
                     }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8){
+                        submissionState = false
+                        winScreen(level: currentLVL!)
+                    }
+                    
                 }
             }
         } else {
@@ -514,10 +524,12 @@ struct ContentView: View {
                     turnRed = false
                 }
             }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.9){
+                submissionState = false
+            }
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.3){
-            submissionState = false
-        }
+        
             
         
     }
@@ -605,6 +617,7 @@ struct ContentView: View {
     }
     
     func playSound(for inputSound: String){
+        guard GlobalAudioSettings.shared.audioOn == true else { return }
         if let url = Bundle.main.url(forResource: inputSound, withExtension: "m4a") {
             do {
                 audioPlayer = try AVAudioPlayer(contentsOf: url)
@@ -631,7 +644,7 @@ struct ContentView: View {
 }
 
 #Preview {
-//    @Previewable @Namespace var previewNamespace
+    @Previewable @Namespace var previewNamespace
     do {
  
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
@@ -643,7 +656,7 @@ struct ContentView: View {
         container.mainContext.insert(Level(level: 4, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: true))
         container.mainContext.insert(Level(level: 5, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: false))
         container.mainContext.insert(Level(level: 6, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: false))
-        return ContentView(score: 0, currentLevel: 0, foundWords: [[String]](), foundQuartiles: [String]())
+        return ContentView(score: 0, currentLevel: 0, foundWords: [[String]](), foundQuartiles: [String](), animation: previewNamespace)
             .modelContainer(container)
     } catch {
         return Text("Failed to create container: \(error.localizedDescription)")

@@ -10,8 +10,7 @@ import SwiftData
 import SwiftUI
 
 @Model
-class Level: Identifiable, ObservableObject{
-    var id: UUID
+class Level: Identifiable, ObservableObject, Hashable{
     var level: Int
     var foundWords: [[String]]
     var foundQuartiles: [String] // List of the individual quartiles that make up the whole word. So 1 word equal foundQuartiles.count -> 4
@@ -22,8 +21,7 @@ class Level: Identifiable, ObservableObject{
     var levelThreshhold: Int
     var foundAllWords: Bool
     
-    init(level: Int, foundWords: [[String]], foundQuartiles: [String], completed: Bool, rank: String, score: Int, unlocked: Bool, levelThreshhold: Int = 15, foundAllWords: Bool = false, mainColor: Color = AppColors.coreBlue) {
-        self.id = UUID()
+    init(level: Int, foundWords: [[String]], foundQuartiles: [String], completed: Bool, rank: String, score: Int, unlocked: Bool, levelThreshhold: Int = 15, foundAllWords: Bool = false) {
         self.level = level
         self.foundWords = foundWords
         self.foundQuartiles = foundQuartiles

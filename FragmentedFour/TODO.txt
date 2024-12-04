@@ -19,19 +19,3 @@ Hold Preview on Each Level
 BUGS:
 
 
-
-
-
-
-Fixed:
-
-1. in the rare case that the level set has 6 or more words that can be made from quartiles...
-- make it so that appending to the quartilelist only takes in the intended words...
-
-2. We leaving the view and comming back with all quartiles found, the view resets and the user can still gain the additional 40 pts...
-- Add a check in the Level class...
-
-3. Changes Color when >= 100
-
-4. Change tier names
-

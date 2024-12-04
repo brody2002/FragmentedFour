@@ -14,8 +14,8 @@
             filePath = "FragmentedFour/ContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "583"
-            endingLineNumber = "583"
+            startingLineNumber = "595"
+            endingLineNumber = "595"
             landmarkName = "clearData()"
             landmarkType = "7">
          </BreakpointContent>
@@ -28,6 +28,20 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../../../../../var/folders/3v/f5znd_2n6nv_0q5n6dtvtgnh0000gq/T/swift-generated-sources/@__swiftmacro_14FragmentedFour9LevelViewV4test5QueryfMp_.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1"
+            endingLineNumber = "1">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "7104C09A-884B-4B24-B669-861351D6A462"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../../../../var/folders/3v/f5znd_2n6nv_0q5n6dtvtgnh0000gq/T/swift-generated-sources/@__swiftmacro_14FragmentedFour19GlobalAudioSettingsC15audioPlayerList18ObservationTrackedfMp_.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1"
