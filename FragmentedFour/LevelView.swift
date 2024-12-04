@@ -110,7 +110,8 @@ struct LevelView: View {
                                         navPath.append(Destination.levelDestination(level: level))
                                             
                                     }
-                                    .matchedGeometryEffect(id: level.level, in: animationNamespace)
+//                                    .matchedGeometryEffect(id: level.level, in: animationNamespace)
+                                    .matchedTransitionSource(id: level.level, in: animationNamespace)
                                     
                                     
                                     .disabled(!level.unlocked)
