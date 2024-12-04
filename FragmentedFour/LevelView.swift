@@ -5,7 +5,7 @@
 //  Created by Brody on 11/29/24.
 //
 
-
+import AVFoundation
 import SwiftUI
 import SwiftData
 
@@ -15,6 +15,8 @@ struct LevelView: View {
     @Query(sort: [SortDescriptor(\Level.level)]) var levels: [Level]
     @Namespace private var transitionNamespace
     @EnvironmentObject var userData: UserData
+    @State private var audioPlayer: AVAudioPlayer?
+    @State private var mainColor: Color = AppColors.coreBlue
     
     // Define the levels as a range for simplicity
     
@@ -36,7 +38,7 @@ struct LevelView: View {
                 
                 VStack{
                     ZStack{
-                        Color.blue.ignoresSafeArea()
+                        mainColor.ignoresSafeArea()
                         VStack{
                             ZStack(alignment: .top){
                                 VStack{
@@ -64,7 +66,7 @@ struct LevelView: View {
                                                         + Text("\(userData.avgRank)")
                                                             .bold()
                                                             .font(.system(size: 28))
-                                                            .foregroundStyle(Color.blue)
+                                                            .foregroundStyle(mainColor)
                                                             
                                                         Spacer()
                                                             .frame(height: 10)
@@ -73,7 +75,7 @@ struct LevelView: View {
                                                             .font(.system(size:14))
                                                         + Text("    \(userData.totalPts) 💰")
                                                             .bold()
-                                                            .foregroundColor(.blue)
+                                                            .foregroundColor(mainColor)
                                                             .font(.system(size: 23))
                                                         Spacer()
                                                     }
@@ -121,15 +123,16 @@ struct LevelView: View {
                 switch dest{
                 case .levelDestination(let level):
                     ContentView(score: level.score, currentLevel: level.level, foundWords: level.foundWords, foundQuartiles: level.foundQuartiles)
-                        .navigationTransition(.zoom(sourceID: level.level, in: transitionNamespace))
+                        .navigationTransition(.zoom(sourceID: level, in: transitionNamespace))
                         
                 }
             })
         }
        
         .task{
-            
-            userData.updatePtsAndRank(levels: levels)
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)){
+                userData.updatePtsAndRank(levels: levels)
+            }
 //             Check if it's the first launch EVER
             if UserDefaults.standard.bool(forKey: "firstLaunchEver") == false {
                 initializeAppData()
@@ -138,8 +141,32 @@ struct LevelView: View {
             }
             
             
+            playSound(for: "BackgroundMusic")
+        
+            
+            
         }
     }
+    
+    func playSound(for soundName: String) {
+        // Safely unwrap the URL
+        guard let url = Bundle.main.url(forResource: soundName, withExtension: "m4a") else {
+            print("Error: Could not find the sound file named \(soundName).m4a in the bundle.")
+            return
+        }
+
+        do {
+            // Try to initialize the audio player
+            audioPlayer = try AVAudioPlayer(contentsOf: url)
+            audioPlayer?.numberOfLoops = -1 // Set your desired number of loops (-1 for infinite)
+            audioPlayer?.play()
+        } catch {
+            // Print an error message in case of failure
+            print("Error: Could not play the audio file. \(error.localizedDescription)")
+        }
+    }
+
+    
     
     func initializeAppData() {
         print("Initializing app data for first launch...")

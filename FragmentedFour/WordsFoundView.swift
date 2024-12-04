@@ -14,6 +14,7 @@ struct WordsFoundView: View {
     
     
     var words: [[String]]
+    @State var mainColor: Color
     
     
     var body: some View {
@@ -50,6 +51,7 @@ struct WordsFoundView: View {
                         .padding(5)
                     
                 }
+                .tint(mainColor)
                 .buttonStyle(.bordered)
                 .buttonBorderShape(.circle)
             }
@@ -125,5 +127,5 @@ struct WordsFoundView: View {
 }
 
 #Preview {
-    WordsFoundView(words: [["hel", "lo"],["wor","ld"]])
+    WordsFoundView(words: [["hel", "lo"],["wor","ld"]], mainColor: AppColors.coreBlue)
 }

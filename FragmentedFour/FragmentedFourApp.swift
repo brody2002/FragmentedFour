@@ -4,6 +4,8 @@
 //
 //  Created by Brody on 11/26/24.
 //
+
+import AVFoundation
 import SwiftUI
 import SwiftData
 
@@ -12,13 +14,11 @@ import SwiftData
 struct FragmentedFourApp: App {
     @Environment(\.modelContext) var modelContext
     @StateObject private var userData = UserData()
-
     var body: some Scene {
         WindowGroup {
             LevelView()
                 .modelContainer(for: Level.self)
                 .environmentObject(userData)
-                
         }
     }
 }

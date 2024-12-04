@@ -17,10 +17,12 @@ struct ContentView: View {
     @Query var LevelClass: [Level]
 
     let levels: [[String]] = Bundle.main.decode("levels.txt")
+    @State private var currentLVL: Level?
     
     @State private var tiles = [String]()
     @State private var selectedTiles = [String]()
     @State private var orderedTiles = [String]()
+    @State private var intendedWords = [String]()
     
     @State private var turnRed: Bool = false
     @State private var turnGreen: Bool = false
@@ -28,9 +30,6 @@ struct ContentView: View {
     @State private var quartileCount: Int = 1
     @State private var submissionState: Bool = false
     @State private var foundQuartile: Bool = false
-    
-    @State private var fetchedLevel: Level? = nil
-    @State var scoreToBeat: Int?
     
     @State private var isGroupingQuartiles = true
     
@@ -46,8 +45,11 @@ struct ContentView: View {
     @State private var sideBarDragOffset = CGSize.zero
     @State var shouldRestartLevel = false
     
-    @State private var foundAllQuartiles = false
     @State private var audioPlayer: AVAudioPlayer?
+    
+    @State private var mainColor: Color = Color.gray
+    
+//    var namespace: Namespace.ID
     
     var bubbleSoundList: [String] = ["BubbleSound1", "BubbleSound2", "BubbleSound3", "BubbleSound4"]
 
@@ -164,7 +166,7 @@ struct ContentView: View {
                 .padding()
                 .padding(.bottom, 60)
                 .foregroundStyle(.white)
-                .background(foundQuartile ? .green : .blue)
+                .background(foundQuartile ? .green : mainColor)
                 
                 
                 ZStack(alignment: .top) {
@@ -196,7 +198,7 @@ struct ContentView: View {
                                     .font(.title2.bold())
                                     .foregroundStyle(.white)
                                     .frame(minWidth: 180, maxWidth: 240, maxHeight: 50)
-                                    .background(.blue)
+                                    .background(mainColor)
                                     .clipShape(RoundedRectangle(cornerRadius: 10))
                                     .padding(.horizontal)
                             })
@@ -209,7 +211,7 @@ struct ContentView: View {
                                     .font(.title3.bold())
                                     .foregroundStyle(.white)
                                     .frame(minWidth: 180, maxWidth: 240, maxHeight: 50)
-                                    .background(.blue)
+                                    .background(mainColor)
                                     .clipShape(RoundedRectangle(cornerRadius: 10))
                                     .padding(.horizontal)
                             })
@@ -228,14 +230,14 @@ struct ContentView: View {
                         .padding(.top ,100)
                     }
                     
-                    WordsFoundView(words: foundWords)
+                    WordsFoundView(words: foundWords, mainColor: mainColor)
                         .zIndex(1)
                         .opacity(showWinScreenView ? 0 : 1)
                     
                     VStack{
                         
                         //hidden placeholder
-                        WordsFoundView(words: foundWords)
+                        WordsFoundView(words: foundWords, mainColor: mainColor)
                             .hidden()
                         
                         Spacer()
@@ -243,7 +245,7 @@ struct ContentView: View {
                         HStack{
                             if selectedTiles.isEmpty{
                                 // hidden tile so that the UI doesnt move...
-                                SelectedTileView(text: "aa", turnRed: $turnRed, turnGreen: $turnGreen)
+                                SelectedTileView(text: "aa", turnRed: $turnRed, turnGreen: $turnGreen, mainColor: mainColor)
                                     
                                     .hidden()
                             } else {
@@ -252,7 +254,7 @@ struct ContentView: View {
                                     Button {
                                         deselect(tile)
                                     } label : {
-                                        SelectedTileView(text: tile, turnRed: $turnRed, turnGreen: $turnGreen)
+                                        SelectedTileView(text: tile, turnRed: $turnRed, turnGreen: $turnGreen, mainColor: mainColor)
                                             
                                         
                                     }
@@ -266,7 +268,7 @@ struct ContentView: View {
                                     .animation(nil, value: showX)
                                     .labelStyle(.iconOnly)
                                     .symbolVariant(.fill)
-                                    .foregroundStyle(turnGreen ? .green : .blue)
+                                    .foregroundStyle(turnGreen ? .green : mainColor)
                                     
                             }
                         }
@@ -282,7 +284,8 @@ struct ContentView: View {
                                     TileView(
                                         text: tile,
                                         isSelected: selectedTiles.contains(tile),
-                                        isHighlighted: isGroupingQuartiles && foundQuartiles.contains(tile)
+                                        isHighlighted: isGroupingQuartiles && foundQuartiles.contains(tile),
+                                        mainColor: mainColor
                                     )
                                     .transition(.identity)
                                 }
@@ -303,9 +306,11 @@ struct ContentView: View {
                                 Label("Shuffles", systemImage: "shuffle")
                                     .padding(5)
                                     .font(.headline)
+                                    .foregroundStyle(mainColor)
                             }
                             .buttonStyle(.bordered)
                             .buttonBorderShape(.circle)
+                
                             
                             Spacer()
                             
@@ -314,6 +319,7 @@ struct ContentView: View {
                                     .padding(10)
                                     .font(.title)
                             }
+                            .tint(mainColor)
                             .buttonStyle(.borderedProminent)
                             .buttonBorderShape(.circle)
                             .disabled(selectedTiles.isEmpty)
@@ -328,7 +334,7 @@ struct ContentView: View {
                             }
                             .buttonStyle(.bordered)
                             .buttonBorderShape(.circle)
-                            .tint(isGroupingQuartiles ? .blue : nil)
+                            .tint(isGroupingQuartiles ? mainColor : nil)
                         }
                         .padding(.bottom, -40)
                         .opacity(showWinScreenView ? 0 : 1)
@@ -344,8 +350,8 @@ struct ContentView: View {
             .font(.title2.bold())
             .preferredColorScheme(.light)
             .task{
-                fetchedLevel = fetchLevel(levelNumber: currentLevel, context: modelContext)!
-               
+                currentLVL = fetchLevel(levelNumber: currentLevel, context: modelContext)!
+                mainColor = currentLVL!.score >= 100 ? AppColors.masterRed : AppColors.coreBlue
                 loadLevel()
                 if isGroupingQuartiles{
                     groupQuartiles()
@@ -357,6 +363,7 @@ struct ContentView: View {
             }
             
         }.navigationBarBackButtonHidden(true)
+            
     
         
         
@@ -364,10 +371,9 @@ struct ContentView: View {
     
     
     func loadLevel(){
-        // we want to start levels off of level 1 not 0
-//        print("CurrentLevel: \(currentLevel + 1)")
-        tiles = levels[currentLevel].shuffled()
+        tiles = levels[currentLevel]
         orderedTiles = tiles
+        findIntendWords(for: tiles)
     }
     func clearSelected(){
         selectedTiles.removeAll()
@@ -393,7 +399,17 @@ struct ContentView: View {
     
     func combineTiles(completion: @escaping () -> Void) {
         guard selectedTiles.count > 1 else {
-            playSound(for: "CorrectSound")
+            if quartileCount == 4{
+                playSound(for: "Quartile")
+                withAnimation(.spring(response: 0.2)){
+                    foundQuartile = true
+                    
+                }
+            }
+            if quartileCount == 1{
+                playSound(for: "CorrectSound")
+            }
+            quartileCount = 1
             completion()
             return
         }
@@ -412,79 +428,73 @@ struct ContentView: View {
         }
     }
     
+    func winScreen(level: Level){
+        print("level threshhold: \(level.levelThreshhold)")
+        if level.levelThreshhold == 15 && score >= 15{
+            withAnimation(.spring(response: 1.0, dampingFraction: 0.4)){
+                showWinScreenView.toggle()
+            }
+            level.completed = true
+            level.levelThreshhold = 100
+
+            if let nextLVL = fetchLevel(levelNumber: currentLevel + 1, context: modelContext) {
+                nextLVL.unlocked = true
+            } else {
+                print("There is no next level")
+            }
+        }
+        if level.levelThreshhold == 100 && score >= 100{
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)){
+                mainColor = AppColors.masterRed
+            }
+            level.levelThreshhold = 1000
+            withAnimation(.spring(response: 1.0, dampingFraction: 0.4)){
+                showWinScreenView.toggle()
+            }
+        }
+    }
 
     func submit() {
         submissionState = true
+        // Correct Input
         if canSubmit {
-            
-            
-            scoreToBeat = fetchedLevel!.score >= 15 ? 100 : 15
+            showX = false
             withAnimation(.spring(response: 0.4, dampingFraction: 0.6)){
-                
-                
                 foundWords.append(selectedTiles)
                 turnGreen = true
                 score += selectedTiles.score
                 
-                if selectedTiles.count == 4 {
-    
+                // If user lands on intended quartile
+                if selectedTiles.count == 4 && intendedWords.contains(selectedTiles.joined()) {
+                    print("found intended Quartile")
                     foundQuartiles.append(contentsOf: selectedTiles)
                 }
-                
-                if foundQuartiles.count / 4 == 5 && !foundAllQuartiles {
-                    // Found all Quartiles
-                    score += 40
-                    foundAllQuartiles = true
-                }
-                
                 combineTiles {
-                    // This block runs after all tiles are combined
-                    showX = false
-                    
-                    
-                    if quartileCount == 4{
-                        withAnimation(.spring(response: 0.2)){
-                            foundQuartile = true
-                            
-                        }
-                    }
-                   
                     groupQuartiles()
-                    
-                    //Fetch Level from SwiftData and save it in its container
+                    print("foundQuartiles.count \(foundQuartiles.count)\n\(foundQuartiles)")
                     saveToSwiftData()
-                    
-                    if score >= scoreToBeat! {
-                        withAnimation(.spring(response: 1.0, dampingFraction: 0.4)){
-                            showWinScreenView.toggle()
-                            playSound(for: "Victory")
-                        }
-                        let currentLVL = fetchLevel(levelNumber: currentLevel, context: modelContext)!
-                        currentLVL.completed = true
-
-                        if let nextLVL = fetchLevel(levelNumber: currentLevel + 1, context: modelContext) {
-                            nextLVL.unlocked = true
-                        } else {
-                            print("There is no next level")
-                        }
+                    if currentLVL!.foundQuartiles.count / 4 == 5 && currentLVL!.foundAllWords == false {
+                        score += 40
+                        currentLVL!.score = score
+                        currentLVL!.foundAllWords = true
+                        
                     }
                     
+                    winScreen(level: currentLVL!)
+                    
+                    // Reset values
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
                         withAnimation(.spring(response: 0.2, dampingFraction: 0.45)){
                             selectedTiles.removeAll()
                             turnGreen = false
-                            quartileCount = 0
                             showX = true
                             foundQuartile = false
                         }
                     }
                 }
-               
-                
             }
         } else {
-            // Incorrect Word
-            
+            // Incorrect Input
             showX = false
             let joinedTile = selectedTiles.joined()
             selectedTiles.removeAll()
@@ -503,24 +513,21 @@ struct ContentView: View {
                     selectedTiles.removeAll()
                     turnRed = false
                 }
-                    
-                    
-                
-                
             }
         }
-        submissionState = false
-        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.3){
+            submissionState = false
+        }
+            
         
     }
+    
     func saveToSwiftData(){
-        let currentLVL = fetchLevel(levelNumber: currentLevel, context: modelContext)!
-        currentLVL.foundWords = foundWords
-        currentLVL.foundQuartiles = foundQuartiles
-        currentLVL.score = score
-        currentLVL.rank = Rank.name(for: score)
-        
-//        userData.updatePtsAndRank(levels: LevelClass)
+        currentLVL!.foundWords = foundWords
+        currentLVL!.foundQuartiles = foundQuartiles
+        currentLVL!.score = score
+        currentLVL!.rank = Rank.name(for: score)
+        //userData.updatePtsAndRank(levels: LevelClass)
     }
     
     
@@ -566,6 +573,7 @@ struct ContentView: View {
         
         
     }
+    
     func clearData(){
         withAnimation(.spring(response: 0.4, dampingFraction: 0.6)){
             loadLevel()
@@ -573,7 +581,13 @@ struct ContentView: View {
             foundQuartiles.removeAll()
             foundWords.removeAll()
             score = 0
-            foundAllQuartiles = false
+            currentLVL!.foundAllWords = false
+            currentLVL!.levelThreshhold = 15
+            currentLVL!.score = 0
+            currentLVL!.rank = "Novice"
+            currentLVL!.foundWords = [[String]]()
+            currentLVL!.foundQuartiles = [String]()
+            mainColor = AppColors.coreBlue
         }
     }
     
@@ -603,11 +617,23 @@ struct ContentView: View {
         }
     }
     
+    func findIntendWords(for inputWords: [String]){
+        var wordsList = levels[currentLevel] // has 16 strings in [String]
+        for _ in 0...4 {
+            let word = wordsList[0] + wordsList[1] + wordsList[2] + wordsList[3]
+            wordsList.removeFirst(4)
+            intendedWords.append(word)
+        }
+        print("intendedWords: \(intendedWords)")
+        
+    }
+    
 }
 
 #Preview {
-    
+//    @Previewable @Namespace var previewNamespace
     do {
+ 
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: Level.self, configurations: config)
         container.mainContext.insert(Level(level: 0, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Novice", score: 0, unlocked: false))

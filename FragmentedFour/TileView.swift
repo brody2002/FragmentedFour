@@ -12,6 +12,7 @@ struct TileView: View {
     var text: String
     var isSelected: Bool
     var isHighlighted: Bool
+    var mainColor: Color
     
     var body: some View {
         if isSelected {
@@ -35,12 +36,12 @@ struct TileView: View {
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
-                        .strokeBorder(isHighlighted ? .blue: .clear, lineWidth: 2)
+                        .strokeBorder(isHighlighted ? mainColor : .clear, lineWidth: 2)
                 )
         }
     }
 }
 
 #Preview {
-    TileView(text: "test", isSelected: false, isHighlighted: false)
+    TileView(text: "test", isSelected: false, isHighlighted: false, mainColor: AppColors.coreBlue)
 }

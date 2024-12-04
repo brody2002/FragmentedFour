@@ -18,11 +18,11 @@ struct Rank{
     
     static let allRanks = [
         Rank(name: "Novice", minimumScore: 0),
-        Rank(name: "Apprentice", minimumScore: 5),
-        Rank(name: "Builder", minimumScore: 15),
-        Rank(name: "Artisan", minimumScore: 30),
-        Rank(name: "Wordsmith", minimumScore: 50),
-        Rank(name: "Expert", minimumScore: 100)
+        Rank(name: "Explorer", minimumScore: 5),
+        Rank(name: "Architect", minimumScore: 15),
+        Rank(name: "Craftsman", minimumScore: 30),
+        Rank(name: "Virtuoso", minimumScore: 50),
+        Rank(name: "Master", minimumScore: 100)
     ]
     
     static func name(for score: Int) -> String {

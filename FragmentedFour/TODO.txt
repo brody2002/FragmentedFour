@@ -1,21 +1,14 @@
 
 Add sounds:
-- Quartile sound
-- Victory
-- incorrcet aquired
-- correct
-- pops from wordle game... aquired
-- Background music aquired
+
+pops to the other UI
 
 
 
-make an average rank calculator
-- Ask Kai for icons maybe? for each rank...
 
-Points system from the points cumulated from all levels...
-Use it to get to the next level?
+sound on an off button
 
-Color for each rank???
+
 
 Hold Preview on Each Level
 -expands view so that person can see view
@@ -23,5 +16,22 @@ Hold Preview on Each Level
 
 
 
+BUGS:
 
+
+
+
+
+
+Fixed:
+
+1. in the rare case that the level set has 6 or more words that can be made from quartiles...
+- make it so that appending to the quartilelist only takes in the intended words...
+
+2. We leaving the view and comming back with all quartiles found, the view resets and the user can still gain the additional 40 pts...
+- Add a check in the Level class...
+
+3. Changes Color when >= 100
+
+4. Change tier names
 

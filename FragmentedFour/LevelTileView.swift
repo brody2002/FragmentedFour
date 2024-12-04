@@ -46,7 +46,7 @@ struct LevelTileView: View {
                     Image(systemName: "trophy.fill")
                         .resizable()
                         .frame(width: 40, height: 40)
-                        .foregroundStyle(score >= 100 ?  .yellow.opacity(0.9): .white.opacity(0.7))
+                        .foregroundStyle(score >= 100 ?  AppColors.trophyYellow : .white.opacity(0.7))
                         .offset(y: 5)
                         .padding()
                     Text(String(level + 1))
@@ -103,7 +103,7 @@ struct LevelTileView: View {
         }
         .background(
             RoundedRectangle(cornerRadius: 10)
-                .fill(completed && score >= 100 ? .red : unlocked ? .blue : .gray)
+                .fill(completed && score >= 100 ? AppColors.masterRed : unlocked ? AppColors.coreBlue : .gray)
         )
         .background(
                 RoundedRectangle(cornerRadius: 10)
