@@ -11,11 +11,13 @@ import SwiftData
 @main
 struct FragmentedFourApp: App {
     @Environment(\.modelContext) var modelContext
+    @StateObject private var userData = UserData()
 
     var body: some Scene {
         WindowGroup {
             LevelView()
-                .modelContainer(for: [Level.self, UserData.self])
+                .modelContainer(for: Level.self)
+                .environmentObject(userData)
                 
         }
     }

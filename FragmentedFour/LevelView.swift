@@ -13,25 +13,10 @@ struct LevelView: View {
     @State var navPath = NavigationPath()
     @Environment(\.modelContext) var modelContext
     @Query(sort: [SortDescriptor(\Level.level)]) var levels: [Level]
-    @State var userData: UserData?
-    
-    // FIGURE OUT FETCHING THE CLASS CORRECTLY
-
-    
     @Namespace private var transitionNamespace
+    @EnvironmentObject var userData: UserData
     
-    @State private var totalPts: Int = 0
-    @State private var levelsUnlocked: Int = 1
-    
-    func fetchUserData(){
-        let fetchDescriptor = FetchDescriptor<UserData>(
-            predicate: #Predicate { $0.id == "UserData" })
-        do {
-            userData = try? modelContext.fetch(fetchDescriptor)
-        } catch {
-            print("Failed to fetch: \(error)")
-        }
-    }
+    // Define the levels as a range for simplicity
     
     // Define the grid layout
     let columns = [
@@ -62,7 +47,7 @@ struct LevelView: View {
                                     
                                         
                                     RoundedRectangle(cornerRadius: 10)
-                                        .fill(AppColors.body)
+                                        .fill(Color.white)
                                         .frame(width: UIScreen.main.bounds.width * 0.84, height: UIScreen.main.bounds.height * 0.10)
                                         .overlay(
                                             ZStack{
@@ -76,7 +61,7 @@ struct LevelView: View {
                                                         Text("Avg Rank   ")
                                                             .bold()
                                                             .font(.system(size:14))
-                                                        + Text(String(userData.avgRank))
+                                                        + Text("\(userData.avgRank)")
                                                             .bold()
                                                             .font(.system(size: 28))
                                                             .foregroundStyle(Color.blue)
@@ -86,7 +71,7 @@ struct LevelView: View {
                                                         Text("Total Pts") //place holder score for now
                                                             .bold()
                                                             .font(.system(size:14))
-                                                        + Text("   \(userData.totalPts) 💰")
+                                                        + Text("    \(userData.totalPts) 💰")
                                                             .bold()
                                                             .foregroundColor(.blue)
                                                             .font(.system(size: 23))
@@ -129,7 +114,6 @@ struct LevelView: View {
                         }
                         .padding(.leading, 40)
                         .padding(.trailing, 40)// Add padding around the grid
-                        
                     }
                 }
             }
@@ -144,14 +128,16 @@ struct LevelView: View {
         }
        
         .task{
-//             Check if it's the first launch EVER
-                    if UserDefaults.standard.bool(forKey: "firstLaunchEver") == false {
-                        initializeAppData()
-                        // Set the flag to true so initialization doesn't run again
-                        UserDefaults.standard.set(true, forKey: "firstLaunchEver")
-                    }
+            
             userData.updatePtsAndRank(levels: levels)
-        
+//             Check if it's the first launch EVER
+            if UserDefaults.standard.bool(forKey: "firstLaunchEver") == false {
+                initializeAppData()
+                // Set the flag to true so initialization doesn't run again
+                UserDefaults.standard.set(true, forKey: "firstLaunchEver")
+            }
+            
+            
         }
     }
     
@@ -183,6 +169,7 @@ struct LevelView: View {
     do {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: Level.self, configurations: config)
+        let userData = UserData()
         container.mainContext.insert(Level(level: 0, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Novice", score: 0, unlocked: false))
         container.mainContext.insert(Level(level: 1, foundWords: [[]], foundQuartiles: [], completed: true, rank: "Master", score: 101,unlocked: true))
         container.mainContext.insert(Level(level: 2, foundWords: [[]], foundQuartiles: [], completed: true, rank: "Wordsmith", score: 67, unlocked: true))
@@ -192,8 +179,8 @@ struct LevelView: View {
         container.mainContext.insert(Level(level: 6, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: false))
         return LevelView()
             .modelContainer(container)
+            .environmentObject(userData)
     } catch {
         return Text("Failed to create container: \(error.localizedDescription)")
     }
 }
-

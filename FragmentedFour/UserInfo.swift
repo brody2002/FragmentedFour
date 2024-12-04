@@ -5,28 +5,35 @@
 //  Created by Brody on 12/3/24.
 //
 
-import Foundation
-import SwiftData
 
-@Model
-class UserData: Identifiable{
-    var id: String
+import Foundation
+
+@Observable
+class UserData: ObservableObject {
     var totalPts: Int
     var avgRank: String
+    var unlockedLevels: Int
     
-    init(){
-        self.id = "UserData"
+    init() {
         self.totalPts = 0
         self.avgRank = "Novice"
+        self.unlockedLevels = 1
     }
     
-    func updatePtsAndRank(levels: [Level]){
+    func updatePtsAndRank(levels: [Level]) {
+        //Restart values
+        self.totalPts = 0
+        self.unlockedLevels = 1
+        
+        
         let levelsUnlocked = levels.count
-        for level in levels{
-            if level.completed{
+        for level in levels {
+            if level.unlocked {
                 self.totalPts += level.score
+                self.unlockedLevels += 1
             }
         }
-        self.avgRank = Rank.name(for: totalPts / levelsUnlocked)
+        unlockedLevels -= 1 
+        self.avgRank = Rank.name(for: totalPts / max(self.unlockedLevels, 1))
     }
 }

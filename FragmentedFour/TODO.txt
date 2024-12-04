@@ -2,10 +2,10 @@
 Add sounds:
 - Quartile sound
 - Victory
-- incorrcet
+- incorrcet aquired
 - correct
-- pops from wordle game...
-- Background music
+- pops from wordle game... aquired
+- Background music aquired
 
 
 

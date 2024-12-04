@@ -7,15 +7,15 @@
 
 //Video Progress -> 1:43:55
 
+import AVFoundation
 import SwiftData
 import SwiftUI
 
 struct ContentView: View {
     @Environment(\.modelContext) var modelContext
-    
-    
+    @EnvironmentObject var userData: UserData
+    @Query var LevelClass: [Level]
 
-    
     let levels: [[String]] = Bundle.main.decode("levels.txt")
     
     @State private var tiles = [String]()
@@ -26,6 +26,7 @@ struct ContentView: View {
     @State private var turnGreen: Bool = false
     @State private var showX: Bool = true
     @State private var quartileCount: Int = 1
+    @State private var submissionState: Bool = false
     
     @State private var fetchedLevel: Level? = nil
     @State var scoreToBeat: Int?
@@ -45,6 +46,10 @@ struct ContentView: View {
     @State var shouldRestartLevel = false
     
     @State private var foundAllQuartiles = false
+    
+    @State private var audioPlayer: AVAudioPlayer?
+    var bubbleSoundList: [String] = ["BubbleSound1", "BubbleSound2", "BubbleSound3", "BubbleSound4"]
+
     
     let gridLayout = Array(repeating:  GridItem.init(.flexible(minimum: 50, maximum: 100)), count: 4)
     
@@ -245,6 +250,7 @@ struct ContentView: View {
                                             \.self) { tile in
                                     Button {
                                         deselect(tile)
+                                        playSound(for: "BackBubble")
                                     } label : {
                                         SelectedTileView(text: tile, turnRed: $turnRed, turnGreen: $turnGreen)
                                             
@@ -267,6 +273,7 @@ struct ContentView: View {
                             ForEach(orderedTiles, id: \.self){ tile in
                                 Button {
                                     select(tile)
+                                    playSound(for: bubbleSoundList.randomElement())
                                 } label: {
                                     TileView(
                                         text: tile,
@@ -278,7 +285,7 @@ struct ContentView: View {
                                 //Custom Style preventing button from going gray on disable
                                 .buttonStyle(NoGrayOutButtonStyle())
         
-                                .disabled(turnRed)
+                                .disabled(submissionState)
                                 
                                 
                             }
@@ -340,6 +347,7 @@ struct ContentView: View {
                     groupQuartiles()
                 }
             }
+            
             .onChange(of: shouldRestartLevel){
                 restartLevel()
             }
@@ -389,6 +397,7 @@ struct ContentView: View {
        
         withAnimation(.spring(response: 0.3, dampingFraction: 0.4)){
             selectedTiles.insert(firstTwoCombined, at: 0)
+            playSound(for: "CorrectSound")
         }
       
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
@@ -398,7 +407,9 @@ struct ContentView: View {
     
 
     func submit() {
+        submissionState = true
         if canSubmit {
+            
             
             scoreToBeat = fetchedLevel!.score >= 15 ? 100 : 15
             withAnimation(.spring(response: 0.4, dampingFraction: 0.6)){
@@ -419,48 +430,42 @@ struct ContentView: View {
                 }
                 
                 combineTiles {
-                            // This block runs after all tiles are combined
-                            showX = false
-                            
-                            withAnimation(.spring(response: 0.2, dampingFraction: 0.45)) {
-                                if quartileCount == 4{
-                                    turnGreen = true
-                                }
-                            }
-                            
+                    // This block runs after all tiles are combined
+                    showX = false
                     
-                            groupQuartiles()
-                            
-                            
-                            
-                            //Fetch Level from SwiftData and save it in its container
-                            saveToSwiftData()
-                            
-                            
-                            
-                            if score >= scoreToBeat! {
-                                withAnimation(.spring(response: 1.0, dampingFraction: 0.4)){
-                                    showWinScreenView.toggle()
-                                }
-                                let currentLVL = fetchLevel(levelNumber: currentLevel, context: modelContext)!
-                                currentLVL.completed = true
-
-                                if let nextLVL = fetchLevel(levelNumber: currentLevel + 1, context: modelContext) {
-                                    nextLVL.unlocked = true
-                                } else {
-                                    print("There is no next level")
-                                }
-                            }
-                            
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
-                                withAnimation(.spring(response: 0.2, dampingFraction: 0.45)){
-                                    selectedTiles.removeAll()
-                                    turnGreen = false
-                                    quartileCount = 0
-                                    showX = true
-                                }
-                            }
+                    withAnimation(.spring(response: 0.2, dampingFraction: 0.45)) {
+                        if quartileCount == 4{
+                            turnGreen = true
                         }
+                    }
+                    groupQuartiles()
+                    
+                    //Fetch Level from SwiftData and save it in its container
+                    saveToSwiftData()
+                    
+                    if score >= scoreToBeat! {
+                        withAnimation(.spring(response: 1.0, dampingFraction: 0.4)){
+                            showWinScreenView.toggle()
+                        }
+                        let currentLVL = fetchLevel(levelNumber: currentLevel, context: modelContext)!
+                        currentLVL.completed = true
+
+                        if let nextLVL = fetchLevel(levelNumber: currentLevel + 1, context: modelContext) {
+                            nextLVL.unlocked = true
+                        } else {
+                            print("There is no next level")
+                        }
+                    }
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
+                        withAnimation(.spring(response: 0.2, dampingFraction: 0.45)){
+                            selectedTiles.removeAll()
+                            turnGreen = false
+                            quartileCount = 0
+                            showX = true
+                        }
+                    }
+                }
                
                 
             }
@@ -476,6 +481,7 @@ struct ContentView: View {
                 
             }
             turnRed = true
+            playSound(for: "IncorrectSound")
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
                 
@@ -490,6 +496,8 @@ struct ContentView: View {
                 
             }
         }
+        submissionState = false
+        
         
     }
     func saveToSwiftData(){
@@ -498,6 +506,8 @@ struct ContentView: View {
         currentLVL.foundQuartiles = foundQuartiles
         currentLVL.score = score
         currentLVL.rank = Rank.name(for: score)
+        
+        userData.updatePtsAndRank(levels: LevelClass)
     }
     
     
@@ -563,6 +573,20 @@ struct ContentView: View {
         } catch {
             print("Failed to fetch level: \(error)")
             return nil
+        }
+    }
+    
+    func playSound(for inputSound: String){
+        if let url = Bundle.main.url(forResource: inputSound, withExtension: "m4a") {
+            do {
+                audioPlayer = try AVAudioPlayer(contentsOf: url)
+                audioPlayer?.play()
+                print("Audio Playing")
+            } catch {
+                print("Couldn't play Audio")
+            }
+        } else {
+            print("Can't Find File when trying to play audio")
         }
     }
     
