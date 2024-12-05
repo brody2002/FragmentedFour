@@ -17,7 +17,7 @@ struct LevelView: View {
     @EnvironmentObject var userData: UserData
     @State private var audioPlayer: AVAudioPlayer?
     @State private var mainColor: Color = AppColors.coreBlue
-    
+    @State private var shakeStates: [Int: Bool] = [:]
     // Define the levels as a range for simplicity
     
     // Define the grid layout
@@ -65,7 +65,7 @@ struct LevelView: View {
                                                             
                                                         Spacer()
                                                             .frame(height: 10)
-                                                        Text("Total Pts") //place holder score for now
+                                                        Text("Total Words") //place holder score for now
                                                             .bold()
                                                             .font(.system(size:14))
                                                         + Text("    \(userData.totalPts) 💰")
@@ -106,20 +106,35 @@ struct LevelView: View {
                         LazyVGrid(columns: columns, spacing: 40) {
                             ForEach(levels, id: \.level){ level in
                                 LevelTileView(level: level.level, completed: level.completed, unlocked: level.unlocked, score:  level.score, redeemed: level.redeemed)
-                                    
                                     .matchedTransitionSource(id: level.level, in: animationNamespace)
-                                    
                                     .onTapGesture {
-                                        GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
-                                        navPath.append(Destination.levelDestination(level: level))
-                                            
+                                        if level.unlocked{
+                                            GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                                            navPath.append(Destination.levelDestination(level: level))
+                                        } else if !level.unlocked && level.redeemed {
+                                            shakeStates[level.level] = true
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8){
+                                                shakeStates[level.level] = false
+                                            }
+                                        }
                                     }
-                                    .disabled(!level.unlocked)
+//                                    .disabled(!level.unlocked)
                                     .background(
-                                            RoundedRectangle(cornerRadius: 10)
-                                                .fill(.gray.opacity(0.5))
-                                                .offset(y: 4)
-                                                .frame(width: 120, height: 80)
+                                        ZStack{
+                                            if level.redeemed {
+                                                RoundedRectangle(cornerRadius: 10)
+                                                    .fill(.gray.opacity(0.5))
+                                                    .offset(y: 4)
+                                                    .frame(width: 120, height: 80)
+                                            }
+                                        }
+                                    )
+                                    .frame(width: 120, height: 80)
+                                    .shakeEffect(
+                                        trigger: shakeStates[level.level] ?? false,
+                                        distance: 7,
+                                        animationDuration: 0.08,
+                                        initialDelay: 0.0
                                     )
                             }
                         }

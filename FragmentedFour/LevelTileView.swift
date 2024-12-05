@@ -17,7 +17,8 @@ struct LevelTileView: View {
     
     var buttonWidth: CGFloat = 120
     var buttonHeight: CGFloat = 80
-    
+    var notRedeemedButtonWidth: CGFloat = 10
+    var notRedeemedButtonHeight: CGFloat = 10
     
     let levels: [[String]] = Bundle.main.decode("levels.txt")
     let gridLayout = Array(repeating:  GridItem.init(.flexible(minimum: 20, maximum: 20)), count: 4)
@@ -113,9 +114,9 @@ struct LevelTileView: View {
         }
         .background(
             RoundedRectangle(cornerRadius: 10)
-                .fill(completed && score >= 100 ? AppColors.masterRed : redeemed ? (unlocked ? AppColors.coreBlue : .gray) : .black)
+                .fill(completed && score >= 100 ? AppColors.masterRed : redeemed ? (unlocked ? AppColors.coreBlue : .gray) : .black.opacity(0.6))
         )
-        .frame(width: buttonWidth, height: buttonHeight)
+        .frame(width: redeemed ? buttonWidth : notRedeemedButtonWidth, height: redeemed ? buttonHeight : notRedeemedButtonHeight)
         .task {
             tiles = levels[level].shuffled()
         }
