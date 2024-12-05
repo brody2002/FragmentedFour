@@ -10,6 +10,13 @@ import SwiftUI
 struct LevelPreviewView: View {
     @State private var screenHeight = UIScreen.main.bounds.height
     @State private var screenWidth = UIScreen.main.bounds.width
+    var columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
+    var wordList = [
+        "word1",
+        "word2",
+        "word3",
+        "HAROO"
+    ]
     var body: some View {
         ZStack{
             Color.white.ignoresSafeArea()
@@ -49,16 +56,19 @@ struct LevelPreviewView: View {
                     .fill(AppColors.body)
                     .frame(width: screenWidth * 0.87, height: screenHeight * 0.14)
                     .overlay(
-                            ScrollView{
-                                VStack{
-                                    Text("Word1")
-                                    Text("Word2")
-                                    Text("Word3")
-                                    Text("Word4")
-                                    Text("Word5")
-                                    Text("Word6")
+                        ScrollView{
+                            LazyVGrid(columns: columns, spacing: 10) {
+                                
+                                ForEach(wordList, id: \.self) { word in
+                                    Text(word)
+                                        .font(.headline)
+                                        .frame(maxWidth: .infinity, alignment: .center)
+                                        .padding()
+                                        .background(AppColors.body.opacity(0.2))
+                                        .cornerRadius(5)
                                 }
                             }
+                        }
                     )
                 Spacer()
                     .frame(height: screenHeight * 0.01)

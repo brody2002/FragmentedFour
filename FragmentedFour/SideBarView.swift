@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import AVFoundation
+
 
 struct SideBarView: View {
     @Binding var shouldRestartLevel: Bool
     @Environment(\.dismiss) var dismiss
+    @State private var audioPlayer: AVAudioPlayer?
+    
     var body: some View {
-        
         VStack(alignment: .center) {
             Spacer()
                 .frame(height: 60)
@@ -19,8 +22,6 @@ struct SideBarView: View {
                 .font(.title.bold())
                 .foregroundStyle(.white)
                 .padding()
-                
-            
             Divider()
                 .frame(width: UIScreen.main.bounds.width * 2/4)
                 .padding(.horizontal)
@@ -30,7 +31,9 @@ struct SideBarView: View {
                     .frame(height: 20)
                 
                 HStack{
-                    Button(action:{}, label:{
+                    Button(action:{
+                        GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                    }, label:{
                         Image(systemName: "house")
                             .foregroundStyle(.white)
                             .padding()
@@ -62,11 +65,7 @@ struct SideBarView: View {
                         RoundedRectangle(cornerRadius: 10)
                             .fill(.quaternary)
                     )
-                    
-                    
                 }
-                
-                
                 Spacer()
                     .frame(height: 30)
                 
@@ -80,6 +79,7 @@ struct SideBarView: View {
                     )
                     .onTapGesture {
                         //dismiss back to LevelSelectView
+                        GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                         dismiss()
                     }
                 Spacer()
@@ -87,6 +87,8 @@ struct SideBarView: View {
                 
                 Button(action: {
                     shouldRestartLevel.toggle()
+                    GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                    
                 }, label:{
                     Text("Restart")
                         .font(.body.bold())
@@ -102,19 +104,13 @@ struct SideBarView: View {
                     .frame(minHeight: 70, maxHeight: 90 )
                  
             }
-            
-            
-           
-               
-                
             Spacer()
         }
         .background(AppColors.coreBlue)
         .cornerRadius(10)
         .edgesIgnoringSafeArea(.all)
-        
-        
     }
+    
 }
 
 #Preview {

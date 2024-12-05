@@ -19,7 +19,23 @@ class GlobalAudioSettings: ObservableObject {
         audioPlayerList.append(inputAudioPlayer)
     }
     
-    func playSound(for soundName: String, backgroundMusic: Bool) {
+    func playSoundEffect(for inputString: String, audioPlayer: inout AVAudioPlayer?) {
+        guard GlobalAudioSettings.shared.audioOn == true else { return }
+        let extensionType = "m4a"
+        if let url = Bundle.main.url(forResource: inputString, withExtension: extensionType){
+            
+                audioPlayer = try? AVAudioPlayer(contentsOf: url)
+                audioPlayer?.play()
+            
+            
+        }
+        else {
+            print("couldn't locate file: \(inputString).\(extensionType)")
+            return
+        }
+    }
+    
+    func playMusic(for soundName: String, backgroundMusic: Bool) {
         guard let url = Bundle.main.url(forResource: soundName, withExtension: "m4a") else {
             print("Error: Could not find the sound file named \(soundName).m4a in the bundle.")
             return

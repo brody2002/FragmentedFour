@@ -20,8 +20,9 @@ class Level: Identifiable, ObservableObject, Hashable{
     var unlocked: Bool
     var levelThreshhold: Int
     var foundAllWords: Bool
+    var redeemed: Bool
     
-    init(level: Int, foundWords: [[String]], foundQuartiles: [String], completed: Bool, rank: String, score: Int, unlocked: Bool, levelThreshhold: Int = 15, foundAllWords: Bool = false) {
+    init(level: Int, foundWords: [[String]], foundQuartiles: [String], completed: Bool, rank: String, score: Int, unlocked: Bool, levelThreshhold: Int = 15, foundAllWords: Bool = false, redeemed: Bool = true) {
         self.level = level
         self.foundWords = foundWords
         self.foundQuartiles = foundQuartiles
@@ -31,6 +32,7 @@ class Level: Identifiable, ObservableObject, Hashable{
         self.unlocked = unlocked
         self.levelThreshhold = levelThreshhold
         self.foundAllWords = foundAllWords
+        self.redeemed = redeemed
     }
 }
 //TODO: Add functions that save to coreData

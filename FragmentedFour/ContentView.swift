@@ -14,7 +14,7 @@ import SwiftUI
 struct ContentView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) var Dismiss
-//    @EnvironmentObject var userData: UserData
+    @EnvironmentObject var userData: UserData
     @Query var LevelClass: [Level]
 
     let levels: [[String]] = Bundle.main.decode("levels.txt")
@@ -125,6 +125,7 @@ struct ContentView: View {
                     ZStack(alignment: .leading) {
                         Button(
                             action: {
+                                GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                                 withAnimation(.easeOut(duration: 0.2)) {
                                             if showSideBarView {
                                                 showSideBarView = false
@@ -142,6 +143,7 @@ struct ContentView: View {
                             }
                         )
                         .offset(y: -70)
+                        .allowsHitTesting(!submissionState)
                         
                         RankView(score: score)
                     }
@@ -263,7 +265,7 @@ struct ContentView: View {
                                 
                                 Button("Clear", systemImage: "xmark.circle", action: {
                                     clearSelected()
-                                    playSound(for: "BackBubble")
+                                    GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                                 })
                                     .opacity(showX ? 1.0 : 0.0)
                                     .animation(nil, value: showX)
@@ -388,11 +390,11 @@ struct ContentView: View {
         guard selectedTiles.contains(tile) == false else { return }
         
         selectedTiles.append(tile)
-        playSound(for: bubbleSoundList.randomElement()!)
+        GlobalAudioSettings.shared.playSoundEffect(for: bubbleSoundList.randomElement()!, audioPlayer: &audioPlayer)
     }
     func deselect(_ tile: String){
         selectedTiles.removeAll { $0 == tile }
-        playSound(for: "BackBubble")
+        GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
     }
     func shuffletiles() {
         withAnimation{
@@ -405,14 +407,14 @@ struct ContentView: View {
     func combineTiles(completion: @escaping () -> Void) {
         guard selectedTiles.count > 1 else {
             if quartileCount == 4{
-                playSound(for: "Quartile")
+                GlobalAudioSettings.shared.playSoundEffect(for: "Quartile", audioPlayer: &audioPlayer)
                 withAnimation(.spring(response: 0.2)){
                     foundQuartile = true
                     
                 }
             }
             if quartileCount == 1{
-                playSound(for: "CorrectSound")
+                GlobalAudioSettings.shared.playSoundEffect(for: "CorrectSound", audioPlayer: &audioPlayer)
             }
             quartileCount = 1
             completion()
@@ -425,7 +427,7 @@ struct ContentView: View {
        
         withAnimation(.spring(response: 0.3, dampingFraction: 0.4)){
             selectedTiles.insert(firstTwoCombined, at: 0)
-            playSound(for: "CorrectSound")
+            GlobalAudioSettings.shared.playSoundEffect(for: "CorrectSound", audioPlayer: &audioPlayer)
         }
       
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
@@ -514,7 +516,7 @@ struct ContentView: View {
                 
             }
             turnRed = true
-            playSound(for: "IncorrectSound")
+            GlobalAudioSettings.shared.playSoundEffect(for: "IncorrectSound", audioPlayer: &audioPlayer)
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
                 
@@ -539,7 +541,7 @@ struct ContentView: View {
         currentLVL!.foundQuartiles = foundQuartiles
         currentLVL!.score = score
         currentLVL!.rank = Rank.name(for: score)
-        //userData.updatePtsAndRank(levels: LevelClass)
+        userData.updatePtsAndRank(levels: LevelClass)
     }
     
     
@@ -600,6 +602,7 @@ struct ContentView: View {
             currentLVL!.foundWords = [[String]]()
             currentLVL!.foundQuartiles = [String]()
             mainColor = AppColors.coreBlue
+            userData.updatePtsAndRank(levels: LevelClass)
         }
     }
     
@@ -615,20 +618,7 @@ struct ContentView: View {
             return nil
         }
     }
-    
-    func playSound(for inputSound: String){
-        guard GlobalAudioSettings.shared.audioOn == true else { return }
-        if let url = Bundle.main.url(forResource: inputSound, withExtension: "m4a") {
-            do {
-                audioPlayer = try AVAudioPlayer(contentsOf: url)
-                audioPlayer?.play()
-            } catch {
-                print("Couldn't play Audio")
-            }
-        } else {
-            print("Can't Find File when trying to play audio")
-        }
-    }
+
     
     func findIntendWords(for inputWords: [String]){
         var wordsList = levels[currentLevel] // has 16 strings in [String]
@@ -645,6 +635,7 @@ struct ContentView: View {
 
 #Preview {
     @Previewable @Namespace var previewNamespace
+    @Previewable @StateObject var userData = UserData()
     do {
  
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
@@ -658,6 +649,7 @@ struct ContentView: View {
         container.mainContext.insert(Level(level: 6, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: false))
         return ContentView(score: 0, currentLevel: 0, foundWords: [[String]](), foundQuartiles: [String](), animation: previewNamespace)
             .modelContainer(container)
+            .environment(userData)
     } catch {
         return Text("Failed to create container: \(error.localizedDescription)")
     }

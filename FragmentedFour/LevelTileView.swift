@@ -13,6 +13,7 @@ struct LevelTileView: View {
     var completed: Bool
     var unlocked: Bool
     var score: Int
+    var redeemed: Bool
     
     var buttonWidth: CGFloat = 120
     var buttonHeight: CGFloat = 80
@@ -43,6 +44,7 @@ struct LevelTileView: View {
             if completed && unlocked{
             
                 ZStack{
+                    
                     Image(systemName: "trophy.fill")
                         .resizable()
                         .frame(width: 40, height: 40)
@@ -50,10 +52,14 @@ struct LevelTileView: View {
                         .offset(y: 5)
                         .padding()
                     Text(String(level + 1))
-                        .frame(maxWidth: .infinity, minHeight: 44, maxHeight: 64)
+                        .frame(width: 35, height: 30)
                         .clipShape(.rect(cornerRadius: 10))
                         .foregroundStyle(.white)
                         .font(.title.bold())
+                        .cornerRadius(10)
+                        
+                    
+                        
                     Text(Rank.name(for: score))
                         .foregroundStyle(.white)
                         .font(.system(size: 10))
@@ -80,7 +86,11 @@ struct LevelTileView: View {
                 }
                 
                     
-            } else{
+            }
+            else if !completed && !unlocked && !redeemed{
+                
+            }
+            else{
                 // Locked
                 ZStack{
                     Image(systemName: "lock.fill")
@@ -103,7 +113,7 @@ struct LevelTileView: View {
         }
         .background(
             RoundedRectangle(cornerRadius: 10)
-                .fill(completed && score >= 100 ? AppColors.masterRed : unlocked ? AppColors.coreBlue : .gray)
+                .fill(completed && score >= 100 ? AppColors.masterRed : redeemed ? (unlocked ? AppColors.coreBlue : .gray) : .black)
         )
         .frame(width: buttonWidth, height: buttonHeight)
         .task {
@@ -120,7 +130,7 @@ struct LevelTileView: View {
 #Preview {
     ZStack{
         Color.red.ignoresSafeArea()
-        LevelTileView(level: 1, completed: true, unlocked: true, score: 33)
+        LevelTileView(level: 1, completed: true, unlocked: true, score: 33, redeemed: false)
     }
     
 }
