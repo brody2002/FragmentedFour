@@ -14,17 +14,29 @@ import SwiftData
 struct FragmentedFourApp: App {
     @Environment(\.modelContext) var modelContext
     @StateObject private var userData = UserData()
+    
+    init() {
+            // Access the root window and set its background color
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                windowScene.windows.first?.backgroundColor = UIColor(AppColors.coreBlue)
+            }
+        }
     var body: some Scene {
         WindowGroup {
-            HomeView()
-                .modelContainer(for: Level.self)
-                .environmentObject(userData)
-                .task {
-                    if UserDefaults.standard.bool(forKey: "firstLaunchEver") == false {
-                        initializeAppData() // for first ever launch
-                        UserDefaults.standard.set(true, forKey: "firstLaunchEver")
+            ZStack{
+                
+                HomeView()
+                    .modelContainer(for: Level.self)
+                    .environmentObject(userData)
+                    .task {
+                        if UserDefaults.standard.bool(forKey: "firstLaunchEver") == false {
+                            initializeAppData() // for first ever launch
+                            UserDefaults.standard.set(true, forKey: "firstLaunchEver")
+                        }
                     }
-                }
+                    
+            }
+            
         }
     }
     func initializeAppData() {

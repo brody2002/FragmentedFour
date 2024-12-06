@@ -52,6 +52,8 @@ struct ContentView: View {
     
     var animation: Namespace.ID
     
+    @Binding var navPath: NavigationPath
+    
     var bubbleSoundList: [String] = ["BubbleSound1", "BubbleSound2", "BubbleSound3", "BubbleSound4"]
 
     
@@ -84,7 +86,7 @@ struct ContentView: View {
                     Color.black.opacity(0.25).ignoresSafeArea()
                     GeometryReader { proxy in
                         HStack{
-                            SideBarView(shouldRestartLevel: $shouldRestartLevel)
+                            SideBarView(shouldRestartLevel: $shouldRestartLevel, navPath: $navPath)
                                 .offset(x: sideBarDragOffset.width) // Apply the drag offset here
                                 .gesture(
                                     DragGesture()
@@ -211,7 +213,11 @@ struct ContentView: View {
                             Spacer()
                                 .frame(height: 20)
                             Button(action: {
-                                Dismiss()
+                                if navPath.count == 2 {
+                                    navPath.removeLast(2)
+                                } else {
+                                    Dismiss()
+                                }
                             }, label:{
                                 Text("Back to Main Menu?")
                                     .font(.title2.bold())
@@ -654,6 +660,7 @@ struct ContentView: View {
 #Preview {
     @Previewable @Namespace var previewNamespace
     @Previewable @StateObject var userData = UserData()
+    @Previewable @State var navPath = NavigationPath()
     do {
  
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
@@ -665,7 +672,7 @@ struct ContentView: View {
         container.mainContext.insert(Level(level: 4, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: true))
         container.mainContext.insert(Level(level: 5, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: false))
         container.mainContext.insert(Level(level: 6, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: false))
-        return ContentView(score: 0, currentLevel: 0, foundWords: [[String]](), foundQuartiles: [String](), animation: previewNamespace)
+        return ContentView(score: 0, currentLevel: 0, foundWords: [[String]](), foundQuartiles: [String](), animation: previewNamespace, navPath: $navPath)
             .modelContainer(container)
             .environment(userData)
     } catch {

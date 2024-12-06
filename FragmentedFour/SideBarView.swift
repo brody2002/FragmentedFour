@@ -13,6 +13,7 @@ struct SideBarView: View {
     @Binding var shouldRestartLevel: Bool
     @Environment(\.dismiss) var dismiss
     @State private var audioPlayer: AVAudioPlayer?
+    @Binding var navPath: NavigationPath
     
     var body: some View {
         VStack(alignment: .center) {
@@ -40,6 +41,11 @@ struct SideBarView: View {
                 HStack{
                     Button(action:{
                         GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                        if navPath.count == 2 {
+                            navPath.removeLast(2)
+                        } else {
+                            dismiss()
+                        }
                     }, label:{
                         Image(systemName: "house")
                             .foregroundStyle(.white)
@@ -102,8 +108,11 @@ struct SideBarView: View {
                     .onTapGesture {
                         //dismiss back to LevelSelectView
                         GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
-                        dismiss()
+                        if navPath.count == 2 {
+                            navPath.removeLast(1)
+                        }
                     }
+                    .opacity(navPath.count == 2 ? 1.0 : 0.0)
                 Spacer()
                     .frame(minHeight: 300)
                 
@@ -141,8 +150,9 @@ struct SideBarView: View {
 }
 
 #Preview {
+    @Previewable @State var navPath = NavigationPath()
     ZStack {
         Color.red.ignoresSafeArea()
-        SideBarView(shouldRestartLevel: .constant(false))
+        SideBarView(shouldRestartLevel: .constant(false), navPath: $navPath)
     }
 }

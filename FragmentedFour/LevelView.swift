@@ -18,6 +18,7 @@ struct LevelView: View {
     @State private var mainColor: Color = AppColors.coreBlue
     @State private var shakeStates: [Int: Bool] = [:]
     @Binding var navPath: NavigationPath
+    @Namespace var levelSelectionAnimation: Namespace.ID
     // Define the levels as a range for simplicity
     
     // Define the grid layout
