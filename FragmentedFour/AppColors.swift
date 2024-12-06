@@ -15,4 +15,5 @@ struct AppColors {
     static let masterRed = Color(red: 165/255, green: 0/255, blue: 0/255)
     static let masterRedDark = Color(red: 125/255, green: 0/255, blue: 0/255)
     static let trophyYellow = Color(red: 255/255, green: 204/255, blue: 0/255)
+    static let sidebarButton = Color(red: 10/255, green : 137/255, blue: 222/255)
 }

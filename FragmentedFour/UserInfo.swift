@@ -21,7 +21,6 @@ class UserData: ObservableObject {
     }
     
     func updatePtsAndRank(levels: [Level]) {
-        print("updaing values")
         //Restart values
         self.totalPts = 0
         self.completedLevels = 0
@@ -31,8 +30,7 @@ class UserData: ObservableObject {
                 self.completedLevels += 1
             }
         }
-        print("total points = self.totalPoints")
-        print("average rank \(Rank.name(for: totalPts / max(self.completedLevels, 1)))")
+//        print("average rank \(Rank.name(for: totalPts / max(self.completedLevels, 1)))")
         self.avgRank = Rank.name(for: totalPts / max(self.completedLevels, 1))
     }
 }

@@ -14,6 +14,7 @@ class GlobalAudioSettings: ObservableObject {
     static let shared = GlobalAudioSettings()
     var audioOn: Bool = true
     var audioPlayerList: [AVAudioPlayer] = []
+    var playingBackgroundMusic: Bool = false
     
     func addPlayer(inputAudioPlayer: AVAudioPlayer) {
         audioPlayerList.append(inputAudioPlayer)
@@ -41,12 +42,12 @@ class GlobalAudioSettings: ObservableObject {
             return
         }
         var audioPlayer = AVAudioPlayer()
-        do { // Try to initialize the audio player
+        do {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
-            if backgroundMusic { audioPlayer.numberOfLoops = -1 } // Set your desired number of loops (-1 for infinite)
+            if backgroundMusic { audioPlayer.numberOfLoops = -1 }
             audioPlayer.play()
             audioPlayerList.append(audioPlayer)
-        } catch { // Print an error message in case of failure
+        } catch {
             print("Error: Could not play the audio file. \(error.localizedDescription)")
         }
     }

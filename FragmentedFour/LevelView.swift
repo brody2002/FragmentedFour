@@ -10,7 +10,6 @@ import SwiftUI
 import SwiftData
 
 struct LevelView: View {
-    @State var navPath = NavigationPath()
     @Environment(\.modelContext) var modelContext
     @Query(sort: [SortDescriptor(\Level.level)]) var levels: [Level]
     @Namespace private var animationNamespace
@@ -18,6 +17,7 @@ struct LevelView: View {
     @State private var audioPlayer: AVAudioPlayer?
     @State private var mainColor: Color = AppColors.coreBlue
     @State private var shakeStates: [Int: Bool] = [:]
+    @Binding var navPath: NavigationPath
     // Define the levels as a range for simplicity
     
     // Define the grid layout
@@ -26,13 +26,7 @@ struct LevelView: View {
             GridItem(.flexible(), spacing: 40),
     ]
     
-    enum Destination: Hashable{
-        case levelDestination(level: Level)
-        
-    }
-    
     var body: some View {
-        NavigationStack(path: $navPath){
             ZStack{
                 AppColors.body.ignoresSafeArea()
                 
@@ -110,7 +104,7 @@ struct LevelView: View {
                                     .onTapGesture {
                                         if level.unlocked{
                                             GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
-                                            navPath.append(Destination.levelDestination(level: level))
+                                            navPath.append(DestinationStruct.Destination.levelDestination(level: level, animation: animationNamespace))
                                         } else if !level.unlocked && level.redeemed {
                                             shakeStates[level.level] = true
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.8){
@@ -142,79 +136,32 @@ struct LevelView: View {
                         .padding(.trailing, 40)// Add padding around the grid
                     }
                 }
-            }
-            .navigationDestination(for: Destination.self, destination: { dest in
-                switch dest{
-                case .levelDestination(let level):
-                    ContentView(score: level.score, currentLevel: level.level, foundWords: level.foundWords, foundQuartiles: level.foundQuartiles, animation: animationNamespace)
-                        .navigationTransition(.zoom(sourceID: level.level, in: animationNamespace))
-                        
-                        
-                        
-                }
-            })
         }
        
         .task{
             withAnimation(.spring(response: 0.3, dampingFraction: 0.6)){
                 userData.updatePtsAndRank(levels: levels)
             }
-            if UserDefaults.standard.bool(forKey: "firstLaunchEver") == false {
-                initializeAppData() // for first ever launch
-                UserDefaults.standard.set(true, forKey: "firstLaunchEver")
-            }
-            
-            if GlobalAudioSettings.shared.audioOn{
-                print("audio is on")
-                GlobalAudioSettings.shared.playMusic(for: "BackgroundMusic", backgroundMusic: true)
-            }
-            else { print("audio off ") }
-            
-            
         }
     }
-    func initializeAppData() {
-        print("Initializing app data for first launch...")
-        let levels: [[String]] = Bundle.main.decode("levels.txt")
-        for (index, _) in levels.enumerated() {
-            print("inserting")
-            if index == 0 {
-                modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
-            } else {
-                if (1...4).contains(index){
-                    modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
-                } else{
-                    modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false, redeemed: false))
-                }
-                
-            }
-            print("Level \(index) inserted...")
-        }
-        // Save the context to persist the data
-        do {
-            try modelContext.save()
-            print("Data initialized and saved successfully.")
-        } catch {
-            print("Failed to save context: \(error)")
-        }
-        print(modelContext.container)
-    }
+    
 }
 
 #Preview {
-    
+    @Previewable @State var navPath = NavigationPath()
     do {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: Level.self, configurations: config)
         let userData = UserData()
-        container.mainContext.insert(Level(level: 0, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Novice", score: 0, unlocked: false))
-        container.mainContext.insert(Level(level: 1, foundWords: [[]], foundQuartiles: [], completed: true, rank: "Master", score: 101,unlocked: true))
-        container.mainContext.insert(Level(level: 2, foundWords: [[]], foundQuartiles: [], completed: true, rank: "Wordsmith", score: 67, unlocked: true))
-        container.mainContext.insert(Level(level: 3, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: true))
-        container.mainContext.insert(Level(level: 4, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: true))
-        container.mainContext.insert(Level(level: 5, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: false))
-        container.mainContext.insert(Level(level: 6, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: false, redeemed: false))
-        return LevelView()
+        container.mainContext.insert(Level(level: 0, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
+        container.mainContext.insert(Level(level: 1, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
+        container.mainContext.insert(Level(level: 2, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
+        container.mainContext.insert(Level(level: 3, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
+        container.mainContext.insert(Level(level: 4, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
+        container.mainContext.insert(Level(level: 5, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
+        container.mainContext.insert(Level(level: 6, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false, redeemed: false))
+        container.mainContext.insert(Level(level: 7, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false, redeemed: false))
+        return LevelView(navPath: $navPath)
             .modelContainer(container)
             .environmentObject(userData)
     } catch {

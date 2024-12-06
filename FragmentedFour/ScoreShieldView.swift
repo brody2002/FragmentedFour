@@ -28,7 +28,7 @@ struct ScoreShieldView: View {
             Image(systemName: "shield.fill")
                 .resizable()
                 .frame(width: 90, height: 100)
-                .foregroundStyle(score >= 100 ? AppColors.masterRed : .blue)
+                .foregroundStyle(score >= 100 ? AppColors.masterRed : AppColors.coreBlue)
             
             Text(String(score))
                 .font(.title.bold())

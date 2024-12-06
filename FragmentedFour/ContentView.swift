@@ -377,7 +377,6 @@ struct ContentView: View {
                     groupQuartiles()
                 }
             }
-//            .matchedTransitionSource(id: currentLevel, in: animation)
             
             .onChange(of: shouldRestartLevel){
                 restartLevel()

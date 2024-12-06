@@ -22,6 +22,13 @@ struct SideBarView: View {
                 .font(.title.bold())
                 .foregroundStyle(.white)
                 .padding()
+                .background(
+                    Text("Menu")
+                        .font(.title.bold())
+                        .foregroundStyle(.gray)
+                        .offset(y: 3)
+                        .padding()
+                )
             Divider()
                 .frame(width: UIScreen.main.bounds.width * 2/4)
                 .padding(.horizontal)
@@ -42,7 +49,12 @@ struct SideBarView: View {
                     })
                     .background(
                         RoundedRectangle(cornerRadius: 10)
-                            .fill(.quaternary)
+                            .fill(AppColors.sidebarButton)
+                            .background(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(.gray)
+                                    .offset(y: 3)
+                            )
                     )
                     
                     
@@ -63,7 +75,12 @@ struct SideBarView: View {
                     })
                     .background(
                         RoundedRectangle(cornerRadius: 10)
-                            .fill(.quaternary)
+                            .fill(AppColors.sidebarButton)
+                            .background(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(.gray)
+                                    .offset(y: 3)
+                            )
                     )
                 }
                 Spacer()
@@ -75,7 +92,12 @@ struct SideBarView: View {
                     .padding()
                     .background(
                         RoundedRectangle(cornerRadius: 10)
-                            .fill(.quaternary)
+                            .fill(AppColors.sidebarButton)
+                            .background(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(.gray)
+                                    .offset(y: 3)
+                            )
                     )
                     .onTapGesture {
                         //dismiss back to LevelSelectView
@@ -98,7 +120,12 @@ struct SideBarView: View {
                 })
                 .background(
                     RoundedRectangle(cornerRadius: 10)
-                        .fill(.quaternary)
+                        .fill(AppColors.sidebarButton)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(.gray)
+                                .offset(y: 3)
+                        )
                 )
                 Spacer()
                     .frame(minHeight: 70, maxHeight: 90 )

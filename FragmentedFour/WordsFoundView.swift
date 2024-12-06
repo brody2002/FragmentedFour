@@ -79,13 +79,13 @@ struct WordsFoundView: View {
                                         .padding(1)
                                         .padding(.horizontal)
                                         .foregroundStyle(.white)
-                                        .background(.blue)
+                                        .background(AppColors.coreBlue)
                                         .cornerRadius(10)
                                     
                                 } else {
                                     Text(String(word.score))
                                         .padding(.horizontal)
-                                        .foregroundStyle(.blue)
+                                        .foregroundStyle(AppColors.coreBlue)
                                 }
                                 
                                 
