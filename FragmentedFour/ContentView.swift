@@ -140,6 +140,15 @@ struct ContentView: View {
                                     .resizable()
                                     .frame(width: 40, height: 20)
                                     .foregroundStyle(.white)
+                                    .padding(.leading, 20)
+                                    .background(
+                                        Image(systemName: "equal")
+                                            .resizable()
+                                            .frame(width: 40, height: 20)
+                                            .foregroundStyle(.gray)
+                                            .padding(.leading, 20)
+                                            .offset(y:2)
+                                    )
                             }
                         )
                         .offset(y: -70)
@@ -160,6 +169,13 @@ struct ContentView: View {
                             .foregroundStyle(.white)
                             .font(.title.bold())
                             .offset(y: -70)
+                            .background(
+                                Text("Level  \(currentLevel + 1)")
+                                    .multilineTextAlignment(.leading)
+                                    .foregroundStyle(.gray)
+                                    .font(.title.bold())
+                                    .offset(y: -68)
+                            )
                         
                         QuartilesFoundView(quartiles: foundQuartiles.count / 4)
                     }
@@ -222,6 +238,7 @@ struct ContentView: View {
                                 .frame(minHeight: 80)
                                 .frame(minHeight: 80)
                         }
+                        .onAppear(perform: {GlobalAudioSettings.shared.playSoundEffect(for: "Victory", audioPlayer: &audioPlayer)})
                         
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                         .frame(maxWidth: .infinity, minHeight: 400, maxHeight: 400)
@@ -445,7 +462,9 @@ struct ContentView: View {
             level.levelThreshhold = 100
 
             if let nextLVL = fetchLevel(levelNumber: currentLevel + 1, context: modelContext) {
-                nextLVL.unlocked = true
+                if nextLVL.redeemed{
+                    nextLVL.unlocked = true
+                }
             } else {
                 print("There is no next level")
             }

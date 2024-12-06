@@ -8,5 +8,20 @@
 	["br","ow","si","ng","ag","ric","ult","ure","typ","ogr","aph","ers","alp","hab","eti","ses","ba","ss","is","ts"],
 	["re","mo","te","st","ari","sto","cr","ats","we","ak","ne","ss","fr","iz","zi","er","bo","mb","in","gs"],
 	["ref","res","hin","gly","uni","nst","all","er","dis","tra","cti","ons","su","bli","min","al","mo","der","nis","es"],
-	["su","rg","eo","ns","hai","rst","yli","st","cr","ow","ba","rs","co","nve","rt","or","dec","im","at","es"]
+	["su","rg","eo","ns","hai","rst","yli","st","cr","ow","ba","rs","co","nve","rt","or","dec","im","at","es"],
+    ["hyp","not","ize","ing","ob","lit","era","ted","com","pli","cat","ion","wa","ter","fa","lls","tr","em","ble","rs"],
+    ["un","der","sto","od","pe","ri","phe","ral","sy","no","nym","ous","ma","ni","fes","to","em","ph","asi","zed"],
+    ["dis","ori","ent","ing","im","mu","tab","le","per","fo","rat","ing","har","mo","niz","ers","co","nti","nu","ous"],
+    ["thr","es","hol","ds","res","ti","tut","ion","pa","la","din","ate","el","ec","tro","des","ha","b","it","ual"],
+    ["ar","ch","ite","cts","stu","pe","fy","ing","scu","pl","tor","ial","el","ab","ora","tes","en","tan","gle","rs"],
+    ["in","fra","str","uct","ure","ca","te","go","ries","pa","st","or","ate","re","co","un","ters","fr","ag","men","ts"],
+    ["un","co","ver","ing","ir","rev","oca","ble","ho","sp","ita","ble","pr","oc","lam","ed","sy","ne","rg","ies"],
+    ["dep","en","den","cies","lu","xu","ria","ted","mu","lti","pli","ers","re","fin","eri","es","sp","or","ts","men"],
+    ["op","por","tu","nity","am","bi","ti","ous","tr","ans","mi","tter","ca","lam","iti","es","sta","gn","ant","ly"],
+    ["su","per","st","iti","ons","con","tem","pla","ted","tr","ans","it","ion","s","se","pa","rat","ion","s","pa","th"],
+    ["pa","ra","dig","ms","as","tro","no","mers","co","or","din","ate","re","ge","ne","rate","he","ar","tf","elt","ly"],
+    ["cl","ass","ica","lis","ts","or","gan","iz","ing","in","cr","edi","bly","ma","rve","lou","sly","re","con","fig","ure"],
+    ["el","eg","anc","ies","ex","tra","pol","ate","di","mi","nis","hed","ra","di","an","ces","he","al","ing","to","uch"],
+    ["em","pow","ers","sol","ace","ful","nes","s","re","tro","gra","ded","ch","arg","ing","st","at","ion","fi","na","lly"],
+    ["br","igh","ten","ing","in","flu","enc","ers","th","ou","san","ds","di","st","rib","ute","pe","ace","ful","ly","or"]
 ]

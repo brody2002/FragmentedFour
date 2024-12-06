@@ -11,7 +11,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		964F1A5E2CFF9D7200E256B2 /* Exceptions for "FragmentedFour" folder in "FragmentedFour" target */ = {
+		96BF06F92D027869002C9AB7 /* Exceptions for "FragmentedFour" folder in "FragmentedFour" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -24,7 +24,7 @@
 		96DD6D2C2CF672ED00E25B78 /* FragmentedFour */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				964F1A5E2CFF9D7200E256B2 /* Exceptions for "FragmentedFour" folder in "FragmentedFour" target */,
+				96BF06F92D027869002C9AB7 /* Exceptions for "FragmentedFour" folder in "FragmentedFour" target */,
 			);
 			path = FragmentedFour;
 			sourceTree = "<group>";

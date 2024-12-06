@@ -27,6 +27,8 @@ struct MyProgressView: View {
                 },
                 alignment: .leading
             )
+            
+        
         
     }
 }

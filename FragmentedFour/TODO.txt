@@ -1,21 +1,15 @@
+NOV 5th:
 
-Add sounds:
+TODO:
 
-pops to the other UI
-
-
-
-
-sound on an off button
-
-
-
-Hold Preview on Each Level
--expands view so that person can see view
-- maybe option to play level or to go back
+2. Create a homeView:
+3. Create a sidebar menu for the Level Select and Store View
+4. Make Store View Connect to Purchase View
+5. Add Sounds for finding all the Quartiles.
+6. 
 
 
-
-BUGS:
+Done:
+1. Add Victory Sound
 
 
