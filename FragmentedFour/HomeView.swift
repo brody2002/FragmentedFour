@@ -14,10 +14,20 @@ struct HomeView: View {
     
     // Navigation
     @State var navPath = NavigationPath()
+    @Namespace var levelSelectAnimation
+    @Namespace var levelGameAnimation
     
     // SwiftData
     @Query(sort: [SortDescriptor(\Level.level)]) var levels: [Level]
     @Environment(\.modelContext) var modelContext
+    @EnvironmentObject var userData: UserData
+    
+    // Previewable Game
+    let gridLayout = Array(repeating:  GridItem.init(.flexible(minimum: 50, maximum: 100)), count: 4)
+    @State var currentLevel: Level?
+    @State var levelTiles: [[String]]?
+    @State var wordTiles = [String]()
+    
     
     var body: some View {
         NavigationStack(path: $navPath){
@@ -82,31 +92,32 @@ struct HomeView: View {
                     
                     HStack(alignment: .top){
                         Spacer()
+                        
+                        //Level Select Button
                         Button(
                             action: {
                                 // Level Select
-                                navPath.append(DestinationStruct.Destination.selectLevel)
+                                navPath.append(DestinationStruct.Destination.selectLevel(animation: levelSelectAnimation ))
                             },
                             label: {
                                 RoundedRectangle(cornerRadius: 10)
                                     .fill(.white)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 10)
-                                            .fill(.gray.opacity(0.4))
-                                    )
                                     .overlay(
                                         Text("Level Select")
                                             .foregroundStyle(.black)
                                             .bold()
+                                            .clipShape(.rect(cornerRadius: 10))
                                     )
                             }
                         )
+                        .buttonStyle(NoGrayOutButtonStyle())
+                        .matchedTransitionSource(id: "levelSelect", in: levelSelectAnimation)
                         .background(
                             RoundedRectangle(cornerRadius: 10)
                                 .fill(.gray)
-                                .offset(y: 4)
+                                .offset(y:4)
                         )
-                        .buttonStyle(NoGrayOutButtonStyle())
+                        
                         Spacer()
                             .frame(width: 10)
                         Button(
@@ -116,14 +127,11 @@ struct HomeView: View {
                             label: {
                                 RoundedRectangle(cornerRadius: 10)
                                     .fill(.white)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 10)
-                                            .fill(.gray.opacity(0.4))
-                                    )
                                     .overlay(
                                         Text("Store")
                                             .bold()
                                             .foregroundStyle(.black)
+                                            .clipShape(.rect(cornerRadius: 10))
                                     )
                             }
                             
@@ -142,13 +150,26 @@ struct HomeView: View {
                     Spacer()
                         .frame(height: 30)
                     RoundedRectangle(cornerRadius: 10)
-                        .fill(.white)
+                        .fill(AppColors.body)
                         .overlay(
-                            // Current Word Puzzle display View
-                            Text("TBD Puzzle View")
-                                .foregroundStyle(.black)
-                                .bold()
+                            
+                                LazyVGrid(columns: gridLayout) {
+                                    ForEach(wordTiles, id: \.self){ tile in
+                                            TileView(
+                                                text: tile,
+                                                isSelected: false,
+                                                isHighlighted: false,
+                                                mainColor: AppColors.coreBlue
+                                            )
+                                            .bold()
+                                            .font(.system(size: 22))
+                                            
+                                    }
+                                }
+                                
+                            
                         )
+                        .matchedTransitionSource(id: currentLevel, in: levelGameAnimation)
                         .background(
                             RoundedRectangle(cornerRadius: 10)
                                 .fill(.gray)
@@ -173,6 +194,9 @@ struct HomeView: View {
                         )
                         .padding(.horizontal)
                         .frame(height: screen.height * 0.05)
+                        .onTapGesture {
+                            navPath.append(DestinationStruct.Destination.levelDestination(level: currentLevel!, animation: levelGameAnimation))
+                        }
                     Spacer()
                         .frame(height: 50)
                     HStack{
@@ -213,16 +237,29 @@ struct HomeView: View {
                 } else {
                     print("not playing background music ")
                 }
+                currentLevel = userData.findCurrentLevel(levels: levels)
+
+                if let loadedTiles: [[String]] = Bundle.main.decode("levels.txt"),
+                   currentLevel!.level < loadedTiles.count {
+                    levelTiles = loadedTiles
+                    wordTiles = loadedTiles[currentLevel!.level]
+                } else {
+                    levelTiles = []
+                    wordTiles = []
+                    print("Failed to load level tiles or current level is out of bounds.")
+                }
+                
             }
-            // nav dest
             .navigationDestination(for: DestinationStruct.Destination.self, destination: { dest in
                 switch dest{
-                case .selectLevel:
+                case .selectLevel(let animation):
                     LevelView(navPath: $navPath)
+                        .navigationTransition(.zoom(sourceID: "levelSelect", in: animation))
                 case .levelDestination(let level, let animation):
                     ContentView(score: level.score, currentLevel: level.level, foundWords: level.foundWords, foundQuartiles: level.foundQuartiles, animation: animation)
                         .navigationTransition(.zoom(sourceID: level.level, in: animation))
                 }
+                
                 
             })
         }

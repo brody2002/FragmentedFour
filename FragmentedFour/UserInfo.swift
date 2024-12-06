@@ -30,7 +30,24 @@ class UserData: ObservableObject {
                 self.completedLevels += 1
             }
         }
-//        print("average rank \(Rank.name(for: totalPts / max(self.completedLevels, 1)))")
         self.avgRank = Rank.name(for: totalPts / max(self.completedLevels, 1))
+    }
+    
+    func findCurrentLevel(levels: [Level]) -> Level {
+        var latestLevel = 0 // Used for if user has completed everything they have access to
+        for level in levels{
+            // print("Level: \(level.level) score: \(level.score) unlocked: \(level.unlocked)")
+            if level.completed {
+                
+                latestLevel += 1
+            }
+            if level.completed == false && level.unlocked == true{
+                //print("returning Level")
+                return level
+            }
+            
+        }
+        //print("returning LatestLevel")
+        return levels[latestLevel]
     }
 }

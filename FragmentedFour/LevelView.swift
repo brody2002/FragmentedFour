@@ -137,12 +137,12 @@ struct LevelView: View {
                     }
                 }
         }
-       
-        .task{
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)){
-                userData.updatePtsAndRank(levels: levels)
+            .navigationBarBackButtonHidden(true)
+            .task{
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.6)){
+                    userData.updatePtsAndRank(levels: levels)
+                }
             }
-        }
     }
     
 }
