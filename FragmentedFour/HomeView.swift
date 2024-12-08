@@ -5,8 +5,11 @@
 //  Created by Brody on 12/5/24.
 //
 
+
+import AVFoundation
 import SwiftData
 import SwiftUI
+
 
 
 struct HomeView: View {
@@ -16,6 +19,7 @@ struct HomeView: View {
     @State var navPath = NavigationPath()
     @Namespace var levelSelectAnimation
     @Namespace var levelGameAnimation
+    @Namespace var storeAnimation
     
     // SwiftData
     @Query(sort: [SortDescriptor(\Level.level)]) var levels: [Level]
@@ -27,6 +31,9 @@ struct HomeView: View {
     @State var currentLevel: Level?
     @State var levelTiles: [[String]]?
     @State var wordTiles = [String]()
+    
+    // Audio Player
+    @State var audioPlayer: AVAudioPlayer?
     
     
     var body: some View {
@@ -53,6 +60,9 @@ struct HomeView: View {
                                                 .padding(.leading, 20)
                                                 .offset(y:2)
                                         )
+                                        .onTapGesture {
+                                            GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                                        }
                                 }
                                 
                             }
@@ -99,6 +109,7 @@ struct HomeView: View {
                             Button(
                                 action: {
                                     // Level Select
+                                    GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                                     navPath.append(DestinationStruct.Destination.selectLevel(animation: levelSelectAnimation ))
                                 },
                                 label: {
@@ -125,6 +136,8 @@ struct HomeView: View {
                             Button(
                                 action: {
                                     // Store
+                                    GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                                    navPath.append(DestinationStruct.Destination.store)
                                 },
                                 label: {
                                     RoundedRectangle(cornerRadius: 10)
@@ -138,6 +151,8 @@ struct HomeView: View {
                                 }
                                 
                             )
+                            .buttonStyle(NoGrayOutButtonStyle())
+                            .matchedTransitionSource(id: "store", in: levelSelectAnimation)
                             .background(
                                 RoundedRectangle(cornerRadius: 10)
                                     .fill(.gray)
@@ -176,7 +191,11 @@ struct HomeView: View {
                                         .fill(.gray)
                                         .frame(width: 160, height: 160)
                                         .offset(y: 4)
+                                        
                                 )
+                                .onTapGesture {
+                                    GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                                }
                         }
                         .padding(.horizontal)
                         Spacer()
@@ -227,12 +246,17 @@ struct HomeView: View {
                             .padding(.horizontal)
                             .frame(height: screen.height * 0.05)
                             .onTapGesture {
+                                GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                                 navPath.append(DestinationStruct.Destination.levelDestination(level: currentLevel!, animation: levelGameAnimation))
                             }
                         Spacer()
                     }
                 }
                 .task{
+                    print("Loaded levels: \(levels.count)")
+                        for level in levels {
+                            print("Level \(level.level) - Rank: \(level.rank)")
+                        }
                     if GlobalAudioSettings.shared.audioOn && GlobalAudioSettings.shared.playingBackgroundMusic == false{
                         print("attempt to play audio ")
                         GlobalAudioSettings.shared.playMusic(for: "BackgroundMusic", backgroundMusic: true)
@@ -261,20 +285,23 @@ struct HomeView: View {
                     case .levelDestination(let level, let animation):
                         ContentView(score: level.score, currentLevel: level.level, foundWords: level.foundWords, foundQuartiles: level.foundQuartiles, animation: animation, navPath: $navPath)
                             .navigationTransition(.zoom(sourceID: "levelView", in: animation))
+                    case .store:
+                        StoreView()
+                            .navigationTransition(.zoom(sourceID: "store", in: storeAnimation))
                     }
-                    
-                    
                 })
             }
         }
         
     }
+    
+    
 }
 
 #Preview {
     
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        let container = try! ModelContainer(for: Level.self, configurations: config)
+        let config = ModelConfiguration(for: Level.self, Pack.self) 
+        let container = try! ModelContainer(for: Level.self, Pack.self, configurations: config)
         let userData = UserData()
         container.mainContext.insert(Level(level: 0, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
         container.mainContext.insert(Level(level: 1, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
@@ -283,6 +310,11 @@ struct HomeView: View {
         container.mainContext.insert(Level(level: 4, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
         container.mainContext.insert(Level(level: 5, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
         container.mainContext.insert(Level(level: 1, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true, redeemed: false))
+    
+    container.mainContext.insert(Pack(name: "6-10", unlocked: false, price: 200, id: 1))
+    container.mainContext.insert(Pack(name: "11-15", unlocked: false, price: 600, id: 2))
+    container.mainContext.insert(Pack(name: "16-20", unlocked: false, price: 1000, id: 3))
+    container.mainContext.insert(Pack(name: "21-25", unlocked: false, price: 1300, id: 4))
         
 
         return HomeView()

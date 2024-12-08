@@ -3,14 +3,17 @@ NOV 5th:
 TODO:
 
 
-3. Create a sidebar menu for the Level Select and Store View
+
 4. Make Store View Connect to Purchase View
 5. Add Sounds for finding all the Quartiles.
-6. 
+6. Create the 4 packs that I have currnently in swiftdata StoreView
 
 
 Done:
 1. Add Victory Sound
 2. Create a homeView:
+3. Create a sidebar menu for the Level Select and Store View
+
+
 
 

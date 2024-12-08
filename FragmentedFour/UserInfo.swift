@@ -35,8 +35,9 @@ class UserData: ObservableObject {
     
     func findCurrentLevel(levels: [Level]) -> Level {
         var latestLevel = 0 // Used for if user has completed everything they have access to
+        print("Levels coming in: \(levels.count)" )
         for level in levels{
-            // print("Level: \(level.level) score: \(level.score) unlocked: \(level.unlocked)")
+            
             if level.completed {
                 
                 latestLevel += 1
