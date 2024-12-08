@@ -265,6 +265,7 @@ struct HomeView: View {
                         print("not playing background music ")
                     }
                     currentLevel = userData.findCurrentLevel(levels: levels)
+                    print("currentLevel \(currentLevel!.level) Score: \(currentLevel!.score) Unlocked? \(currentLevel!.unlocked)")
                     
                     if let loadedTiles: [[String]] = Bundle.main.decode("levels.txt"),
                        currentLevel!.level < loadedTiles.count {

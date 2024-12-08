@@ -43,12 +43,12 @@ class UserData: ObservableObject {
                 latestLevel += 1
             }
             if level.completed == false && level.unlocked == true{
-                //print("returning Level")
+                print("returning Level")
                 return level
             }
             
         }
-        //print("returning LatestLevel")
+        print("returning LatestLevel")
         return levels[latestLevel]
     }
 }
