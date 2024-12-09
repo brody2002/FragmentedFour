@@ -22,6 +22,8 @@ struct PurchaseView: View {
                 .font(.system(size: 40))
             
         }
+        .frame(maxWidth: .infinity, minHeight: 400, maxHeight: 400)
+        .cornerRadius(10)
         
     }
 }

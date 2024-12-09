@@ -123,16 +123,15 @@
                         .frame(height: 100)
                     
                     ScrollView{ // Add ScrollView for scrolling
-                    LazyVGrid(columns: columns, spacing: 20) {
+                    LazyVGrid(columns: columns, spacing: 40) {
                         ForEach(packs, id: \.name) { pack in
                             VStack{
-                                RoundedRectangle(cornerRadius: 10)
-                                    .frame(width: 100, height: 100)
-                                    .overlay(
-                                        Text("Pack \(pack.name)")
-                                            .foregroundStyle(mainColor)
-                                            .bold()
-                                    )
+                                Text("Pack \(pack.id)")
+                                    .bold()
+                                    .fontDesign(.rounded)
+                                    .font(.system(size: 24))
+                                Spacer().frame(height: 40)
+                                PackPile_View(name: pack.name)
                                 //HELP WITH THIS
                                 HStack(alignment: .center) {
                                     Text("\(pack.price)")
@@ -147,11 +146,7 @@
                                         .offset(x: -10)
                                 }
                                 .frame(height: 30)
-                                
-                                
-                                
                             }
-                            .frame(width: 110)
                         }
                     }
                         .padding(.leading, 40)

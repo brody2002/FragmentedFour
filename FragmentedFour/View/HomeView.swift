@@ -223,7 +223,7 @@ struct HomeView: View {
                                 
                                 
                             )
-                            .matchedTransitionSource(id: "levelView", in: levelGameAnimation)
+                            .matchedTransitionSource(id: "fastTravel", in: levelGameAnimation) // Transition 1
                             .background(
                                 RoundedRectangle(cornerRadius: 10)
                                     .fill(.gray)
@@ -250,7 +250,7 @@ struct HomeView: View {
                             .frame(height: screen.height * 0.05)
                             .onTapGesture {
                                 GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
-                                navPath.append(DestinationStruct.Destination.levelDestination(level: currentLevel!, animation: levelGameAnimation))
+                                navPath.append(DestinationStruct.Destination.levelDestination(level: currentLevel!, animation: levelGameAnimation, comingFromFastTravel: true))
                             }
                         Spacer()
                     }
@@ -284,12 +284,18 @@ struct HomeView: View {
                 }
                 .navigationDestination(for: DestinationStruct.Destination.self, destination: { dest in
                     switch dest{
-                    case .selectLevel(let animation):
+                    case .selectLevel(let animation): // For for level select
                         LevelView(navPath: $navPath)
                             .navigationTransition(.zoom(sourceID: "levelSelect", in: animation))
-                    case .levelDestination(let level, let animation):
-                        ContentView(score: level.score, currentLevel: level.level, foundWords: level.foundWords, foundQuartiles: level.foundQuartiles, animation: animation, navPath: $navPath)
-                            .navigationTransition(.zoom(sourceID: level.level, in: animation))
+                    case .levelDestination(let level, let animation, let comingFromFastTravel):
+                        if comingFromFastTravel {
+                            ContentView(score: level.score, currentLevel: level.level, foundWords: level.foundWords, foundQuartiles: level.foundQuartiles, animation: animation, navPath: $navPath)
+                                .navigationTransition(.zoom(sourceID: "fastTravel", in: animation))
+                        }
+                        else {
+                            ContentView(score: level.score, currentLevel: level.level, foundWords: level.foundWords, foundQuartiles: level.foundQuartiles, animation: animation, navPath: $navPath)
+                                .navigationTransition(.zoom(sourceID: level.level, in: animation))
+                        }
                     case .store:
                         StoreView()
                             .navigationTransition(.zoom(sourceID: "store", in: storeAnimation))

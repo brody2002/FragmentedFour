@@ -12,7 +12,7 @@ struct DestinationStruct {
     
     enum Destination: Hashable{
         case selectLevel(animation: Namespace.ID)
-        case levelDestination(level: Level, animation: Namespace.ID)
+        case levelDestination(level: Level, animation: Namespace.ID, comingFromFastTravel: Bool)
         case store
     }
 }
