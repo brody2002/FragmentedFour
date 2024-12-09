@@ -60,13 +60,25 @@ struct LevelView: View {
                                                             
                                                         Spacer()
                                                             .frame(height: 10)
-                                                        Text("Total Words") //place holder score for now
-                                                            .bold()
-                                                            .font(.system(size:14))
-                                                        + Text("    \(userData.totalPts) 💰")
-                                                            .bold()
-                                                            .foregroundColor(mainColor)
-                                                            .font(.system(size: 23))
+                                                        HStack{
+                                                            Text("Total Words") //place holder score for now
+                                                                .bold()
+                                                                .font(.system(size:14))
+                                                            MoneyView()
+                                                                .offset(x: -35)
+                                                                .scaleEffect(0.5)
+                                                            Text("\(userData.totalPts)")
+                                                                .bold()
+                                                                .font(.system(size: 28))
+                                                                .foregroundStyle(mainColor)
+                                                                .offset(x: -30)
+                                                        }
+                                                        .frame(height: 20)
+//
+//                                                        + Text("    \(userData.totalPts) 💰")
+//                                                            .bold()
+//                                                            .foregroundColor(mainColor)
+//                                                            .font(.system(size: 23))
                                                         Spacer()
                                                     }
                                                     .padding()

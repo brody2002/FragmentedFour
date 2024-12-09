@@ -1,193 +1,290 @@
-    //
-    //  StoreView.swift
-    //  FragmentedFour
-    //
-    //  Created by Brody on 12/5/24.
-    //
+//
+//  StoreView.swift
+//  FragmentedFour
+//
+//  Created by Brody on 12/5/24.
+//
 
-    import SwiftUI
-    import SwiftData
+import SwiftUI
+import SwiftData
 
-    @Model
-    class Pack : Identifiable, ObservableObject {
-        var name: String
-        var unlocked: Bool
-        var price: Int
-        var id: Int
-        
-        init(name: String, unlocked: Bool, price: Int, id: Int) {
-            self.name = name
-            self.unlocked = unlocked
-            self.price = price
-            self.id = id
-        }
+@Model
+class Pack : Identifiable, ObservableObject {
+    var name: String
+    var unlocked: Bool
+    var price: Int
+    var id: Int
+    
+    init(name: String, unlocked: Bool, price: Int, id: Int) {
+        self.name = name
+        self.unlocked = unlocked
+        self.price = price
+        self.id = id
     }
+}
 
-    //TODO: Create the 4 packs that I have currnently in swiftdata
-
-    struct StoreView: View {
-        @State private var mainColor = AppColors.coreBlue
-        
-        // Packs
-        private var columns = Array(repeating: GridItem.init(.flexible(), spacing: 1), count: 2)
-        @Query(sort: [SortDescriptor(\Pack.id)]) var packs: [Pack]
-        
-        // UserData
-        @EnvironmentObject var userData: UserData
-        @Query var levels: [Level]
-        @State private var rankLocal: String?
-        @State private var totalPtsLocal: Int?
-        
-        var body: some View {
-            ZStack{
-                AppColors.body.ignoresSafeArea()
-                
-                VStack{
-                    ZStack{
-                        mainColor.ignoresSafeArea()
-                        VStack{
-                            ZStack(alignment: .top){
-                                VStack{
-                                    Text("Store")
-                                        .foregroundStyle(.white)
-                                        .font(.system(size: 40).bold())
-                                        .offset(y: 54)
+struct StoreView: View {
+    @State private var mainColor = AppColors.coreBlue
+    
+    // Packs
+    private var columns = Array(repeating: GridItem.init(.flexible(), spacing: 1), count: 2)
+    @Query(sort: [SortDescriptor(\Pack.id)]) var packs: [Pack]
+    
+    // UserData
+    @EnvironmentObject var userData: UserData
+    @Query var levels: [Level]
+    @State private var rankLocal: String?
+    @State private var totalPtsLocal: Int?
+    
+    // Preview Handling
+    @State private var pressedDict: [String: Bool] = [:]
+    @State private var pressedPack: Pack?
+    @State private var showWindow: Bool = false
+    
+    var body: some View {
+        ZStack{
+            AppColors.body.ignoresSafeArea()
+            
+            VStack{
+                ZStack{
+                    mainColor.ignoresSafeArea()
+                    VStack{
+                        ZStack(alignment: .top){
+                            VStack{
+                                Text("Store")
+                                    .foregroundStyle(.white)
+                                    .font(.system(size: 40).bold())
+                                    .offset(y: 54)
+                                
                                     
-                                        
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .fill(Color.white)
-                                        .frame(width: UIScreen.main.bounds.width * 0.84, height: UIScreen.main.bounds.height * 0.10)
-                                        .overlay(
-                                            ZStack{
-                                                HStack(alignment: .top) {
-                                                    VStack(alignment: .leading) {
-                                                        Text("Avg Rank     ")
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(Color.white)
+                                    .frame(width: UIScreen.main.bounds.width * 0.84, height: UIScreen.main.bounds.height * 0.10)
+                                    .overlay(
+                                        ZStack{
+                                            HStack(alignment: .top) {
+                                                VStack(alignment: .leading) {
+                                                    Text("Avg Rank     ")
+                                                        .bold()
+                                                        .font(.system(size:14))
+                                                    + Text("\(rankLocal ?? "Novice")")
+                                                        .bold()
+                                                        .font(.system(size: 28))
+                                                        .foregroundStyle(mainColor)
+                                                    
+                                                    
+                                                        
+                                                    Spacer()
+                                                        .frame(height: 10)
+                                                    HStack{
+                                                        Text("Total Fragments") //place holder score for now
                                                             .bold()
                                                             .font(.system(size:14))
-                                                        + Text("\(rankLocal ?? "Novice")")
+                                                        Spacer()
+                                                            .frame(width: 0)
+                                                        MoneyView()
+                                                            .scaleEffect(0.6)
+                                                            .offset(x: -10)
+                                                        Spacer()
+                                                            .frame(width: 0)
+                                                        Text("\(String(totalPtsLocal ?? 0))")
                                                             .bold()
-                                                            .font(.system(size: 28))
-                                                            .foregroundStyle(mainColor)
-                                                        
-                                                        
-                                                            
-                                                        Spacer()
-                                                            .frame(height: 10)
-                                                        HStack{
-                                                            Text("Total Fragments") //place holder score for now
-                                                                .bold()
-                                                                .font(.system(size:14))
-                                                            Spacer()
-                                                                .frame(width: 0)
-                                                            MoneyView()
-                                                                .scaleEffect(0.6)
-                                                                .offset(x: -10)
-                                                            Spacer()
-                                                                .frame(width: 0)
-                                                            Text("\(String(totalPtsLocal ?? 0))")
-                                                                .bold()
-                                                                .foregroundColor(mainColor)
-                                                                .font(.system(size: 23))
-                                                                .offset(x: -20)
-                                                        }
-                                                        .frame(height: 10)
-                                                        
-                                                        Spacer()
+                                                            .foregroundColor(mainColor)
+                                                            .font(.system(size: 23))
+                                                            .offset(x: -20)
                                                     }
-                                                    .padding()
+                                                    .frame(height: 10)
+                                                    
                                                     Spacer()
                                                 }
+                                                .padding()
+                                                Spacer()
                                             }
-                                        )
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 10)
-                                                .frame(width: UIScreen.main.bounds.width * 0.84, height: UIScreen.main.bounds.height * 0.10)
-                                                .foregroundStyle(.gray.opacity(0.4))
-                                                .offset(y:4)
-                                        )
-                                        .offset(y: 40)
-                                        
-                                }
-                                .padding(.bottom, 20)
-                                
-                                
-                                
+                                        }
+                                    )
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .frame(width: UIScreen.main.bounds.width * 0.84, height: UIScreen.main.bounds.height * 0.10)
+                                            .foregroundStyle(.gray.opacity(0.4))
+                                            .offset(y:4)
+                                    )
+                                    .offset(y: 40)
+                                    
                             }
+                            .padding(.bottom, 20)
+                            
+                            
                             
                         }
                         
                     }
-                    .frame(height: UIScreen.main.bounds.height * 0.08)
-                    
-                    Spacer()
-                        .frame(height: 100)
-                    
-                    ScrollView{ // Add ScrollView for scrolling
-                    LazyVGrid(columns: columns, spacing: 40) {
-                        ForEach(packs, id: \.name) { pack in
-                            VStack{
-                                Text("Pack \(pack.id)")
+                }
+                .frame(height: UIScreen.main.bounds.height * 0.08)
+                
+                Spacer()
+                    .frame(height: 100)
+                
+                ScrollView{ // Add ScrollView for scrolling
+                LazyVGrid(columns: columns, spacing: 40) {
+                    ForEach(packs, id: \.name) { pack in
+                        VStack{
+                            Text("Pack \(pack.id)")
+                                .bold()
+                                .fontDesign(.rounded)
+                                .font(.system(size: 24))
+                            Spacer().frame(height: 40)
+                            PackPile_View(name: pack.name)
+                            //HELP WITH THIS
+                            HStack(alignment: .center) {
+                                Text("\(pack.price)")
+                                    .font(.system(size: 16))
                                     .bold()
-                                    .fontDesign(.rounded)
-                                    .font(.system(size: 24))
-                                Spacer().frame(height: 40)
-                                PackPile_View(name: pack.name)
-                                //HELP WITH THIS
-                                HStack(alignment: .center) {
-                                    Text("\(pack.price)")
-                                        .font(.system(size: 16))
-                                        .bold()
-                                        .frame(minWidth: 50)
-                                        .padding(.leading, 20)
-                                    Spacer()
-                                        .frame(width: 0)
-                                    MoneyView()
-                                        .scaleEffect(0.6)
-                                        .offset(x: -10)
-                                }
-                                .frame(height: 30)
+                                    .frame(minWidth: 50)
+                                    .padding(.leading, 20)
+                                Spacer()
+                                    .frame(width: 0)
+                                MoneyView()
+                                    .scaleEffect(0.6)
+                                    .offset(x: -10)
                             }
+                            .frame(height: 30)
+                        }
+                        .onTapGesture {
+//                            // Bring up purchase view?
+                            pressedDict[pack.name] = true
+                            pressedPack = pack
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)){ showWindow = true }
+                            
                         }
                     }
-                        .padding(.leading, 40)
-                        .padding(.trailing, 40)// Add padding around the grid
-                    }
                 }
-            }
-            .navigationBarBackButtonHidden(true)
-            .task {
-                withAnimation(.spring(response: 0.3, dampingFraction: 0.6)){
-                    userData.updatePtsAndRank(levels: levels)
+                    .padding(.leading, 40)
+                    .padding(.trailing, 40)// Add padding around the grid
                 }
-                rankLocal = userData.avgRank
-                totalPtsLocal = userData.totalPts
+                
+                
             }
             
+            if showWindow {
+                ZStack {
+                                Color.gray.opacity(0.6) // Background overlay
+                                    .edgesIgnoringSafeArea(.all)
+                                    .onTapGesture {
+                                        withAnimation(.spring(response: 0.5, dampingFraction: 0.8)){ showWindow = false }  // Dismiss on background tap
+                                    }
+                                
+                                VStack(spacing: 20) {
+                                    // Close button
+                                    HStack{
+                                        Circle()
+                                            .fill(AppColors.coreBlue)
+                                            .frame(width: 40, height: 40)
+                                            .overlay(
+                                                Image(systemName: "xmark")
+                                                    .foregroundColor(.white)
+                                                    .font(.headline)
+                                            )
+                                            .onTapGesture {
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4){
+                                                    withAnimation(.spring(response: 0.5, dampingFraction: 0.8)){ showWindow = false }
+                                                }
+                                                
+                                            }
+                                        Spacer()
+                                    }
+                                    
+                                    // Pack pile
+                                    PackPile_View(name: pressedPack!.name)
+                                        .scaleEffect(1.4)
+                                        .frame(height: 250) // Adjust height to center content
+                                    
+                                    // Price and Purchase Button
+                                    HStack(spacing: 20) {
+                                        // Price display
+                                        ZStack {
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .stroke(style: StrokeStyle(lineWidth: 2))
+                                                .foregroundStyle(.black)
+                                            HStack(){
+                                                Spacer()
+                                                    
+                                                Text("\(pressedPack!.price) 💰")
+                                                    .font(.title3.bold())
+                                                    .foregroundStyle(.black)
+                                                    .padding(.leading, 20)
+                                                Spacer()
+                                            }
+                                        }
+                                        .frame(width: 130, height: 50) // Uniform frame for ZStack
+                                        
+                                        ZStack{
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .fill(AppColors.coreBlue)
+                                                
+                                            Text("Purchase")
+                                                .font(.title3.bold())
+                                                .foregroundStyle(.white)
+                                                .fontDesign(.rounded)
+                                        }
+                                        .frame(width: 130, height: 50)
+                                        
+                                            
+                                    }
+                                    .padding(.horizontal)
+
+                                }
+                                .padding()
+                                .frame(width: 300, height: 400)
+                                .background(Color.white)
+                                .cornerRadius(20)
+                                .shadow(radius: 10)
+                                
+                            }
+            }
         }
+        .navigationBarBackButtonHidden(true)
+        .task {
+//            // init dict for view
+            for pack in packs {
+                print("pack.name \(pack.name) ID: \(pack.id)")
+                pressedDict[pack.name] = false
+            }
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)){
+                userData.updatePtsAndRank(levels: levels)
+            }
+            rankLocal = userData.avgRank
+            totalPtsLocal = userData.totalPts
+        }
+        
     }
+}
 
 #Preview {
+
+    let config = ModelConfiguration(for: Pack.self, isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: Pack.self, configurations: config)
+    let userData = UserData()
     
-        let config = ModelConfiguration(for: Level.self, Pack.self)
-        let container = try! ModelContainer(for: Level.self, Pack.self, configurations: config)
-        let userData = UserData()
-        container.mainContext.insert(Level(level: 0, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
-        container.mainContext.insert(Level(level: 1, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
-        container.mainContext.insert(Level(level: 2, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
-        container.mainContext.insert(Level(level: 3, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
-        container.mainContext.insert(Level(level: 4, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
-        container.mainContext.insert(Level(level: 5, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
-        container.mainContext.insert(Level(level: 1, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true, redeemed: false))
-    
+    try! container.mainContext.delete(model: Pack.self)
+
     container.mainContext.insert(Pack(name: "6-10", unlocked: false, price: 200, id: 1))
     container.mainContext.insert(Pack(name: "11-15", unlocked: false, price: 600, id: 2))
     container.mainContext.insert(Pack(name: "16-20", unlocked: false, price: 1000, id: 3))
     container.mainContext.insert(Pack(name: "21-25", unlocked: false, price: 1300, id: 4))
+    
+    
+    
+    do {
+        try container.mainContext.save()
+    }
+    catch{
+        print("couldn't save context")
+    }
         
 
     return StoreView()
             .modelContainer(container)
             .environmentObject(userData)
-    
+
 }
 

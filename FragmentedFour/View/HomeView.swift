@@ -112,8 +112,8 @@ struct HomeView: View {
                             Button(
                                 action: {
                                     // Level Select
-                                    GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
-                                    navPath.append(DestinationStruct.Destination.selectLevel(animation: levelSelectAnimation ))
+                                        GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                                        navPath.append(DestinationStruct.Destination.selectLevel(animation: levelSelectAnimation ))
                                 },
                                 label: {
                                     RoundedRectangle(cornerRadius: 10)
@@ -139,8 +139,8 @@ struct HomeView: View {
                             Button(
                                 action: {
                                     // Store
-                                    GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
-                                    navPath.append(DestinationStruct.Destination.store)
+                                        GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                                        navPath.append(DestinationStruct.Destination.store)
                                 },
                                 label: {
                                     RoundedRectangle(cornerRadius: 10)
@@ -256,7 +256,6 @@ struct HomeView: View {
                     }
                 }
                 .task{
-                    
                     initializeAppData()
 
                     if GlobalAudioSettings.shared.audioOn && GlobalAudioSettings.shared.playingBackgroundMusic == false{
@@ -291,10 +290,12 @@ struct HomeView: View {
                         if comingFromFastTravel {
                             ContentView(score: level.score, currentLevel: level.level, foundWords: level.foundWords, foundQuartiles: level.foundQuartiles, animation: animation, navPath: $navPath)
                                 .navigationTransition(.zoom(sourceID: "fastTravel", in: animation))
+                                
                         }
                         else {
                             ContentView(score: level.score, currentLevel: level.level, foundWords: level.foundWords, foundQuartiles: level.foundQuartiles, animation: animation, navPath: $navPath)
                                 .navigationTransition(.zoom(sourceID: level.level, in: animation))
+                            
                         }
                     case .store:
                         StoreView()
@@ -311,6 +312,31 @@ struct HomeView: View {
         guard firstLoad else { return } // Check if first load is necessary
         print("Initializing app data for first launch...")
         let levels: [[String]] = Bundle.main.decode("levels.txt")
+        
+        do {
+            let existingLevels: [Level] = try modelContext.fetch(FetchDescriptor<Level>())
+            let existingPacks: [Pack] = try modelContext.fetch(FetchDescriptor<Pack>())
+
+
+            for level in existingLevels {
+                modelContext.delete(level)
+            }
+            
+            for pack in existingPacks {
+                modelContext.delete(pack)
+            }
+
+            // Save after deletion to persist the cleared context
+            try modelContext.save()
+            print("Existing data cleared.")
+        } catch {
+            print("Failed to clear existing data: \(error)")
+        }
+        
+        
+        
+        
+        
         //Load Levels in context
         for (index, _) in levels.enumerated() {
 //            print("inserting")
