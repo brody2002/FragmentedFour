@@ -15,6 +15,9 @@ import SwiftUI
 struct HomeView: View {
     @State private var screen = UIScreen.main.bounds
     
+    // Loading InitialData
+    @Binding var firstLoad: Bool
+    
     // Navigation
     @State var navPath = NavigationPath()
     @Namespace var levelSelectAnimation
@@ -152,7 +155,7 @@ struct HomeView: View {
                                 
                             )
                             .buttonStyle(NoGrayOutButtonStyle())
-                            .matchedTransitionSource(id: "store", in: levelSelectAnimation)
+                            .matchedTransitionSource(id: "store", in: storeAnimation)
                             .background(
                                 RoundedRectangle(cornerRadius: 10)
                                     .fill(.gray)
@@ -253,10 +256,9 @@ struct HomeView: View {
                     }
                 }
                 .task{
-                    print("Loaded levels: \(levels.count)")
-                        for level in levels {
-                            print("Level \(level.level) - Rank: \(level.rank)")
-                        }
+                    
+                    initializeAppData()
+
                     if GlobalAudioSettings.shared.audioOn && GlobalAudioSettings.shared.playingBackgroundMusic == false{
                         print("attempt to play audio ")
                         GlobalAudioSettings.shared.playMusic(for: "BackgroundMusic", backgroundMusic: true)
@@ -270,7 +272,9 @@ struct HomeView: View {
                     if let loadedTiles: [[String]] = Bundle.main.decode("levels.txt"),
                        currentLevel!.level < loadedTiles.count {
                         levelTiles = loadedTiles
-                        wordTiles = loadedTiles[currentLevel!.level]
+                        withAnimation {
+                            wordTiles = loadedTiles[currentLevel!.level]
+                        }
                     } else {
                         levelTiles = []
                         wordTiles = []
@@ -285,7 +289,7 @@ struct HomeView: View {
                             .navigationTransition(.zoom(sourceID: "levelSelect", in: animation))
                     case .levelDestination(let level, let animation):
                         ContentView(score: level.score, currentLevel: level.level, foundWords: level.foundWords, foundQuartiles: level.foundQuartiles, animation: animation, navPath: $navPath)
-                            .navigationTransition(.zoom(sourceID: "levelView", in: animation))
+                            .navigationTransition(.zoom(sourceID: level.level, in: animation))
                     case .store:
                         StoreView()
                             .navigationTransition(.zoom(sourceID: "store", in: storeAnimation))
@@ -293,8 +297,49 @@ struct HomeView: View {
                 })
             }
         }
+        .fontDesign(.rounded)
         
     }
+    
+    func initializeAppData() {
+        guard firstLoad else { return } // Check if first load is necessary
+        print("Initializing app data for first launch...")
+        let levels: [[String]] = Bundle.main.decode("levels.txt")
+        //Load Levels in context
+        for (index, _) in levels.enumerated() {
+//            print("inserting")
+            if index == 0 {
+                modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
+            } else {
+                if (1...4).contains(index){
+                    modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
+                } else{
+                    modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false, redeemed: false))
+                }
+                
+            }
+//            print("Level \(index) inserted...")
+        }
+        // Insert Packs to the model Context
+        modelContext.insert(Pack(name: "6-10", unlocked: false, price: 200, id: 1))
+        modelContext.insert(Pack(name: "11-15", unlocked: false, price: 600, id: 2))
+        modelContext.insert(Pack(name: "16-20", unlocked: false, price: 1000, id: 3))
+        modelContext.insert(Pack(name: "21-25", unlocked: false, price: 1300, id: 4))
+
+        
+        // Save the context to persist the data
+        do {
+            try modelContext.save()
+            print("Data initialized and saved successfully.")
+        } catch {
+            print("Failed to save context: \(error)")
+        }
+        print(modelContext.container)
+        
+        firstLoad = false
+        
+    }
+    
     
     
 }
@@ -318,7 +363,7 @@ struct HomeView: View {
     container.mainContext.insert(Pack(name: "21-25", unlocked: false, price: 1300, id: 4))
         
 
-        return HomeView()
+    return HomeView(firstLoad: .constant(false))
             .modelContainer(container)
             .environmentObject(userData)
     

@@ -1,8 +1,5 @@
 from itertools import permutations
 
-
-
-
 levels = [
 	["ca","lam","it","ous","pa","no","ra","mic","sp","ell","bo","und","bl","ust","eri","ng","pr","ow","le","rs"],
 # 	["shr","ub","be","ry","mal","odo","ro","us","sch","oo","lr","oom","pe","da","nt","ic","de","ra","il","ed"],
@@ -15,15 +12,6 @@ levels = [
 # 	["ref","res","hin","gly","uni","nst","all","er","dis","tra","cti","ons","su","bli","min","al","mo","der","nis","es"],
 # 	["su","rg","eo","ns","hai","rst","yli","st","cr","ow","ba","rs","co","nve","rt","or","dec","im","at","es"]
 ]
-
-
-
-
-
-
-
-
-
 
 def scoreCalc(inputLevel: list[str]) -> bool:
 
@@ -63,5 +51,3 @@ for level in levels:
         break
 
     levelCounter += 1
-
-

@@ -43,5 +43,9 @@ struct TileView: View {
 }
 
 #Preview {
-    TileView(text: "test", isSelected: false, isHighlighted: false, mainColor: AppColors.coreBlue)
+    ZStack{
+        Color.red.ignoresSafeArea()
+        TileView(text: "test", isSelected: false, isHighlighted: false, mainColor: AppColors.coreBlue)
+    }
+    
 }

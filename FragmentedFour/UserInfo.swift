@@ -14,10 +14,10 @@ class UserData: ObservableObject {
     var avgRank: String
     var completedLevels: Int
     
-    init() {
-        self.totalPts = 0
-        self.avgRank = "Novice"
-        self.completedLevels = 0
+    init(totalPts: Int = 0, avgRank: String = "Novice", completedLevels: Int = 0) {
+        self.totalPts = totalPts
+        self.avgRank = avgRank
+        self.completedLevels = completedLevels
     }
     
     func updatePtsAndRank(levels: [Level]) {
@@ -35,7 +35,6 @@ class UserData: ObservableObject {
     
     func findCurrentLevel(levels: [Level]) -> Level {
         var latestLevel = 0 // Used for if user has completed everything they have access to
-        print("Levels coming in: \(levels.count)" )
         for level in levels{
             
             if level.completed {

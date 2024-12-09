@@ -31,6 +31,7 @@ struct ContentView: View {
     @State private var quartileCount: Int = 1
     @State private var submissionState: Bool = false
     @State private var foundQuartile: Bool = false
+    @State private var makeTilesLarge: Bool = false
     
     @State private var isGroupingQuartiles = true
     
@@ -314,6 +315,7 @@ struct ContentView: View {
                                         mainColor: mainColor
                                     )
                                     .transition(.identity)
+                                    .scaleEffect(makeTilesLarge ? 1.2 : 1.0)
                                 }
                                 //Custom Style preventing button from going gray on disable
                                 .buttonStyle(NoGrayOutButtonStyle())
@@ -505,9 +507,35 @@ struct ContentView: View {
                     print("foundQuartiles.count \(foundQuartiles.count)\n\(foundQuartiles)")
                     saveToSwiftData()
                     if currentLVL!.foundQuartiles.count / 4 == 5 && currentLVL!.foundAllWords == false {
+                        
                         score += 40
                         currentLVL!.score = score
                         currentLVL!.foundAllWords = true
+                        
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
+                            GlobalAudioSettings.shared.playSoundEffect(for: "FoundAllQuartiles", audioPlayer: &audioPlayer)
+                            withAnimation{
+                                makeTilesLarge = true
+                            }
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.8){
+                            GlobalAudioSettings.shared.playSoundEffect(for: "FoundAllQuartiles", audioPlayer: &audioPlayer)
+                            withAnimation{
+                                makeTilesLarge = false
+                            }
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.6){
+                            GlobalAudioSettings.shared.playSoundEffect(for: "FoundAllQuartiles", audioPlayer: &audioPlayer)
+                            withAnimation{
+                                makeTilesLarge = true
+                            }
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 3.4){
+                            GlobalAudioSettings.shared.playSoundEffect(for: "FoundAllQuartiles", audioPlayer: &audioPlayer)
+                            withAnimation{
+                                makeTilesLarge = false
+                            }
+                        }
                         
                     }
                     
@@ -520,6 +548,7 @@ struct ContentView: View {
                             turnGreen = false
                             showX = true
                             foundQuartile = false
+                            
                         }
                     }
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.8){
@@ -555,9 +584,6 @@ struct ContentView: View {
                 submissionState = false
             }
         }
-        
-            
-        
     }
     
     func saveToSwiftData(){
@@ -665,13 +691,13 @@ struct ContentView: View {
  
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: Level.self, configurations: config)
-        container.mainContext.insert(Level(level: 0, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Novice", score: 0, unlocked: false))
-        container.mainContext.insert(Level(level: 1, foundWords: [[]], foundQuartiles: [], completed: true, rank: "Master", score: 101,unlocked: true))
-        container.mainContext.insert(Level(level: 2, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: true))
-        container.mainContext.insert(Level(level: 3, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: true))
-        container.mainContext.insert(Level(level: 4, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: true))
-        container.mainContext.insert(Level(level: 5, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: false))
-        container.mainContext.insert(Level(level: 6, foundWords: [[]], foundQuartiles: [], completed: false, rank: "Master", score: 101, unlocked: false))
+        container.mainContext.insert(Level(level: 0, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
+        container.mainContext.insert(Level(level: 1, foundWords: [[String]](), foundQuartiles: [String](), completed: true, rank: "Master", score: 101,unlocked: true))
+        container.mainContext.insert(Level(level: 2, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Master", score: 101, unlocked: true))
+        container.mainContext.insert(Level(level: 3, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Master", score: 101, unlocked: true))
+        container.mainContext.insert(Level(level: 4, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Master", score: 101, unlocked: true))
+        container.mainContext.insert(Level(level: 5, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Master", score: 101, unlocked: false))
+        container.mainContext.insert(Level(level: 6, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Master", score: 101, unlocked: false))
         return ContentView(score: 0, currentLevel: 0, foundWords: [[String]](), foundQuartiles: [String](), animation: previewNamespace, navPath: $navPath)
             .modelContainer(container)
             .environment(userData)
