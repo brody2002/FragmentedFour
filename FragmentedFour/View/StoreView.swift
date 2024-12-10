@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import AVFoundation
 
 @Model
 class Pack : Identifiable, ObservableObject {
@@ -14,12 +15,14 @@ class Pack : Identifiable, ObservableObject {
     var unlocked: Bool
     var price: Int
     var id: Int
+    var levels: [Int] // ACCOUNT FOR ZERO INDEX lvls 1, 2, 3, 4 - > 0, 1 ,2, 3
     
-    init(name: String, unlocked: Bool, price: Int, id: Int) {
+    init(name: String, unlocked: Bool, price: Int, id: Int, levels: [Int]) {
         self.name = name
         self.unlocked = unlocked
         self.price = price
         self.id = id
+        self.levels = levels
     }
 }
 
@@ -32,6 +35,7 @@ struct StoreView: View {
     
     // UserData
     @EnvironmentObject var userData: UserData
+    @Environment(\.modelContext) var modelContext
     @Query var levels: [Level]
     @State private var rankLocal: String?
     @State private var totalPtsLocal: Int?
@@ -52,6 +56,9 @@ struct StoreView: View {
         pressedPack?.price ?? 0
     }
     @State private var packViewID = UUID() // for rerendering
+    
+    // Audio
+    @State private var audioPlayer: AVAudioPlayer? = nil
 
     
     var body: some View {
@@ -148,37 +155,46 @@ struct StoreView: View {
                 ScrollView{ // Add ScrollView for scrolling
                 LazyVGrid(columns: columns, spacing: 40) {
                     ForEach(packs, id: \.name) { pack in
-                        VStack{
-                            Text("Pack \(pack.id)")
-                                .bold()
-                                .fontDesign(.rounded)
-                                .font(.system(size: 24))
-                            Spacer().frame(height: 40)
-                            PackPile_View(name: pack.name)
-                            //HELP WITH THIS
-                            HStack(alignment: .center) {
-                                Text("\(pack.price)")
-                                    .font(.system(size: 16))
+                        ZStack{
+                            VStack{
+                                Text("Pack \(pack.id)")
                                     .bold()
-                                    .frame(minWidth: 50)
-                                    .padding(.leading, 20)
-                                Spacer()
-                                    .frame(width: 0)
-                                MoneyView()
-                                    .scaleEffect(0.6)
-                                    .offset(x: -10)
+                                    .fontDesign(.rounded)
+                                    .font(.system(size: 24))
+                                Spacer().frame(height: 40)
+                                PackPile_View(name: pack.name)
+                                //HELP WITH THIS
+                                HStack(alignment: .center) {
+                                    Text("\(pack.price)")
+                                        .font(.system(size: 16))
+                                        .bold()
+                                        .frame(minWidth: 50)
+                                        .padding(.leading, 20)
+                                    Spacer()
+                                        .frame(width: 0)
+                                    MoneyView()
+                                        .scaleEffect(0.6)
+                                        .offset(x: -10)
+                                }
+                                .frame(height: 30)
                             }
-                            .frame(height: 30)
-                        }
-                        .onTapGesture {
-                            pressedPack = pack
-                            packViewID = UUID() // Force view to refresh
-                            DispatchQueue.main.asyncAfter(deadline: .now()) {
-                                withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                                    showWindow = true
+                            .onTapGesture {
+                                pressedPack = pack
+                                packViewID = UUID() // Force view to refresh
+                                DispatchQueue.main.asyncAfter(deadline: .now()) {
+                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                                        showWindow = true
+                                    }
                                 }
                             }
+                            Image("Sold")
+                                .resizable()
+                                .frame(width: 120, height: 120)
+                                .opacity(pack.unlocked ? 1.0 : 0.0)
                         }
+                        .allowsHitTesting(pack.unlocked ? false : true)
+                        
+                        
                     }
                 }
                 .padding(.leading, 40)
@@ -243,6 +259,9 @@ struct StoreView: View {
                                 .font(.title3.bold())
                                 .foregroundStyle(.white)
                                 .fontDesign(.rounded)
+                                .onTapGesture {
+                                    purchasePack()
+                                }
                         }
                         .frame(width: 130, height: 50)
                     }
@@ -253,6 +272,7 @@ struct StoreView: View {
                 .background(Color.white)
                 .cornerRadius(20)
                 .shadow(radius: 10)
+                
 
             }
             .opacity(showWindow ? 1 : 0)
@@ -262,7 +282,6 @@ struct StoreView: View {
         }
         .navigationBarBackButtonHidden(true)
         .task {
-//            // init dict for view
             for pack in packs {
                 print("pack.name \(pack.name) ID: \(pack.id)")
                 pressedDict[pack.name] = false
@@ -275,6 +294,79 @@ struct StoreView: View {
         }
         
     }
+    
+    
+    
+    func fetchLevelAndRedeem(_ inputInt: Int, context: ModelContext, allPossibleLevelsCompleted: Bool = false) {
+        let descriptor = FetchDescriptor<Level>(
+            predicate: #Predicate { $0.level == inputInt }
+        )
+        do {
+            
+            let results = try context.fetch(descriptor)
+            let foundLevel = results.first
+            print("attempting to redeem \(foundLevel!.level)")
+            foundLevel?.redeemed = true
+            if allPossibleLevelsCompleted { foundLevel?.unlocked = true}
+            try! context.save()
+            print("redeem saved!\n")
+        } catch {
+            print("Failed to fetch level: \(error)")
+        }
+    }
+    
+    func purchasePack() {
+        guard let pack = pressedPack, totalPtsLocal ?? 0 >= pack.price else {
+            GlobalAudioSettings.shared.playSoundEffect(for: "IncorrectSound", audioPlayer: &audioPlayer)
+            return
+        }
+        for (index, num) in pack.levels.enumerated() {
+            if index == 0 && checkAvailableLevelsCompleted(context: modelContext) { // If All Available levels have been completed, we need to unlock one for the user to continue playing
+                print("special case: All Levels Completed")
+                fetchLevelAndRedeem(num, context: modelContext, allPossibleLevelsCompleted: true)
+            } else {
+                fetchLevelAndRedeem(num, context: modelContext)
+            }
+            
+        }
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.6)){
+            pack.unlocked = true
+        }
+        print("The levels have been redeemed and can now be unlocked!")
+        GlobalAudioSettings.shared.playSoundEffect(for: "Quartile", audioPlayer: &audioPlayer)
+        
+        withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
+            showWindow = false
+        }
+    }
+    
+    func checkAvailableLevelsCompleted (context: ModelContext) -> Bool {
+        let completedLevels = userData.completedLevels
+        
+        let descriptor = FetchDescriptor<Level>(
+            predicate: #Predicate { $0.level == completedLevels - 1 }
+        )
+        do {
+            
+            let results = try context.fetch(descriptor)
+            let foundLevel = results.first
+            if foundLevel!.completed {
+                // if the last available Level is completed, we need to make the first of the redeemed pack unlocked
+                return true
+            }
+            
+            try! context.save()
+            print("redeem saved!\n")
+        } catch {
+            print("Failed to fetch level: \(error)")
+        }
+        return false
+        
+    }
+    
+    
+    
+    
 }
 
 #Preview {
@@ -283,12 +375,14 @@ struct StoreView: View {
     let container = try! ModelContainer(for: Pack.self, configurations: config)
     let userData = UserData()
     
+    
     try! container.mainContext.delete(model: Pack.self)
 
-    container.mainContext.insert(Pack(name: "6-10", unlocked: false, price: 200, id: 1))
-    container.mainContext.insert(Pack(name: "11-15", unlocked: false, price: 600, id: 2))
-    container.mainContext.insert(Pack(name: "16-20", unlocked: false, price: 1000, id: 3))
-    container.mainContext.insert(Pack(name: "21-25", unlocked: false, price: 1300, id: 4))
+
+    container.mainContext.insert(Pack(name: "6-10", unlocked: false, price: 200, id: 1, levels: [5, 6, 7, 8, 9]))
+    container.mainContext.insert(Pack(name: "11-15", unlocked: false, price: 600, id: 2, levels: [10, 11, 12, 13, 14]))
+    container.mainContext.insert(Pack(name: "16-20", unlocked: false, price: 1000, id: 3, levels: [15, 16, 17, 18, 19]))
+    container.mainContext.insert(Pack(name: "21-25", unlocked: false, price: 1300, id: 4, levels: [20, 21, 22, 23, 24]))
     
     
     

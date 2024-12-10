@@ -338,13 +338,28 @@ struct HomeView: View {
         
         
         //Load Levels in context
+//        for (index, _) in levels.enumerated() {
+////            print("inserting")
+//            if index == 0 {
+//                modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
+//            } else {
+//                if (1...4).contains(index){
+//                    modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
+//                } else{
+//                    modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false, redeemed: false))
+//                }
+//                
+//            }
+////            print("Level \(index) inserted...")
+//        }
+        
         for (index, _) in levels.enumerated() {
 //            print("inserting")
             if index == 0 {
-                modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
+                modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: true, rank: "Novice", score: 100, unlocked: true))
             } else {
                 if (1...4).contains(index){
-                    modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
+                    modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: true, rank: "Novice", score: 100, unlocked: true))
                 } else{
                     modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false, redeemed: false))
                 }
@@ -353,10 +368,10 @@ struct HomeView: View {
 //            print("Level \(index) inserted...")
         }
         // Insert Packs to the model Context
-        modelContext.insert(Pack(name: "6-10", unlocked: false, price: 200, id: 1))
-        modelContext.insert(Pack(name: "11-15", unlocked: false, price: 600, id: 2))
-        modelContext.insert(Pack(name: "16-20", unlocked: false, price: 1000, id: 3))
-        modelContext.insert(Pack(name: "21-25", unlocked: false, price: 1300, id: 4))
+        modelContext.insert(Pack(name: "6-10", unlocked: false, price: 200, id: 1, levels: [5, 6, 7, 8, 9]))
+        modelContext.insert(Pack(name: "11-15", unlocked: false, price: 600, id: 2, levels: [10, 11, 12, 13, 14]))
+        modelContext.insert(Pack(name: "16-20", unlocked: false, price: 1000, id: 3, levels: [15, 16, 17, 18, 19]))
+        modelContext.insert(Pack(name: "21-25", unlocked: false, price: 1300, id: 4, levels: [20, 21, 22, 23, 24]))
 
         
         // Save the context to persist the data
@@ -378,21 +393,21 @@ struct HomeView: View {
 
 #Preview {
     
-        let config = ModelConfiguration(for: Level.self, Pack.self) 
+        let config = ModelConfiguration(for: Level.self, Pack.self)
         let container = try! ModelContainer(for: Level.self, Pack.self, configurations: config)
         let userData = UserData()
-        container.mainContext.insert(Level(level: 0, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
-        container.mainContext.insert(Level(level: 1, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
-        container.mainContext.insert(Level(level: 2, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
-        container.mainContext.insert(Level(level: 3, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
-        container.mainContext.insert(Level(level: 4, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
-        container.mainContext.insert(Level(level: 5, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
-        container.mainContext.insert(Level(level: 1, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true, redeemed: false))
+        container.mainContext.insert(Level(level: 0, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
+        container.mainContext.insert(Level(level: 1, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
+        container.mainContext.insert(Level(level: 2, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
+        container.mainContext.insert(Level(level: 3, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
+        container.mainContext.insert(Level(level: 4, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
+        container.mainContext.insert(Level(level: 5, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
+        container.mainContext.insert(Level(level: 1, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false, redeemed: false))
     
-    container.mainContext.insert(Pack(name: "6-10", unlocked: false, price: 200, id: 1))
-    container.mainContext.insert(Pack(name: "11-15", unlocked: false, price: 600, id: 2))
-    container.mainContext.insert(Pack(name: "16-20", unlocked: false, price: 1000, id: 3))
-    container.mainContext.insert(Pack(name: "21-25", unlocked: false, price: 1300, id: 4))
+    container.mainContext.insert(Pack(name: "6-10", unlocked: false, price: 200, id: 1, levels: [5, 6, 7, 8, 9]))
+    container.mainContext.insert(Pack(name: "11-15", unlocked: false, price: 600, id: 2, levels: [10, 11, 12, 13, 14]))
+    container.mainContext.insert(Pack(name: "16-20", unlocked: false, price: 1000, id: 3, levels: [15, 16, 17, 18, 19]))
+    container.mainContext.insert(Pack(name: "21-25", unlocked: false, price: 1300, id: 4, levels: [20, 21, 22, 23, 24]))
         
 
     return HomeView(firstLoad: .constant(false))
