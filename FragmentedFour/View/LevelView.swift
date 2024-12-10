@@ -41,6 +41,12 @@ struct LevelView: View {
                                         .foregroundStyle(.white)
                                         .font(.system(size: 40).bold())
                                         .offset(y: 54)
+                                        .background(
+                                            Text("Level Select")
+                                                .foregroundStyle(.gray)
+                                                .font(.system(size: 40).bold())
+                                                .offset(y: 57)
+                                        )
                                     
                                         
                                     RoundedRectangle(cornerRadius: 10)

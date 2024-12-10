@@ -13,11 +13,13 @@ class UserData: ObservableObject {
     var totalPts: Int
     var avgRank: String
     var completedLevels: Int
+    var unlockedLevels: Int
     
-    init(totalPts: Int = 0, avgRank: String = "Novice", completedLevels: Int = 0) {
+    init(totalPts: Int = 0, avgRank: String = "Novice", completedLevels: Int = 0, unlockedLevels: Int = 5) {
         self.totalPts = totalPts
         self.avgRank = avgRank
         self.completedLevels = completedLevels
+        self.unlockedLevels = unlockedLevels
     }
     
     func updatePtsAndRank(levels: [Level]) {
@@ -48,6 +50,6 @@ class UserData: ObservableObject {
             
         }
         print("returning LatestLevel")
-        return levels[latestLevel]
+        return levels[latestLevel - 1]
     }
 }

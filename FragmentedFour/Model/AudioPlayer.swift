@@ -36,6 +36,11 @@ class GlobalAudioSettings: ObservableObject {
         }
     }
     
+    func stopAudio(_ audioPlayer: inout AVAudioPlayer?) {
+        audioPlayer?.stop()
+        audioPlayer = nil // Release the audio player to free resources
+    }
+    
     func playMusic(for soundName: String, backgroundMusic: Bool) {
         guard let url = Bundle.main.url(forResource: soundName, withExtension: "m4a") else {
             print("Error: Could not find the sound file named \(soundName).m4a in the bundle.")

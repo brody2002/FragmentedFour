@@ -385,7 +385,10 @@ struct ContentView: View {
                     groupQuartiles()
                 }
             }
-            
+            .onDisappear {
+                print("stopping audio?")
+                GlobalAudioSettings.shared.stopAudio(&audioPlayer)
+            }
             .onChange(of: shouldRestartLevel){
                 restartLevel()
             }
@@ -400,6 +403,7 @@ struct ContentView: View {
         
     }
     
+
     
     func loadLevel(){
         tiles = levels[currentLevel]

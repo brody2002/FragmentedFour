@@ -338,35 +338,20 @@ struct HomeView: View {
         
         
         //Load Levels in context
-//        for (index, _) in levels.enumerated() {
-////            print("inserting")
-//            if index == 0 {
-//                modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
-//            } else {
-//                if (1...4).contains(index){
-//                    modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
-//                } else{
-//                    modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false, redeemed: false))
-//                }
-//                
-//            }
-////            print("Level \(index) inserted...")
-//        }
-        
         for (index, _) in levels.enumerated() {
-//            print("inserting")
             if index == 0 {
-                modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: true, rank: "Novice", score: 100, unlocked: true))
+                modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
             } else {
                 if (1...4).contains(index){
-                    modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: true, rank: "Novice", score: 100, unlocked: true))
+                    modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
                 } else{
                     modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false, redeemed: false))
                 }
                 
             }
-//            print("Level \(index) inserted...")
+            print("Level \(index) inserted...")
         }
+        
         // Insert Packs to the model Context
         modelContext.insert(Pack(name: "6-10", unlocked: false, price: 200, id: 1, levels: [5, 6, 7, 8, 9]))
         modelContext.insert(Pack(name: "11-15", unlocked: false, price: 600, id: 2, levels: [10, 11, 12, 13, 14]))

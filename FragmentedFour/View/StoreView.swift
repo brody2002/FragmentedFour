@@ -82,6 +82,12 @@ struct StoreView: View {
                                     .foregroundStyle(.white)
                                     .font(.system(size: 40).bold())
                                     .offset(y: 54)
+                                    .background (
+                                        Text("Store")
+                                            .foregroundStyle(.gray)
+                                            .font(.system(size: 40).bold())
+                                            .offset(y: 57)
+                                    )
                                 
                                     
                                 RoundedRectangle(cornerRadius: 10)
@@ -295,39 +301,15 @@ struct StoreView: View {
         
     }
     
-    
-    
-    func fetchLevelAndRedeem(_ inputInt: Int, context: ModelContext, allPossibleLevelsCompleted: Bool = false) {
-        let descriptor = FetchDescriptor<Level>(
-            predicate: #Predicate { $0.level == inputInt }
-        )
-        do {
-            
-            let results = try context.fetch(descriptor)
-            let foundLevel = results.first
-            print("attempting to redeem \(foundLevel!.level)")
-            foundLevel?.redeemed = true
-            if allPossibleLevelsCompleted { foundLevel?.unlocked = true}
-            try! context.save()
-            print("redeem saved!\n")
-        } catch {
-            print("Failed to fetch level: \(error)")
-        }
-    }
-    
     func purchasePack() {
         guard let pack = pressedPack, totalPtsLocal ?? 0 >= pack.price else {
             GlobalAudioSettings.shared.playSoundEffect(for: "IncorrectSound", audioPlayer: &audioPlayer)
             return
         }
+        userData.unlockedLevels += 5
+        checkAvailableLevelsUnlocked(context: modelContext)
         for (index, num) in pack.levels.enumerated() {
-            if index == 0 && checkAvailableLevelsCompleted(context: modelContext) { // If All Available levels have been completed, we need to unlock one for the user to continue playing
-                print("special case: All Levels Completed")
-                fetchLevelAndRedeem(num, context: modelContext, allPossibleLevelsCompleted: true)
-            } else {
-                fetchLevelAndRedeem(num, context: modelContext)
-            }
-            
+            fetchLevelAndRedeem(num, context: modelContext)
         }
         withAnimation(.spring(response: 0.3, dampingFraction: 0.6)){
             pack.unlocked = true
@@ -340,28 +322,49 @@ struct StoreView: View {
         }
     }
     
-    func checkAvailableLevelsCompleted (context: ModelContext) -> Bool {
-        let completedLevels = userData.completedLevels
-        
+    func fetchLevelAndRedeem(_ inputInt: Int, context: ModelContext, allPossibleUnlockedLevelsCompleted: Bool = false) {
         let descriptor = FetchDescriptor<Level>(
-            predicate: #Predicate { $0.level == completedLevels - 1 }
+            predicate: #Predicate { $0.level == inputInt }
         )
         do {
             
             let results = try context.fetch(descriptor)
             let foundLevel = results.first
-            if foundLevel!.completed {
-                // if the last available Level is completed, we need to make the first of the redeemed pack unlocked
-                return true
-            }
+            print("attempting to redeem \(foundLevel!.level)")
+            foundLevel?.redeemed = true
             
+            if allPossibleUnlockedLevelsCompleted {
+                print("foundLevel.unlocked = true")
+                foundLevel?.unlocked = true
+            }
             try! context.save()
             print("redeem saved!\n")
         } catch {
             print("Failed to fetch level: \(error)")
         }
-        return false
+    }
+    
+    func checkAvailableLevelsUnlocked (context: ModelContext){
+        let unlockedLevels = userData.unlockedLevels
+        let completedLevels = userData.completedLevels
+        print("unlockedLevels amount \(unlockedLevels)")
         
+        if unlockedLevels - completedLevels == 5 {
+            let descriptor = FetchDescriptor<Level>(
+                predicate: #Predicate { $0.level == unlockedLevels - 5 }
+            )
+            do {
+                let results = try context.fetch(descriptor)
+                let foundLevel = results.first
+                print("Level \(foundLevel!.level) is completed -> \(foundLevel!.completed) LevelScore: \(foundLevel!.score)")
+                foundLevel!.unlocked = true
+                try! context.save()
+                print("redeem saved!\n")
+            } catch {
+                print("Failed to fetch level: \(error)")
+            }
+            
+        }
     }
     
     
