@@ -38,14 +38,20 @@ struct StoreView: View {
     
     // Preview Handling
     @State private var pressedDict: [String: Bool] = [:]
-    @State private var pressedPack: Pack?
+    @State private var pressedPack: Pack? {
+        didSet {
+            // Update pressedPackName and pressedPackPrice when pressedPack changes
+            print("Pressed pack updated: \(pressedPack?.name ?? "nil"), \(pressedPack?.price ?? -1)")
+        }
+    }
     @State private var showWindow: Bool = false
     var pressedPackName: String {
-        pressedPack?.name ?? "nothing"
+        pressedPack?.name ?? "something"
     }
     var pressedPackPrice: Int{
         pressedPack?.price ?? 0
     }
+    @State private var packViewID = UUID() // for rerendering
 
     
     var body: some View {
@@ -61,7 +67,7 @@ struct StoreView: View {
                                 showWindow = false // Dismiss on background tap
                             }
                         }
-                    
+                    // WHITE BOX
                     VStack{
                         ZStack(alignment: .top){
                             VStack{
@@ -138,6 +144,7 @@ struct StoreView: View {
                 Spacer()
                     .frame(height: 100)
                 
+                // REGULAR SCROLL VIEW
                 ScrollView{ // Add ScrollView for scrolling
                 LazyVGrid(columns: columns, spacing: 40) {
                     ForEach(packs, id: \.name) { pack in
@@ -165,8 +172,8 @@ struct StoreView: View {
                         }
                         .onTapGesture {
                             pressedPack = pack
-                            print("Pressed pack updated: \(pressedPack?.name ?? "nil"), \(pressedPack?.price ?? -1)")
-                            DispatchQueue.main.async {
+                            packViewID = UUID() // Force view to refresh
+                            DispatchQueue.main.asyncAfter(deadline: .now()) {
                                 withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
                                     showWindow = true
                                 }
@@ -174,16 +181,15 @@ struct StoreView: View {
                         }
                     }
                 }
-                    .padding(.leading, 40)
-                    .padding(.trailing, 40)// Add padding around the grid
+                .padding(.leading, 40)
+                .padding(.trailing, 40)// Add padding around the grid
                 }
                 
                 
             }
             
-            // Pop Up View
+            // Pop Up View for purchase
             ZStack {
-                
                 VStack(spacing: 20) {
                     // Close button
                     HStack {
@@ -203,10 +209,13 @@ struct StoreView: View {
                         Spacer()
                     }
                     
-                    // Pack pile
-                    PackPile_View(name: pressedPackName)
-                        .scaleEffect(1.4)
-                        .frame(height: 250) // Adjust height to center content
+                    if let pack = pressedPack {
+                        PackPile_View(name: pack.name)
+                            .scaleEffect(1.4)
+                            .frame(height: 250)
+                            .id(packViewID) // Force re-render
+                    }
+                    
                     
                     // Price and Purchase Button
                     HStack(spacing: 20) {
@@ -244,6 +253,7 @@ struct StoreView: View {
                 .background(Color.white)
                 .cornerRadius(20)
                 .shadow(radius: 10)
+
             }
             .opacity(showWindow ? 1 : 0)
             .scaleEffect(showWindow ? 1 : 0.8)
