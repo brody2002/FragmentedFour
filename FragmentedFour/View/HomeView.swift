@@ -51,12 +51,7 @@ struct HomeView: View {
                         AppColors.body.ignoresSafeArea()
                             .frame(height: UIScreen.main.bounds.height * 0.689)
                     }
-                    VStack{
-                        Spacer()
-                        Spacer()
-                        AppColors.coreBlue.ignoresSafeArea()
-                            .frame(height: UIScreen.main.bounds.height * 0.43)
-                    }
+                    
                     
                     VStack{
                         HStack(alignment: .firstTextBaseline){
@@ -282,12 +277,7 @@ struct HomeView: View {
                                 
                                 
                             )
-                            .background(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .fill(.gray)
-                                    .offset(y: 4)
-                                
-                            )
+                            
                             .padding(.horizontal)
                             .frame(height: screen.height * 0.3)
                         Spacer()
