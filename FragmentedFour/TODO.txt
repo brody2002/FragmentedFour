@@ -1,22 +1,16 @@
-NOV 5th:
+NOV 10th:
 
 TODO:
-8. cancel audio when leaving view
+
 9. fix sold png
-10. Tutorial View with swipe show...
+
 
 
 
 
 
 Done:
-1. Add Victory Sound
-2. Create a homeView:
-3. Create a sidebar menu for the Level Select and Store View
-6. Create the 4 packs that I have currnently in swiftdata StoreView
-4. Make the store work for level packs
-5. Add Sounds for finding all the Quartiles.
-7. fix level unlock bug
+8. cancel audio when leaving view
 
 
 

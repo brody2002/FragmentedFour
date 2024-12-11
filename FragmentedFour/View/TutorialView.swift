@@ -63,6 +63,7 @@ struct TutorialView: View {
                 
             }
         }
+        .navigationBarBackButtonHidden(true)
     }
     
     func slideView (stepNumber: Int, imageName: String, description: String) -> some View {

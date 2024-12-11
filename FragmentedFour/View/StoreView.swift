@@ -190,10 +190,11 @@ struct StoreView: View {
                                 DispatchQueue.main.asyncAfter(deadline: .now()) {
                                     withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
                                         showWindow = true
+                                        GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                                     }
                                 }
                             }
-                            Image("Sold")
+                            Image("SoldSign")
                                 .resizable()
                                 .frame(width: 120, height: 120)
                                 .opacity(pack.unlocked ? 1.0 : 0.0)
@@ -225,6 +226,7 @@ struct StoreView: View {
                             )
                             .onTapGesture {
                                 withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
+                                    GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                                     showWindow = false
                                 }
                             }
@@ -382,7 +384,7 @@ struct StoreView: View {
     try! container.mainContext.delete(model: Pack.self)
 
 
-    container.mainContext.insert(Pack(name: "6-10", unlocked: false, price: 200, id: 1, levels: [5, 6, 7, 8, 9]))
+    container.mainContext.insert(Pack(name: "6-10", unlocked: true, price: 200, id: 1, levels: [5, 6, 7, 8, 9]))
     container.mainContext.insert(Pack(name: "11-15", unlocked: false, price: 600, id: 2, levels: [10, 11, 12, 13, 14]))
     container.mainContext.insert(Pack(name: "16-20", unlocked: false, price: 1000, id: 3, levels: [15, 16, 17, 18, 19]))
     container.mainContext.insert(Pack(name: "21-25", unlocked: false, price: 1300, id: 4, levels: [20, 21, 22, 23, 24]))

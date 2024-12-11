@@ -23,6 +23,7 @@ struct HomeView: View {
     @Namespace var levelSelectAnimation
     @Namespace var levelGameAnimation
     @Namespace var storeAnimation
+    @Namespace var tutorialAnimation
     
     // SwiftData
     @Query(sort: [SortDescriptor(\Level.level)]) var levels: [Level]
@@ -189,6 +190,7 @@ struct HomeView: View {
                                         
                                     }
                                 )
+                                .matchedTransitionSource(id: "tutorial", in: tutorialAnimation)
                                 .background(
                                     Circle()
                                         .fill(.gray)
@@ -198,6 +200,7 @@ struct HomeView: View {
                                 )
                                 .onTapGesture {
                                     GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                                    navPath.append(DestinationStruct.Destination.tutorial)
                                 }
                         }
                         .padding(.horizontal)
@@ -300,6 +303,9 @@ struct HomeView: View {
                     case .store:
                         StoreView()
                             .navigationTransition(.zoom(sourceID: "store", in: storeAnimation))
+                    case .tutorial:
+                        TutorialView()
+                            .navigationTransition(.zoom(sourceID: "tutorial", in: tutorialAnimation))
                     }
                 })
             }
