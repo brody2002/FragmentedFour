@@ -194,7 +194,7 @@ struct HomeView: View {
                                         
                                     }
                                 )
-                                .matchedTransitionSource(id: "tutorial", in: tutorialAnimation)
+//                                .matchedTransitionSource(id: "tutorial", in: tutorialAnimation)
                                 .background(
                                     Circle()
                                         .fill(.gray)
@@ -231,7 +231,7 @@ struct HomeView: View {
                                 
                                 
                             )
-                            .matchedTransitionSource(id: "fastTravel", in: levelGameAnimation) // Transition 1
+//                            .matchedTransitionSource(id: "fastTravel", in: levelGameAnimation) // Transition 1
                             .background(
                                 RoundedRectangle(cornerRadius: 10)
                                     .fill(.gray)
@@ -294,36 +294,23 @@ struct HomeView: View {
                     switch dest{
                     case .selectLevel(let animation): // For for level select
                         LevelView(navPath: $navPath)
-//                            .navigationTransition(.z.interactiveDismissDisabled(true)oom(sourceID: "levelSelect", in: animation))
                     case .levelDestination(let level, let animation, let comingFromFastTravel):
                         if comingFromFastTravel {
                             ContentView(score: level.score, currentLevel: level.level, foundWords: level.foundWords, foundQuartiles: level.foundQuartiles, animation: animation, navPath: $navPath)
-                                .navigationTransition(.zoom(sourceID: "fastTravel", in: animation))
-//                                
                         }
                         else {
                             ContentView(score: level.score, currentLevel: level.level, foundWords: level.foundWords, foundQuartiles: level.foundQuartiles, animation: animation, navPath: $navPath)
                                 .disableSwipeBack()
-                                .navigationTransition(.zoom(sourceID: level.level, in: animation))
-                                                         
                         }
                     case .store:
                         StoreView()
-                            
-//
-                            
-                            
                     case .tutorial:
                         TutorialView()
-                            
-//                            .navigationTransition(.zoom(sourceID: "tutorial", in: tutorialAnimation))
-                        
-                        
                     }
                 })
             }
             .navigationTransition(
-                .customZoom.animation(.interpolatingSpring(stiffness: 300, damping: 20))
+                .customZoom.animation(.interpolatingSpring(stiffness: 200, damping: 20))
             )
         }
         .fontDesign(.rounded)

@@ -119,7 +119,6 @@ struct LevelView: View {
                         LazyVGrid(columns: columns, spacing: 40) {
                             ForEach(levels, id: \.level){ level in
                                 LevelTileView(level: level.level, completed: level.completed, unlocked: level.unlocked, score:  level.score, redeemed: level.redeemed)
-                                    .matchedTransitionSource(id: level.level, in: animationNamespace) // Transition 2
                                     .onTapGesture {
                                         if level.unlocked{
                                             GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)

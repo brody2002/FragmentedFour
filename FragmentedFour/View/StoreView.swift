@@ -291,7 +291,7 @@ struct StoreView: View {
         .onDisappear{
             print("disapeered")
         }
-        .navigationBarBackButtonHidden(false)
+        .navigationBarBackButtonHidden(true)
         
         .task {
             for pack in packs {
