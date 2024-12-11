@@ -14,6 +14,7 @@ struct LevelView: View {
     @Query(sort: [SortDescriptor(\Level.level)]) var levels: [Level]
     @Namespace private var animationNamespace
     @EnvironmentObject var userData: UserData
+    @Environment(\.dismiss) var dismiss
     @State private var audioPlayer: AVAudioPlayer?
     @State private var mainColor: Color = AppColors.coreBlue
     @State private var shakeStates: [Int: Bool] = [:]
@@ -36,6 +37,26 @@ struct LevelView: View {
                         mainColor.ignoresSafeArea()
                         VStack{
                             ZStack(alignment: .top){
+                                HStack(alignment: .firstTextBaseline){
+                                    Image(systemName: "arrowshape.turn.up.backward.fill")
+                                        .resizable()
+                                        .frame(width: 40, height: 40)
+                                        .foregroundColor(.white)
+                                        .background(
+                                            Image(systemName: "arrowshape.turn.up.backward.fill")
+                                                .resizable()
+                                                .frame(width: 40, height: 40)
+                                                .foregroundColor(.gray)
+                                                .offset(y: 4)
+                                        )
+                                        .padding(.leading, 20)
+                                        .onTapGesture {
+                                            dismiss()
+                                            GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                                        }
+                                    Spacer()
+                                }
+                                .padding(.top, 55)
                                 VStack{
                                     Text("Level Select")
                                         .foregroundStyle(.white)
@@ -80,11 +101,6 @@ struct LevelView: View {
                                                                 .offset(x: -30)
                                                         }
                                                         .frame(height: 20)
-//
-//                                                        + Text("    \(userData.totalPts) 💰")
-//                                                            .bold()
-//                                                            .foregroundColor(mainColor)
-//                                                            .font(.system(size: 23))
                                                         Spacer()
                                                     }
                                                     .padding()
@@ -130,7 +146,6 @@ struct LevelView: View {
                                             }
                                         }
                                     }
-//                                    .disabled(!level.unlocked)
                                     .background(
                                         ZStack{
                                             if level.redeemed {
@@ -155,7 +170,7 @@ struct LevelView: View {
                     }
                 }
             }
-            .interactiveDismissDisabled(true)
+            .navigationBarBackButtonHidden(true)
             .task{
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.6)){
                     userData.updatePtsAndRank(levels: levels)

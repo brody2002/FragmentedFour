@@ -41,6 +41,7 @@ struct StoreView: View {
     @State private var totalPtsLocal: Int?
     
     // Preview Handling
+    @Environment(\.dismiss) var dismiss
     @State private var pressedDict: [String: Bool] = [:]
     @State private var pressedPack: Pack? {
         didSet {
@@ -55,6 +56,7 @@ struct StoreView: View {
     var pressedPackPrice: Int{
         pressedPack?.price ?? 0
     }
+    
     @State private var packViewID = UUID() // for rerendering
     
     // Audio
@@ -77,6 +79,27 @@ struct StoreView: View {
                     // WHITE BOX
                     VStack{
                         ZStack(alignment: .top){
+                            HStack(alignment: .firstTextBaseline){
+                                Image(systemName: "arrowshape.turn.up.backward.fill")
+                                    .resizable()
+                                    .frame(width: 40, height: 40)
+                                    .foregroundColor(.white)
+                                    .background(
+                                        Image(systemName: "arrowshape.turn.up.backward.fill")
+                                            .resizable()
+                                            .frame(width: 40, height: 40)
+                                            .foregroundColor(.gray)
+                                            .offset(y: 4)
+                                    )
+                                    .padding(.leading, 20)
+                                    .onTapGesture {
+                                        GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                                        dismiss()
+                                    }
+                                Spacer()
+                            }
+                            .padding(.top, 55)
+                            
                             VStack{
                                 Text("Store")
                                     .foregroundStyle(.white)
@@ -88,7 +111,6 @@ struct StoreView: View {
                                             .font(.system(size: 40).bold())
                                             .offset(y: 57)
                                     )
-                                
                                     
                                 RoundedRectangle(cornerRadius: 10)
                                     .fill(Color.white)
@@ -188,7 +210,7 @@ struct StoreView: View {
                                 pressedPack = pack
                                 packViewID = UUID() // Force view to refresh
                                 DispatchQueue.main.asyncAfter(deadline: .now()) {
-                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                                    withAnimation(.spring(response: 0.3)) {
                                         showWindow = true
                                         GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                                     }
@@ -225,7 +247,7 @@ struct StoreView: View {
                                     .font(.headline)
                             )
                             .onTapGesture {
-                                withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
+                                withAnimation(.spring(response: 0.3)) {
                                     GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                                     showWindow = false
                                 }
@@ -285,7 +307,6 @@ struct StoreView: View {
             }
             .opacity(showWindow ? 1 : 0)
             .scaleEffect(showWindow ? 1 : 0.8)
-            .animation(.spring(response: 0.5, dampingFraction: 0.8), value: showWindow)
 
         }
         .onDisappear{
@@ -298,7 +319,7 @@ struct StoreView: View {
                 print("pack.name \(pack.name) ID: \(pack.id)")
                 pressedDict[pack.name] = false
             }
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)){
+            withAnimation(.spring(response: 0.3)){
                 userData.updatePtsAndRank(levels: levels)
             }
             rankLocal = userData.avgRank
@@ -323,7 +344,7 @@ struct StoreView: View {
         print("The levels have been redeemed and can now be unlocked!")
         GlobalAudioSettings.shared.playSoundEffect(for: "Quartile", audioPlayer: &audioPlayer)
         
-        withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
+        withAnimation(.spring(response: 0.3)) {
             showWindow = false
         }
     }

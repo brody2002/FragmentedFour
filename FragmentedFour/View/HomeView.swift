@@ -214,24 +214,26 @@ struct HomeView: View {
                         RoundedRectangle(cornerRadius: 10)
                             .fill(AppColors.body)
                             .overlay(
-                                
-                                LazyVGrid(columns: gridLayout) {
-                                    ForEach(wordTiles, id: \.self){ tile in
-                                        TileView(
-                                            text: tile,
-                                            isSelected: false,
-                                            isHighlighted: false,
-                                            mainColor: AppColors.coreBlue
-                                        )
-                                        .bold()
-                                        .font(.system(size: 22))
-                                        
+                                ZStack{
+                                    LazyVGrid(columns: gridLayout) {
+                                        ForEach(wordTiles, id: \.self){ tile in
+                                            TileView(
+                                                text: tile,
+                                                isSelected: false,
+                                                isHighlighted: false,
+                                                mainColor: AppColors.coreBlue
+                                            )
+                                            .bold()
+                                            .font(.system(size: 22))
+                                            
+                                        }
                                     }
                                 }
+                                    .offset(y: -4)
+                                
                                 
                                 
                             )
-//                            .matchedTransitionSource(id: "fastTravel", in: levelGameAnimation) // Transition 1
                             .background(
                                 RoundedRectangle(cornerRadius: 10)
                                     .fill(.gray)
@@ -312,6 +314,7 @@ struct HomeView: View {
             .navigationTransition(
                 .customZoom.animation(.interpolatingSpring(stiffness: 200, damping: 20))
             )
+            
         }
         .fontDesign(.rounded)
         

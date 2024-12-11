@@ -17,8 +17,8 @@ struct LevelTileView: View {
     
     var buttonWidth: CGFloat = 120
     var buttonHeight: CGFloat = 80
-    var notRedeemedButtonWidth: CGFloat = 10
-    var notRedeemedButtonHeight: CGFloat = 10
+    var notRedeemedButtonWidth: CGFloat = 12
+    var notRedeemedButtonHeight: CGFloat = 12
     
     let levels: [[String]] = Bundle.main.decode("levels.txt")
     let gridLayout = Array(repeating:  GridItem.init(.flexible(minimum: 20, maximum: 20)), count: 4)
@@ -27,21 +27,6 @@ struct LevelTileView: View {
     
     var body: some View {
         ZStack{
-            
-            LazyVGrid(columns: gridLayout, spacing: 4) {
-                ForEach(tiles, id: \.self){ tile in
-
-                    WordFragmentsLevelView(text: tile)
-                        
-                    
-                    
-                }
-            }
-            .opacity(!unlocked || completed ? 0.0: 0.4)
-            .frame(width: buttonWidth, height: buttonHeight)
-            
-            
-            
             if completed && unlocked{
             
                 ZStack{
@@ -68,14 +53,24 @@ struct LevelTileView: View {
                         .offset(y: -27)
                     
                         
-                }
-                
-                
+                }.frame(width: buttonWidth, height: buttonHeight)
                 
                 
                     
             } else if !completed && unlocked{
                 ZStack{
+                    // preview for all fragments
+                    LazyVGrid(columns: gridLayout, spacing: 4) {
+                        ForEach(tiles, id: \.self){ tile in
+                            
+                            WordFragmentsLevelView(text: tile)
+                            
+                            
+                            
+                        }
+                    }
+                    .opacity(!unlocked || completed ? 0.0: 0.4)
+                    .frame(width: buttonWidth, height: buttonHeight)
                     
                     Text(String(level + 1))
                         .frame(maxWidth: .infinity, minHeight: 44, maxHeight: 64)
@@ -89,6 +84,12 @@ struct LevelTileView: View {
                     
             }
             else if !completed && !unlocked && !redeemed{
+                ZStack{
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(Color.gray.opacity(0.6))
+                        .frame(width: notRedeemedButtonWidth, height: notRedeemedButtonWidth)
+                        
+                }
                 
             }
             else{
@@ -100,20 +101,17 @@ struct LevelTileView: View {
                         .foregroundStyle(.white.opacity(0.5))
                         .padding()
                     
-                    
                     Text(String(level + 1))
                         .frame(maxWidth: .infinity, minHeight: 44, maxHeight: 64)
                         .clipShape(.rect(cornerRadius: 10))
                         .foregroundStyle(.white)
                         .font(.title.bold())
-                    
-                        
                 }
-                
+                .frame(width: buttonWidth, height: buttonHeight)
             }
         }
         .background(
-            RoundedRectangle(cornerRadius: 10)
+            RoundedRectangle(cornerRadius: redeemed ? 10 : 4)
                 .fill(completed && score >= 100 ? AppColors.masterRed : redeemed ? (unlocked ? AppColors.coreBlue : .gray) : .black.opacity(0.6))
         )
         .frame(width: redeemed ? buttonWidth : notRedeemedButtonWidth, height: redeemed ? buttonHeight : notRedeemedButtonHeight)
@@ -131,7 +129,7 @@ struct LevelTileView: View {
 #Preview {
     ZStack{
         Color.red.ignoresSafeArea()
-        LevelTileView(level: 1, completed: true, unlocked: true, score: 33, redeemed: false)
+        LevelTileView(level: 1, completed: false, unlocked: false, score: 33, redeemed: false)
     }
     
 }
