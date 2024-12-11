@@ -41,10 +41,22 @@ struct HomeView: View {
     
     var body: some View {
         ZStack{
-            AppColors.coreBlue.ignoresSafeArea()
+            AppColors.body.ignoresSafeArea()
             NavigationStack(path: $navPath){
                 ZStack{
                     AppColors.coreBlue.ignoresSafeArea()
+                    VStack{
+                        Spacer()
+                        Spacer()
+                        AppColors.body.ignoresSafeArea()
+                            .frame(height: UIScreen.main.bounds.height * 0.689)
+                    }
+                    VStack{
+                        Spacer()
+                        Spacer()
+                        AppColors.coreBlue.ignoresSafeArea()
+                            .frame(height: UIScreen.main.bounds.height * 0.43)
+                    }
                     
                     VStack{
                         HStack(alignment: .firstTextBaseline){
@@ -175,25 +187,43 @@ struct HomeView: View {
                             .frame(height: 30)
                         
                         HStack{
-                            ZStack{
+                            ZStack(alignment: .leading){
                                 Text("Level ___") // Hidden Level PlaceHolder
                                     .font(.title.bold())
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .fill(Color.gray.opacity(0.3))
+                                            .frame(height: UIScreen.main.bounds.height * 0.06)
+                                            
+                                    )
                                     .hidden()
                                 if var level = currentLevel?.level {
-                                    Text("Level \(level + 1)")
-                                        .foregroundStyle(.white)
-                                        .font(.title.bold())
-                                        .fontDesign(.rounded)
-                                        .background(
-                                            Text("Level \(level + 1)")
-                                                .foregroundStyle(.gray)
-                                                .font(.title.bold())
-                                                .fontDesign(.rounded)
-                                                .offset(y:3)
-                                        )
+                                    ZStack{
+                                        Text("Level \(level + 1)")
+                                            .foregroundStyle(.white)
+                                            .font(.title.bold())
+                                            .fontDesign(.rounded)
+                                            .background(
+                                                Text("Level \(level + 1)")
+                                                    .foregroundStyle(.gray)
+                                                    .font(.title.bold())
+                                                    .fontDesign(.rounded)
+                                                    .offset(y:3)
+                                            )
+                                    }
+                                    .padding()
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .fill(AppColors.coreBlue)
+                                            .frame(height: UIScreen.main.bounds.height * 0.06)
+                                            
+                                    )
+                                    
                                 }
                             }
-                            .offset(y: UIScreen.main.bounds.height * 0.08)
+                            .offset(y: UIScreen.main.bounds.height * 0.06)
+                            
+                            
                             Spacer()
                             Spacer()
                             Circle()

@@ -4,9 +4,8 @@ TODO:
 
 
 
-12. SETTINGS VIEW
-    - Audio Toggle
-    - Achievment's? -> total fragments found,
+TODO:
+important : update theme.... App looks poor
 13. Make Better levels
     - make levels easier and scale more
     - Make 50 levels to start
@@ -19,6 +18,10 @@ Done:
 8. cancel audio when leaving view
 9. fix sold png
 10. I feel like for most people the game would end once all the quartiles are made... make a win screen for this case.
+
+12. SETTINGS VIEW
+    - Audio Toggle
+    - Achievment's? -> total fragments found,
 
 
 
