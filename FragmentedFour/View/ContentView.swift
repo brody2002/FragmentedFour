@@ -533,32 +533,7 @@ struct ContentView: View {
                         
                         score += 40
                         currentLVL!.score = score
-                        
-                        
-//                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
-//                            GlobalAudioSettings.shared.playSoundEffect(for: "FoundAllQuartiles", audioPlayer: &audioPlayer)
-//                            withAnimation{
-//                                makeTilesLarge = true
-//                            }
-//                        }
-//                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.4){
-//                            GlobalAudioSettings.shared.playSoundEffect(for: "FoundAllQuartiles", audioPlayer: &audioPlayer)
-//                            withAnimation{
-//                                makeTilesLarge = false
-//                            }
-//                        }
-//                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.8){
-//                            GlobalAudioSettings.shared.playSoundEffect(for: "FoundAllQuartiles", audioPlayer: &audioPlayer)
-//                            withAnimation{
-//                                makeTilesLarge = true
-//                            }
-//                        }
-//                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.2){
-//                            GlobalAudioSettings.shared.playSoundEffect(for: "Quartile", audioPlayer: &audioPlayer)
-//                            withAnimation{
-//                                makeTilesLarge = false
-//                            }
-//                        }
+     
                         
                     }
                     
@@ -703,11 +678,9 @@ struct ContentView: View {
         print("intendedWords: \(intendedWords)")
         
     }
-    
 }
 
 #Preview {
-    @Previewable @Namespace var previewNamespace
     @Previewable @StateObject var userData = UserData()
     @Previewable @State var navPath = NavigationPath()
     do {
@@ -721,7 +694,7 @@ struct ContentView: View {
         container.mainContext.insert(Level(level: 4, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Master", score: 101, unlocked: true))
         container.mainContext.insert(Level(level: 5, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Master", score: 101, unlocked: false))
         container.mainContext.insert(Level(level: 6, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Master", score: 101, unlocked: false))
-        return ContentView(score: 0, currentLevel: 0, foundWords: [[String]](), foundQuartiles: [String](), animation: previewNamespace, navPath: $navPath)
+        return ContentView(score: 0, currentLevel: 0, foundWords: [[String]](), foundQuartiles: [String](), navPath: $navPath)
             .modelContainer(container)
             .environment(userData)
     } catch {

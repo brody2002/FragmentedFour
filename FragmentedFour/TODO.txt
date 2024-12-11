@@ -7,6 +7,13 @@ TODO:
 12. SETTINGS VIEW
     - Audio Toggle
     - Achievment's? -> total fragments found,
+13. Make Better levels
+    - make levels easier and scale more
+    - Make 50 levels to start
+14. Make Pack for the new Levels
+15. Redo Images for the tutorial slide
+16. Make Purchasable Packs
+
 
 Done:
 8. cancel audio when leaving view

@@ -23,10 +23,6 @@ struct HomeView: View {
     
     // Navigation
     @State var navPath = NavigationPath()
-    @Namespace var levelSelectAnimation
-    @Namespace var levelGameAnimation
-    @Namespace var storeAnimation
-    @Namespace var tutorialAnimation
     
     // SwiftData
     @Query(sort: [SortDescriptor(\Level.level)]) var levels: [Level]
@@ -54,18 +50,18 @@ struct HomeView: View {
                         HStack(alignment: .firstTextBaseline){
                             VStack{
                                 HStack{
-                                    Image(systemName: "gear")
+                                    Image(systemName: "gearshape.fill")
                                         .resizable()
-                                        .frame(width: 40, height: 20)
+                                        .frame(width: 40, height: 40)
                                         .foregroundStyle(.white)
                                         .padding(.leading, 20)
                                         .background(
-                                            Image(systemName: "gear")
+                                            Image(systemName: "gearshape.fill")
                                                 .resizable()
-                                                .frame(width: 40, height: 20)
+                                                .frame(width: 40, height:40)
                                                 .foregroundStyle(.gray)
                                                 .padding(.leading, 20)
-                                                .offset(y:2)
+                                                .offset(y:4)
                                         )
                                         .onTapGesture {
                                             GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
@@ -117,7 +113,7 @@ struct HomeView: View {
                                 action: {
                                     // Level Select
                                         GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
-                                        navPath.append(DestinationStruct.Destination.selectLevel(animation: levelSelectAnimation ))
+                                        navPath.append(DestinationStruct.Destination.selectLevel)
                                 },
                                 label: {
                                     RoundedRectangle(cornerRadius: 10)
@@ -131,7 +127,6 @@ struct HomeView: View {
                                 }
                             )
                             .buttonStyle(NoGrayOutButtonStyle())
-//                            .matchedTransitionSource(id: "levelSelect", in: levelSelectAnimation)
                             .background(
                                 RoundedRectangle(cornerRadius: 10)
                                     .fill(.gray)
@@ -160,7 +155,6 @@ struct HomeView: View {
                                 
                             )
                             .buttonStyle(NoGrayOutButtonStyle())
-//                            .matchedTransitionSource(id: "store", in: storeAnimation)
                             .background(
                                 RoundedRectangle(cornerRadius: 10)
                                     .fill(.gray)
@@ -176,6 +170,25 @@ struct HomeView: View {
                             .frame(height: 30)
                         
                         HStack{
+                            ZStack{
+                                Text("Level ___") // Hidden Level PlaceHolder
+                                    .font(.title.bold())
+                                    .hidden()
+                                if var level = currentLevel?.level {
+                                    Text("Level \(level + 1)")
+                                        .foregroundStyle(.white)
+                                        .font(.title.bold())
+                                        .fontDesign(.rounded)
+                                        .background(
+                                            Text("Level \(level + 1)")
+                                                .foregroundStyle(.gray)
+                                                .font(.title.bold())
+                                                .fontDesign(.rounded)
+                                                .offset(y:3)
+                                        )
+                                }
+                            }
+                            .offset(y: UIScreen.main.bounds.height * 0.08)
                             Spacer()
                             Spacer()
                             Circle()
@@ -260,7 +273,7 @@ struct HomeView: View {
                             .frame(height: screen.height * 0.05)
                             .onTapGesture {
                                 GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
-                                navPath.append(DestinationStruct.Destination.levelDestination(level: currentLevel!, animation: levelGameAnimation, comingFromFastTravel: true))
+                                navPath.append(DestinationStruct.Destination.levelDestination(level: currentLevel!, comingFromFastTravel: true))
                             }
                         Spacer()
                     }
@@ -425,11 +438,11 @@ class DisableSwipeBackViewController: UIViewController {
 #Preview {
     
     let config = ModelConfiguration(for: Level.self, Pack.self, isStoredInMemoryOnly: true)
-    do {
-        let container = try ModelContainer(for: Level.self, Pack.self, configurations: config)
+    
+        let container = try! ModelContainer(for: Level.self, Pack.self, configurations: config)
+
         let userData = UserData()
-        container.mainContext.delete(Level.self)
-        container.mainContext.delete(Pack.self)
+        
         container.mainContext.insert(Level(level: 0, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
         container.mainContext.insert(Level(level: 1, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
         container.mainContext.insert(Level(level: 2, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
@@ -447,11 +460,7 @@ class DisableSwipeBackViewController: UIViewController {
         return HomeView(firstLoad: .constant(false))
                 .modelContainer(container)
                 .environmentObject(userData)
-    }
-    catch {
-        print("couldn't make container")
-        return EmptyView()
-    }
+    
     
     
     

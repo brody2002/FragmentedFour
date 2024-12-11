@@ -5,10 +5,12 @@
 //  Created by Brody on 12/10/24.
 //
 
+import AVFoundation
 import SwiftUI
 
 struct TutorialView: View {
-    
+    @State private var audioPlayer: AVAudioPlayer?
+    @Environment(\.dismiss) var dismiss
     @State private var textPreview1: String = "The goal of the game is to create words using the fragments of text seen on the screen"
     @State private var textPreview2: String = "Words can be made from groups of fragments ranging from sizes of 1-4."
     @State private var textPreview3: String = "Words that form the color red mean that that they do not exist!"
@@ -18,6 +20,28 @@ struct TutorialView: View {
     var body: some View {
         ZStack{
             AppColors.coreBlue.ignoresSafeArea()
+            VStack(alignment: .center){
+                HStack(alignment: .firstTextBaseline){
+                    Image(systemName: "arrowshape.turn.up.backward.fill")
+                        .resizable()
+                        .frame(width: 40, height: 40)
+                        .foregroundColor(.white)
+                        .background(
+                            Image(systemName: "arrowshape.turn.up.backward.fill")
+                                .resizable()
+                                .frame(width: 40, height: 40)
+                                .foregroundColor(.gray)
+                                .offset(y: 4)
+                        )
+                        .padding(.leading, 20)
+                        .onTapGesture {
+                            GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                            dismiss()
+                        }
+                    Spacer()
+                }
+                Spacer()
+            }
             VStack(alignment: .center){
                 Spacer()
                     .frame(height: UIScreen.main.bounds.width * 0.05)

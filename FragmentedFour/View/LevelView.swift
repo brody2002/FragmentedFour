@@ -12,14 +12,12 @@ import SwiftData
 struct LevelView: View {
     @Environment(\.modelContext) var modelContext
     @Query(sort: [SortDescriptor(\Level.level)]) var levels: [Level]
-    @Namespace private var animationNamespace
     @EnvironmentObject var userData: UserData
     @Environment(\.dismiss) var dismiss
     @State private var audioPlayer: AVAudioPlayer?
     @State private var mainColor: Color = AppColors.coreBlue
     @State private var shakeStates: [Int: Bool] = [:]
     @Binding var navPath: NavigationPath
-    @Namespace var levelSelectionAnimation: Namespace.ID
     // Define the levels as a range for simplicity
     
     // Define the grid layout
@@ -138,7 +136,7 @@ struct LevelView: View {
                                     .onTapGesture {
                                         if level.unlocked{
                                             GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
-                                            navPath.append(DestinationStruct.Destination.levelDestination(level: level, animation: animationNamespace, comingFromFastTravel: false))
+                                            navPath.append(DestinationStruct.Destination.levelDestination(level: level, comingFromFastTravel: false))
                                         } else if !level.unlocked && level.redeemed {
                                             shakeStates[level.level] = true
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.8){
