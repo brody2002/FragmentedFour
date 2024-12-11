@@ -10,6 +10,9 @@ import AVFoundation
 import SwiftData
 import SwiftUI
 
+import SwiftUIIntrospect
+import NavigationTransitions
+    // from https://github.com/davdroman/swiftui-navigation-transitions
 
 
 struct HomeView: View {
@@ -128,7 +131,7 @@ struct HomeView: View {
                                 }
                             )
                             .buttonStyle(NoGrayOutButtonStyle())
-                            .matchedTransitionSource(id: "levelSelect", in: levelSelectAnimation)
+//                            .matchedTransitionSource(id: "levelSelect", in: levelSelectAnimation)
                             .background(
                                 RoundedRectangle(cornerRadius: 10)
                                     .fill(.gray)
@@ -142,6 +145,7 @@ struct HomeView: View {
                                     // Store
                                         GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                                         navPath.append(DestinationStruct.Destination.store)
+                                    
                                 },
                                 label: {
                                     RoundedRectangle(cornerRadius: 10)
@@ -156,7 +160,7 @@ struct HomeView: View {
                                 
                             )
                             .buttonStyle(NoGrayOutButtonStyle())
-                            .matchedTransitionSource(id: "store", in: storeAnimation)
+//                            .matchedTransitionSource(id: "store", in: storeAnimation)
                             .background(
                                 RoundedRectangle(cornerRadius: 10)
                                     .fill(.gray)
@@ -201,6 +205,7 @@ struct HomeView: View {
                                 .onTapGesture {
                                     GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                                     navPath.append(DestinationStruct.Destination.tutorial)
+                                    
                                 }
                         }
                         .padding(.horizontal)
@@ -284,31 +289,42 @@ struct HomeView: View {
                     }
                     
                 }
+                
                 .navigationDestination(for: DestinationStruct.Destination.self, destination: { dest in
                     switch dest{
                     case .selectLevel(let animation): // For for level select
                         LevelView(navPath: $navPath)
-                            .navigationTransition(.zoom(sourceID: "levelSelect", in: animation))
+//                            .navigationTransition(.z.interactiveDismissDisabled(true)oom(sourceID: "levelSelect", in: animation))
                     case .levelDestination(let level, let animation, let comingFromFastTravel):
                         if comingFromFastTravel {
                             ContentView(score: level.score, currentLevel: level.level, foundWords: level.foundWords, foundQuartiles: level.foundQuartiles, animation: animation, navPath: $navPath)
                                 .navigationTransition(.zoom(sourceID: "fastTravel", in: animation))
-                                
+//                                
                         }
                         else {
                             ContentView(score: level.score, currentLevel: level.level, foundWords: level.foundWords, foundQuartiles: level.foundQuartiles, animation: animation, navPath: $navPath)
+                                .disableSwipeBack()
                                 .navigationTransition(.zoom(sourceID: level.level, in: animation))
-                            
+                                                         
                         }
                     case .store:
                         StoreView()
-                            .navigationTransition(.zoom(sourceID: "store", in: storeAnimation))
+                            
+//
+                            
+                            
                     case .tutorial:
                         TutorialView()
-                            .navigationTransition(.zoom(sourceID: "tutorial", in: tutorialAnimation))
+                            
+//                            .navigationTransition(.zoom(sourceID: "tutorial", in: tutorialAnimation))
+                        
+                        
                     }
                 })
             }
+            .navigationTransition(
+                .customZoom.animation(.interpolatingSpring(stiffness: 300, damping: 20))
+            )
         }
         .fontDesign(.rounded)
         
@@ -382,10 +398,46 @@ struct HomeView: View {
     
 }
 
+extension View {
+    func disableSwipeBack() -> some View {
+        self.background(
+            DisableSwipeBackView()
+        )
+    }
+}
+
+struct DisableSwipeBackView: UIViewControllerRepresentable {
+    
+    typealias UIViewControllerType = DisableSwipeBackViewController
+    
+    
+    func makeUIViewController(context: Context) -> UIViewControllerType {
+        UIViewControllerType()
+    }
+    
+    func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
+    }
+}
+
+class DisableSwipeBackViewController: UIViewController {
+    
+    override func didMove(toParent parent: UIViewController?) {
+        super.didMove(toParent: parent)
+        if let parent = parent?.parent,
+           let navigationController = parent.navigationController,
+           let interactivePopGestureRecognizer = navigationController.interactivePopGestureRecognizer {
+            navigationController.view.removeGestureRecognizer(interactivePopGestureRecognizer)
+        }
+    }
+}
+
+
+
 #Preview {
     
-        let config = ModelConfiguration(for: Level.self, Pack.self)
-        let container = try! ModelContainer(for: Level.self, Pack.self, configurations: config)
+    let config = ModelConfiguration(for: Level.self, Pack.self, isStoredInMemoryOnly: true)
+    do {
+        let container = try ModelContainer(for: Level.self, Pack.self, configurations: config)
         let userData = UserData()
         container.mainContext.insert(Level(level: 0, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
         container.mainContext.insert(Level(level: 1, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
@@ -394,15 +446,22 @@ struct HomeView: View {
         container.mainContext.insert(Level(level: 4, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
         container.mainContext.insert(Level(level: 5, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
         container.mainContext.insert(Level(level: 1, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false, redeemed: false))
-    
-    container.mainContext.insert(Pack(name: "6-10", unlocked: false, price: 200, id: 1, levels: [5, 6, 7, 8, 9]))
-    container.mainContext.insert(Pack(name: "11-15", unlocked: false, price: 600, id: 2, levels: [10, 11, 12, 13, 14]))
-    container.mainContext.insert(Pack(name: "16-20", unlocked: false, price: 1000, id: 3, levels: [15, 16, 17, 18, 19]))
-    container.mainContext.insert(Pack(name: "21-25", unlocked: false, price: 1300, id: 4, levels: [20, 21, 22, 23, 24]))
         
+        container.mainContext.insert(Pack(name: "6-10", unlocked: false, price: 200, id: 1, levels: [5, 6, 7, 8, 9]))
+        container.mainContext.insert(Pack(name: "11-15", unlocked: false, price: 600, id: 2, levels: [10, 11, 12, 13, 14]))
+        container.mainContext.insert(Pack(name: "16-20", unlocked: false, price: 1000, id: 3, levels: [15, 16, 17, 18, 19]))
+        container.mainContext.insert(Pack(name: "21-25", unlocked: false, price: 1300, id: 4, levels: [20, 21, 22, 23, 24]))
+            
 
-    return HomeView(firstLoad: .constant(false))
-            .modelContainer(container)
-            .environmentObject(userData)
+        return HomeView(firstLoad: .constant(false))
+                .modelContainer(container)
+                .environmentObject(userData)
+    }
+    catch {
+        print("couldn't make container")
+        return EmptyView()
+    }
+    
+    
     
 }

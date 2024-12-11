@@ -25,6 +25,7 @@ struct FragmentedFourApp: App {
                     
                     
             }
+            .interactiveDismissDisabled()
             .environmentObject(userData)
             .modelContainer(for: [Level.self, Pack.self])
 

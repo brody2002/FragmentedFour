@@ -33,7 +33,7 @@ struct ContentView: View {
     @State private var foundQuartile: Bool = false
     @State private var makeTilesLarge: Bool = false
     
-    @State private var isGroupingQuartiles = true
+    @State private var isGroupingQuartiles = false
     
     // Pass through vals from LevelView
     @State var score: Int
@@ -42,6 +42,8 @@ struct ContentView: View {
     @State var foundQuartiles: [String]
     
     @State private var showWinScreenView = false
+    @State private var winScreenOffQuartiles = false
+    @State private var foundAllQuartiles = false
     
     @State private var showSideBarView = false
     @State private var sideBarDragOffset = CGSize.zero
@@ -166,19 +168,28 @@ struct ContentView: View {
                     Spacer()
                     
                     ZStack(alignment: .leading){
-                        
-                        Text("Level  \(currentLevel + 1)")
-                            .multilineTextAlignment(.leading)
-                            .foregroundStyle(.white)
+                        (
+                        Text("Level ")
                             .font(.title.bold())
-                            .offset(y: -70)
-                            .background(
-                                Text("Level  \(currentLevel + 1)")
-                                    .multilineTextAlignment(.leading)
-                                    .foregroundStyle(.gray)
+                            .foregroundStyle(.white)
+                        +
+                        Text("\(currentLevel + 1)")
+                            .font(currentLevel < 9 ? .title.bold() : .title3.bold())
+                            .foregroundStyle(.white)
+                        )
+                        .offset(y: -70)
+                        .background(
+                            (
+                                Text("Level ")
                                     .font(.title.bold())
-                                    .offset(y: -68)
+                                    .foregroundStyle(.gray)
+                                +
+                                Text("\(currentLevel + 1)")
+                                    .font(currentLevel < 9 ? .title.bold() : .title3.bold())
+                                    .foregroundStyle(.gray)
                             )
+                            .offset(y: -68)
+                        )
                         
                         QuartilesFoundView(quartiles: foundQuartiles.count / 4)
                     }
@@ -203,7 +214,7 @@ struct ContentView: View {
                             VStack(spacing: 5){
                                 Text("Congratulations")
                                     .font(.title.bold())
-                                Text(score >= 100 ? "You reached the highest rank!" : "You scored enough points!")
+                                Text(foundAllQuartiles && score <= 100 ? "You have found all the Fragments 4s!" : score <= 100 ? "You reached the highest rank!" : "You score enough points!")
                                     .font(.body.bold())
                                     .foregroundColor(.black.opacity(0.5))
                                 Text("Proceed to the next level?")
@@ -396,6 +407,7 @@ struct ContentView: View {
             
         }
         .navigationBarBackButtonHidden(true)
+        .interactiveDismissDisabled()
         
             
     
@@ -480,6 +492,16 @@ struct ContentView: View {
                 print("There is no next level")
             }
         }
+        // Finds all the quartiles on the view for the first time. 
+        else if currentLVL!.foundAllWords == false && currentLVL!.foundQuartiles.count / 4 == 5 {
+            print("Show View for finding all the quartiles")
+            currentLVL!.foundAllWords = true
+            foundAllQuartiles = true
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.5)){
+                showWinScreenView.toggle()
+            }
+        }
+        
         if level.levelThreshhold == 100 && score >= 100{
             withAnimation(.spring(response: 0.3, dampingFraction: 0.6)){
                 mainColor = AppColors.masterRed
@@ -514,32 +536,32 @@ struct ContentView: View {
                         
                         score += 40
                         currentLVL!.score = score
-                        currentLVL!.foundAllWords = true
                         
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
-                            GlobalAudioSettings.shared.playSoundEffect(for: "FoundAllQuartiles", audioPlayer: &audioPlayer)
-                            withAnimation{
-                                makeTilesLarge = true
-                            }
-                        }
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.8){
-                            GlobalAudioSettings.shared.playSoundEffect(for: "FoundAllQuartiles", audioPlayer: &audioPlayer)
-                            withAnimation{
-                                makeTilesLarge = false
-                            }
-                        }
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.6){
-                            GlobalAudioSettings.shared.playSoundEffect(for: "FoundAllQuartiles", audioPlayer: &audioPlayer)
-                            withAnimation{
-                                makeTilesLarge = true
-                            }
-                        }
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 3.4){
-                            GlobalAudioSettings.shared.playSoundEffect(for: "FoundAllQuartiles", audioPlayer: &audioPlayer)
-                            withAnimation{
-                                makeTilesLarge = false
-                            }
-                        }
+                        
+//                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
+//                            GlobalAudioSettings.shared.playSoundEffect(for: "FoundAllQuartiles", audioPlayer: &audioPlayer)
+//                            withAnimation{
+//                                makeTilesLarge = true
+//                            }
+//                        }
+//                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.4){
+//                            GlobalAudioSettings.shared.playSoundEffect(for: "FoundAllQuartiles", audioPlayer: &audioPlayer)
+//                            withAnimation{
+//                                makeTilesLarge = false
+//                            }
+//                        }
+//                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.8){
+//                            GlobalAudioSettings.shared.playSoundEffect(for: "FoundAllQuartiles", audioPlayer: &audioPlayer)
+//                            withAnimation{
+//                                makeTilesLarge = true
+//                            }
+//                        }
+//                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.2){
+//                            GlobalAudioSettings.shared.playSoundEffect(for: "Quartile", audioPlayer: &audioPlayer)
+//                            withAnimation{
+//                                makeTilesLarge = false
+//                            }
+//                        }
                         
                     }
                     

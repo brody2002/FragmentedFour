@@ -63,6 +63,7 @@ struct TutorialView: View {
                 
             }
         }
+        .interactiveDismissDisabled(true)
         .navigationBarBackButtonHidden(true)
     }
     
@@ -95,7 +96,9 @@ struct TutorialView: View {
             
             
         }
+        
     }
+       
     
 }
 

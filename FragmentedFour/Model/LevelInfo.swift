@@ -14,6 +14,7 @@ class Level: Identifiable, ObservableObject, Hashable{
     var level: Int
     var foundWords: [[String]]
     var foundQuartiles: [String] // List of the individual quartiles that make up the whole word. So 1 word equal foundQuartiles.count -> 4
+    // Can only be the intended Quartiles
     var completed: Bool
     var rank: String
     var score: Int

@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		96041C552D0A128300B347A9 /* NavigationTransitions in Frameworks */ = {isa = PBXBuildFile; productRef = 96041C542D0A128300B347A9 /* NavigationTransitions */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		96DD6D2A2CF672ED00E25B78 /* FragmentedFour.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FragmentedFour.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				96041C552D0A128300B347A9 /* NavigationTransitions in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +83,7 @@
 			);
 			name = FragmentedFour;
 			packageProductDependencies = (
+				96041C542D0A128300B347A9 /* NavigationTransitions */,
 			);
 			productName = FragmentedFour;
 			productReference = 96DD6D2A2CF672ED00E25B78 /* FragmentedFour.app */;
@@ -107,6 +113,9 @@
 			);
 			mainGroup = 96DD6D212CF672ED00E25B78;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				96041C532D0A128300B347A9 /* XCRemoteSwiftPackageReference "swiftui-navigation-transitions" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 96DD6D2B2CF672ED00E25B78 /* Products */;
 			projectDirPath = "";
@@ -339,6 +348,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		96041C532D0A128300B347A9 /* XCRemoteSwiftPackageReference "swiftui-navigation-transitions" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/davdroman/swiftui-navigation-transitions";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.14.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		96041C542D0A128300B347A9 /* NavigationTransitions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 96041C532D0A128300B347A9 /* XCRemoteSwiftPackageReference "swiftui-navigation-transitions" */;
+			productName = NavigationTransitions;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 96DD6D222CF672ED00E25B78 /* Project object */;
 }

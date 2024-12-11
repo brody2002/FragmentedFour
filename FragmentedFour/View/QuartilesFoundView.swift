@@ -11,11 +11,11 @@ struct QuartilesFoundView: View {
     var quartiles: Int
     var body: some View {
         VStack(alignment: .leading, spacing: 8){
-            Text("Quartiles")
+            Text("Fragment 4s")
                 .font(.body.bold())
                 .foregroundStyle(.white)
                 .background(
-                    Text("Quartiles")
+                    Text("Fragment 4s")
                         .font(.body.bold())
                         .offset(y: 1)
                         .foregroundColor(.gray)

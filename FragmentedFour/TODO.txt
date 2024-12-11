@@ -2,15 +2,15 @@ NOV 10th:
 
 TODO:
 
-9. fix sold png
-
-
-
-
-
+10. I feel like for most people the game would end once all the quartiles are made... make a win screen for this case.
+11. Make better Quartile animation
+12. SETTINGS VIEW
+    - Audio Toggle
+    - Achievment's? -> total fragments found,
 
 Done:
 8. cancel audio when leaving view
+9. fix sold png
 
 
 

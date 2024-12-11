@@ -155,8 +155,8 @@ struct LevelView: View {
                         .padding(.trailing, 40)// Add padding around the grid
                     }
                 }
-        }
-            .navigationBarBackButtonHidden(true)
+            }
+            .interactiveDismissDisabled(true)
             .task{
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.6)){
                     userData.updatePtsAndRank(levels: levels)

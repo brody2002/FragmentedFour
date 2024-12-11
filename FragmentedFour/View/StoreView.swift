@@ -288,7 +288,11 @@ struct StoreView: View {
             .animation(.spring(response: 0.5, dampingFraction: 0.8), value: showWindow)
 
         }
-        .navigationBarBackButtonHidden(true)
+        .onDisappear{
+            print("disapeered")
+        }
+        .navigationBarBackButtonHidden(false)
+        
         .task {
             for pack in packs {
                 print("pack.name \(pack.name) ID: \(pack.id)")
@@ -310,7 +314,7 @@ struct StoreView: View {
         }
         userData.unlockedLevels += 5
         checkAvailableLevelsUnlocked(context: modelContext)
-        for (index, num) in pack.levels.enumerated() {
+        for (_, num) in pack.levels.enumerated() {
             fetchLevelAndRedeem(num, context: modelContext)
         }
         withAnimation(.spring(response: 0.3, dampingFraction: 0.6)){
