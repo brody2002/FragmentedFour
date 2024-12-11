@@ -11,8 +11,8 @@ import SwiftUI
 struct DestinationStruct {
     
     enum Destination: Hashable{
-        case selectLevel(animation: Namespace.ID)
-        case levelDestination(level: Level, animation: Namespace.ID, comingFromFastTravel: Bool)
+        case selectLevel
+        case levelDestination(level: Level, comingFromFastTravel: Bool)
         case store
         case tutorial
     }

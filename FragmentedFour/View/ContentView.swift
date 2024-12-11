@@ -52,9 +52,6 @@ struct ContentView: View {
     @State private var audioPlayer: AVAudioPlayer?
     
     @State private var mainColor: Color = Color.gray
-    
-    var animation: Namespace.ID
-    
     @Binding var navPath: NavigationPath
     
     var bubbleSoundList: [String] = ["BubbleSound1", "BubbleSound2", "BubbleSound3", "BubbleSound4"]

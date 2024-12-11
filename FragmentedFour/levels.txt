@@ -23,5 +23,5 @@
     ["cl","ass","ica","lis","ts","or","gan","iz","ing","in","cr","edi","bly","ma","rve","lou","sly","re","con","fig","ure"],
     ["el","eg","anc","ies","ex","tra","pol","ate","di","mi","nis","hed","ra","di","an","ces","he","al","ing","to","uch"],
     ["em","pow","ers","sol","ace","ful","nes","s","re","tro","gra","ded","ch","arg","ing","st","at","ion","fi","na","lly"],
-    ["br","igh","ten","ing","in","flu","enc","ers","th","ou","san","ds","di","st","rib","ute","pe","ace","ful","ly","or"]
+    ["br","igh","ten","ing","in","flu","enc","ers","th","ou","san","ds","di","st","rib","ute","pe","ace","ful","ly"]
 ]

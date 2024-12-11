@@ -62,6 +62,7 @@ struct SideBarView: View {
                                     .offset(y: 3)
                             )
                     )
+                    .buttonStyle(NoGrayOutButtonStyle())
                     
                     
                     Button(action:{
@@ -88,6 +89,7 @@ struct SideBarView: View {
                                     .offset(y: 3)
                             )
                     )
+                    .buttonStyle(NoGrayOutButtonStyle())
                 }
                 Spacer()
                     .frame(height: 30)
@@ -136,6 +138,7 @@ struct SideBarView: View {
                                 .offset(y: 3)
                         )
                 )
+                .buttonStyle(NoGrayOutButtonStyle())
                 Spacer()
                     .frame(minHeight: 70, maxHeight: 90 )
                  

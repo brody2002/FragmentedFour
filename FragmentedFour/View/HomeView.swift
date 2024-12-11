@@ -54,13 +54,13 @@ struct HomeView: View {
                         HStack(alignment: .firstTextBaseline){
                             VStack{
                                 HStack{
-                                    Image(systemName: "equal")
+                                    Image(systemName: "gear")
                                         .resizable()
                                         .frame(width: 40, height: 20)
                                         .foregroundStyle(.white)
                                         .padding(.leading, 20)
                                         .background(
-                                            Image(systemName: "equal")
+                                            Image(systemName: "gear")
                                                 .resizable()
                                                 .frame(width: 40, height: 20)
                                                 .foregroundStyle(.gray)
@@ -294,15 +294,14 @@ struct HomeView: View {
                 
                 .navigationDestination(for: DestinationStruct.Destination.self, destination: { dest in
                     switch dest{
-                    case .selectLevel(let animation): // For for level select
+                    case .selectLevel: // For for level select
                         LevelView(navPath: $navPath)
-                    case .levelDestination(let level, let animation, let comingFromFastTravel):
+                    case .levelDestination(let level, let comingFromFastTravel):
                         if comingFromFastTravel {
-                            ContentView(score: level.score, currentLevel: level.level, foundWords: level.foundWords, foundQuartiles: level.foundQuartiles, animation: animation, navPath: $navPath)
+                            ContentView(score: level.score, currentLevel: level.level, foundWords: level.foundWords, foundQuartiles: level.foundQuartiles, navPath: $navPath)
                         }
                         else {
-                            ContentView(score: level.score, currentLevel: level.level, foundWords: level.foundWords, foundQuartiles: level.foundQuartiles, animation: animation, navPath: $navPath)
-                                .disableSwipeBack()
+                            ContentView(score: level.score, currentLevel: level.level, foundWords: level.foundWords, foundQuartiles: level.foundQuartiles, navPath: $navPath)
                         }
                     case .store:
                         StoreView()
@@ -429,6 +428,8 @@ class DisableSwipeBackViewController: UIViewController {
     do {
         let container = try ModelContainer(for: Level.self, Pack.self, configurations: config)
         let userData = UserData()
+        container.mainContext.delete(Level.self)
+        container.mainContext.delete(Pack.self)
         container.mainContext.insert(Level(level: 0, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
         container.mainContext.insert(Level(level: 1, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
         container.mainContext.insert(Level(level: 2, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
