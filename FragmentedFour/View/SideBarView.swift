@@ -65,31 +65,28 @@ struct SideBarView: View {
                     .buttonStyle(NoGrayOutButtonStyle())
                     
                     
-                    Button(action:{
-                        // Toggle Volume on and off
-                        GlobalAudioSettings.shared.audioOn.toggle()
-                        
-                        if GlobalAudioSettings.shared.audioOn == false {
-                            GlobalAudioSettings.shared.setVolume(forAll: 0.0)
-                        } else { GlobalAudioSettings.shared.setVolume(forAll: 1.0) }
-                        
-                    }, label:{
-                        Image(systemName: GlobalAudioSettings.shared.audioOn == true ? "speaker.wave.3.fill" : "speaker.slash.fill")
-                            .foregroundStyle(.white)
-                            .padding()
-                            .frame(width: 60, height: 50)
+                    
+                    Image(systemName: GlobalAudioSettings.shared.audioOn == true ? "speaker.wave.3.fill" : "speaker.slash.fill")
+                        .foregroundStyle(.white)
+                        .padding()
+                        .frame(width: 60, height: 50)
+                        .onTapGesture {
+                            // Toggle Volume on and off
+                            GlobalAudioSettings.shared.audioOn.toggle()
                             
-                    })
-                    .background(
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(AppColors.sidebarButton)
-                            .background(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .fill(.gray)
-                                    .offset(y: 3)
-                            )
-                    )
-                    .buttonStyle(NoGrayOutButtonStyle())
+                            if GlobalAudioSettings.shared.audioOn == false {
+                                GlobalAudioSettings.shared.setVolume(forAll: 0.0)
+                            } else { GlobalAudioSettings.shared.setVolume(forAll: 1.0) }
+                        }
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(AppColors.sidebarButton)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .fill(.gray)
+                                        .offset(y: 3)
+                                )
+                        )
                 }
                 Spacer()
                     .frame(height: 30)

@@ -50,13 +50,13 @@ struct HomeView: View {
                         HStack(alignment: .firstTextBaseline){
                             VStack{
                                 HStack{
-                                    Image(systemName: "gearshape.fill")
+                                    Image(systemName: GlobalAudioSettings.shared.audioOn == true ? "speaker.wave.3.fill" : "speaker.slash.fill")
                                         .resizable()
                                         .frame(width: 40, height: 40)
                                         .foregroundStyle(.white)
                                         .padding(.leading, 20)
                                         .background(
-                                            Image(systemName: "gearshape.fill")
+                                            Image(systemName: GlobalAudioSettings.shared.audioOn == true ? "speaker.wave.3.fill" : "speaker.slash.fill")
                                                 .resizable()
                                                 .frame(width: 40, height:40)
                                                 .foregroundStyle(.gray)
@@ -64,7 +64,12 @@ struct HomeView: View {
                                                 .offset(y:4)
                                         )
                                         .onTapGesture {
-                                            GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                                            // Toggle Volume on and off
+                                            GlobalAudioSettings.shared.audioOn.toggle()
+                                            
+                                            if GlobalAudioSettings.shared.audioOn == false {
+                                                GlobalAudioSettings.shared.setVolume(forAll: 0.0)
+                                            } else { GlobalAudioSettings.shared.setVolume(forAll: 1.0) }
                                         }
                                 }
                                 
