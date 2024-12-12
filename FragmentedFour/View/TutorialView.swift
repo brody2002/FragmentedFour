@@ -9,8 +9,11 @@ import AVFoundation
 import SwiftUI
 
 struct TutorialView: View {
+    // For View
     @State private var audioPlayer: AVAudioPlayer?
     @Environment(\.dismiss) var dismiss
+    
+    // Assets
     @State private var textPreview1: String = "The goal of the game is to create words using the fragments of text seen on the screen"
     @State private var textPreview2: String = "Words can be made from groups of fragments ranging from sizes of 1-4."
     @State private var textPreview3: String = "Words that form the color red mean that that they do not exist!"
@@ -19,6 +22,12 @@ struct TutorialView: View {
     @State private var textPreview6: String = "Build Fragment Points in order to unlock more levels!"
     @State private var textPreview7: String = "Fragment Points are built from your total score across all levels. Use them to get to redeem new levels!"
     @State private var textPreview8: String = "Score 100 points or more in order to hit the rank of Master!"
+    
+    var makeSmaller: (Int) -> Bool = { input in
+        if input == 4 || input == 5 || input == 7 { return true }
+        else { return false }
+    }
+    
     
     var body: some View {
         ZStack{
@@ -66,21 +75,14 @@ struct TutorialView: View {
                 ZStack{
                     AppColors.darkBlue.opacity(0.6)
                     TabView {
-                        slideView(stepNumber: 1, imageName: "Image1", description: textPreview1)
-                        
-                        slideView(stepNumber: 2, imageName: "Image2", description: textPreview2)
-                        
-                        slideView(stepNumber: 3, imageName: "Image3", description: textPreview3)
-                        
-                        slideView(stepNumber: 4, imageName: "Image5", description: textPreview4)
-                        
-                        slideView(stepNumber: 5, imageName: "Image6", description: textPreview5)
-                        
-                        slideView(stepNumber: 6, imageName: "Image7", description: textPreview6)
-                        
-                        slideView(stepNumber: 7, imageName: "Image8", description: textPreview7)
-                        
-                        slideView(stepNumber: 8, imageName: "Image9", description: textPreview8)
+                        slideView(stepNumber: 1, imageName: "Image1", description: textPreview1, makeSmaller)
+                        slideView(stepNumber: 2, imageName: "Image2", description: textPreview2, makeSmaller)
+                        slideView(stepNumber: 3, imageName: "Image3", description: textPreview3, makeSmaller)
+                        slideView(stepNumber: 4, imageName: "Image5", description: textPreview4, makeSmaller)
+                        slideView(stepNumber: 5, imageName: "Image6", description: textPreview5, makeSmaller)
+                        slideView(stepNumber: 6, imageName: "Image7", description: textPreview6, makeSmaller)
+                        slideView(stepNumber: 7, imageName: "Image8", description: textPreview7, makeSmaller)
+                        slideView(stepNumber: 8, imageName: "Image9", description: textPreview8, makeSmaller)
                     }
                     .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
                     .frame(width: UIScreen.main.bounds.width * 0.82, height: UIScreen.main.bounds.height * 0.68)
@@ -100,7 +102,8 @@ struct TutorialView: View {
         .navigationBarBackButtonHidden(true)
     }
     
-    func slideView (stepNumber: Int, imageName: String, description: String) -> some View {
+    func slideView (stepNumber: Int, imageName: String, description: String, _ makeSmaller: (Int) -> Bool) -> some View {
+        
         VStack{
             Text("Step \(stepNumber)")
                 .foregroundStyle(AppColors.coreBlue)
@@ -124,7 +127,7 @@ struct TutorialView: View {
                 .foregroundStyle(.white)
                 .fontDesign(.rounded)
                 .multilineTextAlignment(.center)
-                .font(.system(size: imageName == "Image5" ? 16 : 20))
+                .font(.system(size: makeSmaller(stepNumber) ? 16 : 20))
             Spacer()
             
             

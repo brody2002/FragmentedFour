@@ -20,7 +20,7 @@ struct LevelTileView: View {
     var notRedeemedButtonWidth: CGFloat = 12
     var notRedeemedButtonHeight: CGFloat = 12
     
-    let levels: [[String]] = Bundle.main.decode("levels.txt")
+    let levels: [[String]] = Bundle.main.decode("levels.json")
     let gridLayout = Array(repeating:  GridItem.init(.flexible(minimum: 20, maximum: 20)), count: 4)
     @State private var tiles = [String]()
     

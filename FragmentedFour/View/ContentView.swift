@@ -17,7 +17,7 @@ struct ContentView: View {
     @EnvironmentObject var userData: UserData
     @Query var LevelClass: [Level]
 
-    let levels: [[String]] = Bundle.main.decode("levels.txt")
+    let levels: [[String]] = Bundle.main.decode("levels.json")
     @State private var currentLVL: Level?
     
     @State private var tiles = [String]()
@@ -211,7 +211,7 @@ struct ContentView: View {
                             VStack(spacing: 5){
                                 Text("Congratulations")
                                     .font(.title.bold())
-                                Text(foundAllQuartiles && score <= 100 ? "You have found all the Fragments 4s!" : score <= 100 ? "You reached the highest rank!" : "You score enough points!")
+                                Text(foundAllQuartiles && score <= 100 ? "You have found all the intended Fragment 4s!" : score <= 100 ? "You reached the highest rank!" : "You scored enough points!")
                                     .font(.body.bold())
                                     .foregroundColor(.black.opacity(0.5))
                                 Text("Proceed to the next level?")

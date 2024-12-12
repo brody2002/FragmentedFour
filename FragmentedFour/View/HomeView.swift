@@ -317,11 +317,12 @@ struct HomeView: View {
                     currentLevel = userData.findCurrentLevel(levels: levels)
                     print("currentLevel \(currentLevel!.level) Score: \(currentLevel!.score) Unlocked? \(currentLevel!.unlocked)")
                     
-                    if let loadedTiles: [[String]] = Bundle.main.decode("levels.txt"),
+                    if let loadedTiles: [[String]] = Bundle.main.decode("levels.json"),
                        currentLevel!.level < loadedTiles.count {
                         levelTiles = loadedTiles
+                        let mixedTiles = loadedTiles[currentLevel!.level].shuffled() // shuffle before animation
                         withAnimation {
-                            wordTiles = loadedTiles[currentLevel!.level].shuffled()
+                            wordTiles = mixedTiles
                         }
                     } else {
                         levelTiles = []
@@ -361,7 +362,7 @@ struct HomeView: View {
     func initializeAppData() {
         guard firstLoad else { return } // Check if first load is necessary
         print("Initializing app data for first launch...")
-        let levels: [[String]] = Bundle.main.decode("levels.txt")
+        let levels: [[String]] = Bundle.main.decode("levels.json")
         
         do {
             let existingLevels: [Level] = try modelContext.fetch(FetchDescriptor<Level>())
