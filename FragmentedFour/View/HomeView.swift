@@ -264,7 +264,8 @@ struct HomeView: View {
                                                 text: tile,
                                                 isSelected: false,
                                                 isHighlighted: false,
-                                                mainColor: AppColors.coreBlue
+                                                mainColor: AppColors.coreBlue,
+                                                forMainMenu: false
                                             )
                                             .bold()
                                             .font(.system(size: 22))
@@ -320,7 +321,7 @@ struct HomeView: View {
                        currentLevel!.level < loadedTiles.count {
                         levelTiles = loadedTiles
                         withAnimation {
-                            wordTiles = loadedTiles[currentLevel!.level]
+                            wordTiles = loadedTiles[currentLevel!.level].shuffled()
                         }
                     } else {
                         levelTiles = []

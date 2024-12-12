@@ -86,7 +86,7 @@ struct LevelView: View {
                                                         Spacer()
                                                             .frame(height: 10)
                                                         HStack{
-                                                            Text("Total Words") //place holder score for now
+                                                            Text("Total Fragmnets") //place holder score for now
                                                                 .bold()
                                                                 .font(.system(size:14))
                                                             MoneyView()

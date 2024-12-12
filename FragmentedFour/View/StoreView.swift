@@ -271,12 +271,14 @@ struct StoreView: View {
                                 .stroke(style: StrokeStyle(lineWidth: 2))
                                 .foregroundStyle(.black)
                             HStack {
-                                Spacer()
-                                Text("\(pressedPackPrice) 💰")
+                                Text("\(pressedPackPrice)")
                                     .font(.title3.bold())
                                     .foregroundStyle(.black)
                                     .padding(.leading, 20)
-                                Spacer()
+                                MoneyView()
+                                    .scaleEffect(0.5)
+                                    .padding(-10)
+                                
                             }
                         }
                         .frame(width: 130, height: 50) // Uniform frame for ZStack

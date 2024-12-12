@@ -320,7 +320,8 @@ struct ContentView: View {
                                         text: tile,
                                         isSelected: selectedTiles.contains(tile),
                                         isHighlighted: isGroupingQuartiles && foundQuartiles.contains(tile),
-                                        mainColor: mainColor
+                                        mainColor: mainColor,
+                                        forMainMenu: false
                                     )
                                     .transition(.identity)
                                     .scaleEffect(makeTilesLarge ? 1.2 : 1.0)
@@ -415,7 +416,7 @@ struct ContentView: View {
 
     
     func loadLevel(){
-        tiles = levels[currentLevel]
+        tiles = levels[currentLevel].shuffled()
         orderedTiles = tiles
         findIntendWords(for: tiles)
     }

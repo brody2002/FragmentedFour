@@ -19,11 +19,14 @@ struct MoneyView: View {
                         .resizable()
                         .renderingMode(.template)
                         .foregroundStyle(AppColors.coreBlue.opacity(0.8))
+                    
                     Text("Fr")
                         .foregroundStyle(Color.black)
                         .font(.system(size: 20).bold())
                 }
+                
             )
+            .scaleEffect(0.7)
             
             
     }

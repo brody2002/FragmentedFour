@@ -13,6 +13,7 @@ struct TileView: View {
     var isSelected: Bool
     var isHighlighted: Bool
     var mainColor: Color
+    var forMainMenu: Bool
     
     var body: some View {
         if isSelected {
@@ -31,7 +32,7 @@ struct TileView: View {
                 .clipShape(.rect(cornerRadius: 10))
                 .background(
                     RoundedRectangle(cornerRadius: 10)
-                        .fill(isHighlighted ? .clear: .gray.opacity(0.25))
+                        .fill(isHighlighted ? .clear: forMainMenu ? .gray : .gray.opacity(0.25))
                         .offset(y: 4)
                 )
                 .overlay(
@@ -45,7 +46,7 @@ struct TileView: View {
 #Preview {
     ZStack{
         Color.red.ignoresSafeArea()
-        TileView(text: "test", isSelected: false, isHighlighted: false, mainColor: AppColors.coreBlue)
+        TileView(text: "test", isSelected: false, isHighlighted: false, mainColor: AppColors.coreBlue, forMainMenu: false)
     }
     
 }

@@ -15,7 +15,10 @@ struct TutorialView: View {
     @State private var textPreview2: String = "Words can be made from groups of fragments ranging from sizes of 1-4."
     @State private var textPreview3: String = "Words that form the color red mean that that they do not exist!"
     @State private var textPreview4: String = "Words that form the color green mean that you have successfully found a word. If you find 5 fragments of length 4, you are granted an additional 40 points!"
-    @State private var textPreview5: String = "Build Fragment Points in order to unlock more levels!"
+    @State private var textPreview5: String = "Tap the Shuffle Button and The Found Fragment 4s Button in order to shuffle the fragments and see your found Fragments of Length 4"
+    @State private var textPreview6: String = "Build Fragment Points in order to unlock more levels!"
+    @State private var textPreview7: String = "Fragment Points are built from your total score across all levels. Use them to get to redeem new levels!"
+    @State private var textPreview8: String = "Score 100 points or more in order to hit the rank of Master!"
     
     var body: some View {
         ZStack{
@@ -69,9 +72,15 @@ struct TutorialView: View {
                         
                         slideView(stepNumber: 3, imageName: "Image3", description: textPreview3)
                         
-                        slideView(stepNumber: 4, imageName: "Image4", description: textPreview4)
+                        slideView(stepNumber: 4, imageName: "Image5", description: textPreview4)
                         
-                        slideView(stepNumber: 5, imageName: "Image5", description: textPreview5)
+                        slideView(stepNumber: 5, imageName: "Image6", description: textPreview5)
+                        
+                        slideView(stepNumber: 6, imageName: "Image7", description: textPreview6)
+                        
+                        slideView(stepNumber: 7, imageName: "Image8", description: textPreview7)
+                        
+                        slideView(stepNumber: 8, imageName: "Image9", description: textPreview8)
                     }
                     .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
                     .frame(width: UIScreen.main.bounds.width * 0.82, height: UIScreen.main.bounds.height * 0.68)
@@ -115,7 +124,7 @@ struct TutorialView: View {
                 .foregroundStyle(.white)
                 .fontDesign(.rounded)
                 .multilineTextAlignment(.center)
-                .font(.system(size: imageName == "Image4" ? 14 : 20))
+                .font(.system(size: imageName == "Image5" ? 16 : 20))
             Spacer()
             
             
