@@ -5,8 +5,9 @@
 //  Created by Brody on 12/3/24.
 //
 
-
+import StoreKit
 import Foundation
+import SwiftUI
 
 @Observable
 class UserData: ObservableObject {
@@ -14,12 +15,14 @@ class UserData: ObservableObject {
     var avgRank: String
     var completedLevels: Int
     var unlockedLevels: Int
+    var reviewCounter: Int
     
-    init(totalPts: Int = 0, avgRank: String = "Novice", completedLevels: Int = 0, unlockedLevels: Int = 5) {
+    init(totalPts: Int = 0, avgRank: String = "Novice", completedLevels: Int = 0, unlockedLevels: Int = 5, reviewCounter: Int = 0) {
         self.totalPts = totalPts
         self.avgRank = avgRank
         self.completedLevels = completedLevels
         self.unlockedLevels = unlockedLevels
+        self.reviewCounter = reviewCounter
     }
     
     func updatePtsAndRank(levels: [Level]) {
@@ -51,5 +54,13 @@ class UserData: ObservableObject {
         }
         print("returning LatestLevel")
         return levels[latestLevel - 1]
+    }
+    
+    @MainActor func incrementReviewCount(reviewAction: RequestReviewAction) {
+        reviewCounter += 1
+        if reviewCounter == 3 { // trigger review
+            reviewCounter = 0
+            reviewAction()
+        }
     }
 }

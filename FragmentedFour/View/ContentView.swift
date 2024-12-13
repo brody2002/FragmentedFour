@@ -5,9 +5,10 @@
 //  Created by Brody on 11/26/24.
 //
 
-//Video Progress -> 1:43:55
+
 
 import AVFoundation
+import StoreKit
 import SwiftData
 import SwiftUI
 
@@ -15,6 +16,7 @@ struct ContentView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) var Dismiss
     @EnvironmentObject var userData: UserData
+    @Environment(\.requestReview) var requestReview
     @Query var LevelClass: [Level]
 
     let levels: [[String]] = Bundle.main.decode("levels.json")
@@ -222,13 +224,9 @@ struct ContentView: View {
                             Spacer()
                                 .frame(height: 20)
                             Button(action: {
-                                if navPath.count == 2 {
-                                    navPath.removeLast(2)
-                                } else {
-                                    Dismiss()
-                                }
+                                Dismiss()
                             }, label:{
-                                Text("Back to Main Menu?")
+                                Text(navPath.count == 2 ? "Level Select" : "Main Menu")
                                     .font(.title2.bold())
                                     .foregroundStyle(.white)
                                     .frame(minWidth: 180, maxWidth: 240, maxHeight: 50)
@@ -481,6 +479,7 @@ struct ContentView: View {
             }
             level.completed = true
             level.levelThreshhold = 100
+            userData.incrementReviewCount(reviewAction: requestReview)
 
             if let nextLVL = fetchLevel(levelNumber: currentLevel + 1, context: modelContext) {
                 if nextLVL.redeemed{
@@ -500,7 +499,7 @@ struct ContentView: View {
             }
         }
         
-        if level.levelThreshhold == 100 && score >= 100{
+        else if level.levelThreshhold == 100 && score >= 100{
             withAnimation(.spring(response: 0.3, dampingFraction: 0.6)){
                 mainColor = AppColors.masterRed
             }
