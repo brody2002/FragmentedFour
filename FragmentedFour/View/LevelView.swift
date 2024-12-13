@@ -182,9 +182,8 @@ struct LevelView: View {
 
 #Preview {
     @Previewable @State var navPath = NavigationPath()
-    do {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        let container = try ModelContainer(for: Level.self, configurations: config)
+        let container = try! ModelContainer(for: Level.self, configurations: config)
         let userData = UserData()
         container.mainContext.insert(Level(level: 0, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
         container.mainContext.insert(Level(level: 1, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
@@ -197,7 +196,5 @@ struct LevelView: View {
         return LevelView(navPath: $navPath)
             .modelContainer(container)
             .environmentObject(userData)
-    } catch {
-        return Text("Failed to create container: \(error.localizedDescription)")
-    }
+    
 }

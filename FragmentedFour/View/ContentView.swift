@@ -688,10 +688,9 @@ struct ContentView: View {
     @Previewable @StateObject var userData = UserData()
     @Previewable @StateObject var globalAudio = GlobalAudioSettings()
     @Previewable @State var navPath = NavigationPath()
-    do {
- 
+    
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        let container = try ModelContainer(for: Level.self, configurations: config)
+        let container = try! ModelContainer(for: Level.self, configurations: config)
         container.mainContext.insert(Level(level: 0, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
         container.mainContext.insert(Level(level: 1, foundWords: [[String]](), foundQuartiles: [String](), completed: true, rank: "Master", score: 101,unlocked: true))
         container.mainContext.insert(Level(level: 2, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Master", score: 101, unlocked: true))
@@ -703,7 +702,7 @@ struct ContentView: View {
             .environment(userData)
             .modelContainer(container)
             
-    } catch {
-        return Text("Failed to create container: \(error.localizedDescription)")
-    }
+//    } catch {
+//        return Text("Failed to create container: \(error.localizedDescription)")
+//    }
 }

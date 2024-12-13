@@ -16,6 +16,9 @@ def scoreCalc(inputLevel: list[str]) -> bool:
 # Check for duplicate fragments
     seen = set()
     for i, fragment in enumerate(inputLevel):
+        if len(fragment) < 2 or len(fragment) > 3:
+            print("ivalid fragment of: ", fragment)
+            return False
         if fragment in seen:
             print(f"Duplicate fragment '{fragment}' found at index {i}.")
             return False

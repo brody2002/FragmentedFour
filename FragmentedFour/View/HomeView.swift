@@ -152,7 +152,7 @@ struct HomeView: View {
                         }
                         .frame(height: screen.height * 0.17)
                         Spacer()
-                            .frame(height: 10)
+                            .frame(height: screen.height * 0.02)
                         
                         HStack(alignment: .top){
                             Spacer()
@@ -345,23 +345,23 @@ struct HomeView: View {
                     if globalAudio.audioPlayerList.count == 0 {
                         globalAudio.playMusic(for: "BackgroundMusic", backgroundMusic: true)
                     }
-//                    currentLevel = userData.findCurrentLevel(levels: levels)
-//                    print("currentLevel \(currentLevel!.level) Score: \(currentLevel!.score) Unlocked? \(currentLevel!.unlocked)")
-//                    
-//                    if let loadedTiles: [[String]] = Bundle.main.decode("levels.json"),
-//                       currentLevel!.level < loadedTiles.count {
-//                        levelTiles = loadedTiles
-//                        let mixedTiles = loadedTiles[currentLevel!.level].shuffled() // shuffle before animation
-//                        withAnimation {
-//                            wordTiles = mixedTiles
-//                        } 
-//                    } else {
-//                        levelTiles = []
-//                        wordTiles = []
-//                        print("Failed to load level tiles or current level is out of bounds.")
-//                    }
+                    currentLevel = userData.findCurrentLevel(levels: levels)
+                    print("currentLevel \(currentLevel!.level) Score: \(currentLevel!.score) Unlocked? \(currentLevel!.unlocked)")
                     
-                    wordTiles =     ["cr","oss","ro","ad","hap","pi","ne","ss","ima","gin","ati","on","sk","ate","bo","ard","pu","zz","le","rs"]
+                    if let loadedTiles: [[String]] = Bundle.main.decode("levels.json"),
+                       currentLevel!.level < loadedTiles.count {
+                        levelTiles = loadedTiles
+                        let mixedTiles = loadedTiles[currentLevel!.level].shuffled() // shuffle before animation
+                        withAnimation {
+                            wordTiles = mixedTiles
+                        } 
+                    } else {
+                        levelTiles = []
+                        wordTiles = []
+                        print("Failed to load level tiles or current level is out of bounds.")
+                    }
+                    
+//                    wordTiles =     ["cr","oss","ro","ad","hap","pi","ne","ss","ima","gin","ati","on","sk","ate","bo","ard","pu","zz","le","rs"]
 
                     
                 }
