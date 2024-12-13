@@ -684,7 +684,9 @@ struct ContentView: View {
 }
 
 #Preview {
+    
     @Previewable @StateObject var userData = UserData()
+    @Previewable @StateObject var globalAudio = GlobalAudioSettings()
     @Previewable @State var navPath = NavigationPath()
     do {
  
@@ -698,8 +700,9 @@ struct ContentView: View {
         container.mainContext.insert(Level(level: 5, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Master", score: 101, unlocked: false))
         container.mainContext.insert(Level(level: 6, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Master", score: 101, unlocked: false))
         return ContentView(score: 0, currentLevel: 0, foundWords: [[String]](), foundQuartiles: [String](), navPath: $navPath)
-            .modelContainer(container)
             .environment(userData)
+            .modelContainer(container)
+            
     } catch {
         return Text("Failed to create container: \(error.localizedDescription)")
     }

@@ -23,7 +23,6 @@ class GlobalAudioSettings: ObservableObject {
         guard soundEffectAudioOn else { return }
         let extensionType = "m4a"
         if let url = Bundle.main.url(forResource: inputString, withExtension: extensionType){
-            
                 audioPlayer = try? AVAudioPlayer(contentsOf: url)
                 audioPlayer?.play()
         }

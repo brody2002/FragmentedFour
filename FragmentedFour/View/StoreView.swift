@@ -67,7 +67,6 @@ struct StoreView: View {
     var body: some View {
         ZStack{
             AppColors.body.ignoresSafeArea()
-            
             VStack{
                 ZStack{
                     mainColor.ignoresSafeArea()

@@ -14,7 +14,6 @@ import SwiftUIIntrospect
 import NavigationTransitions
     // from https://github.com/davdroman/swiftui-navigation-transitions
 
-
 struct HomeView: View {
     @State private var screen = UIScreen.main.bounds
     
@@ -137,12 +136,12 @@ struct HomeView: View {
                                 Spacer()
                                     .frame(height: 5)
                                 
-                                Text("Four")
+                                Text("4")
                                     .foregroundStyle(.white)
                                     .font(.system(size: 50).bold())
                                     .multilineTextAlignment(.trailing)
                                     .background(
-                                        Text("Four")
+                                        Text("4")
                                             .foregroundStyle(.gray)
                                             .font(.system(size: 50).bold())
                                             .multilineTextAlignment(.trailing)
@@ -217,7 +216,7 @@ struct HomeView: View {
                         .padding(.horizontal)
                         .frame(height: 30)
                         Spacer()
-                            .frame(height: 30)
+                            .frame(height: 50)
                         
                         HStack{
                             ZStack(alignment: .leading){
@@ -261,7 +260,7 @@ struct HomeView: View {
                             Spacer()
                             Circle()
                                 .fill(.white)
-                                .frame(width: 160, height: 160)
+                                .frame(width: 120, height: 120)
                                 .overlay(
                                     ZStack{
                                         Image(systemName: "book")
@@ -278,7 +277,7 @@ struct HomeView: View {
                                 .background(
                                     Circle()
                                         .fill(.gray)
-                                        .frame(width: 160, height: 160)
+                                        .frame(width: 120, height: 120)
                                         .offset(y: 4)
                                         
                                 )
@@ -346,21 +345,23 @@ struct HomeView: View {
                     if globalAudio.audioPlayerList.count == 0 {
                         globalAudio.playMusic(for: "BackgroundMusic", backgroundMusic: true)
                     }
-                    currentLevel = userData.findCurrentLevel(levels: levels)
-                    print("currentLevel \(currentLevel!.level) Score: \(currentLevel!.score) Unlocked? \(currentLevel!.unlocked)")
+//                    currentLevel = userData.findCurrentLevel(levels: levels)
+//                    print("currentLevel \(currentLevel!.level) Score: \(currentLevel!.score) Unlocked? \(currentLevel!.unlocked)")
+//                    
+//                    if let loadedTiles: [[String]] = Bundle.main.decode("levels.json"),
+//                       currentLevel!.level < loadedTiles.count {
+//                        levelTiles = loadedTiles
+//                        let mixedTiles = loadedTiles[currentLevel!.level].shuffled() // shuffle before animation
+//                        withAnimation {
+//                            wordTiles = mixedTiles
+//                        } 
+//                    } else {
+//                        levelTiles = []
+//                        wordTiles = []
+//                        print("Failed to load level tiles or current level is out of bounds.")
+//                    }
                     
-                    if let loadedTiles: [[String]] = Bundle.main.decode("levels.json"),
-                       currentLevel!.level < loadedTiles.count {
-                        levelTiles = loadedTiles
-                        let mixedTiles = loadedTiles[currentLevel!.level].shuffled() // shuffle before animation
-                        withAnimation {
-                            wordTiles = mixedTiles
-                        } 
-                    } else {
-                        levelTiles = []
-                        wordTiles = []
-                        print("Failed to load level tiles or current level is out of bounds.")
-                    }
+                    wordTiles =     ["cr","oss","ro","ad","hap","pi","ne","ss","ima","gin","ati","on","sk","ate","bo","ard","pu","zz","le","rs"]
 
                     
                 }
