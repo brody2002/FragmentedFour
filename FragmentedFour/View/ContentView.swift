@@ -434,6 +434,7 @@ struct ContentView: View {
         globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
     }
     func shuffletiles() {
+//        globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
         withAnimation{
             tiles.shuffle()
             orderedTiles = tiles
@@ -596,6 +597,7 @@ struct ContentView: View {
     
     
     func toggleGrouping(){
+//        globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
         withAnimation{
             isGroupingQuartiles.toggle()
             if isGroupingQuartiles{

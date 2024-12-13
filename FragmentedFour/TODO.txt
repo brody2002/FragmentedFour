@@ -5,13 +5,14 @@ TODO:
 
 
 TODO:
-important : update theme.... App looks poor
+Update:
 13. Make Better levels
     - make levels easier and scale more
     - Make 50 levels to start
 14. Make Pack for the new Levels
-
 16. Make Purchasable Packs
+
+Release: 
 17. Split Audio Settings from music and sound effects
 18. Audio Settings Resets after termination of app
     - Store it in App Storage? 

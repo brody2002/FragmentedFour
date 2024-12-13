@@ -9,18 +9,18 @@ import Foundation
 import AVFoundation
 import SwiftUI
 
-@Observable
+
 class GlobalAudioSettings: ObservableObject {
-    var audioOn: Bool = true
-    var audioPlayerList: [AVAudioPlayer] = []
-    var playingBackgroundMusic: Bool = false
+    @AppStorage("backgroundAudioOn") var backgroundAudioOn: Bool = true
+    @AppStorage("soundEffectAudioOn") var soundEffectAudioOn: Bool = true
+    @Published var audioPlayerList: [AVAudioPlayer] = []
     
     func addPlayer(inputAudioPlayer: AVAudioPlayer) {
         audioPlayerList.append(inputAudioPlayer)
     }
     
     func playSoundEffect(for inputString: String, audioPlayer: inout AVAudioPlayer?) {
-        guard audioOn == true else { return }
+        guard soundEffectAudioOn else { return }
         let extensionType = "m4a"
         if let url = Bundle.main.url(forResource: inputString, withExtension: extensionType){
             
@@ -39,6 +39,7 @@ class GlobalAudioSettings: ObservableObject {
     }
     
     func playMusic(for soundName: String, backgroundMusic: Bool) {
+//        guard backgroundAudioOn else { return }
         guard let url = Bundle.main.url(forResource: soundName, withExtension: "m4a") else {
             print("Error: Could not find the sound file named \(soundName).m4a in the bundle.")
             return
@@ -46,7 +47,8 @@ class GlobalAudioSettings: ObservableObject {
         var audioPlayer = AVAudioPlayer()
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
-            if backgroundMusic { audioPlayer.numberOfLoops = -1 }
+            audioPlayer.numberOfLoops = -1
+            if !backgroundAudioOn { audioPlayer.volume = 0.0 } 
             audioPlayer.play()
             audioPlayerList.append(audioPlayer)
         } catch {

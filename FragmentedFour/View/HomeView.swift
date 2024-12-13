@@ -52,36 +52,73 @@ struct HomeView: View {
                         AppColors.body.ignoresSafeArea()
                             .frame(height: UIScreen.main.bounds.height * 0.689)
                     }
-                    
-                    
+                    VStack{
+                        Spacer()
+                            .frame(height: UIScreen.main.bounds.height * 0.025)
+                        HStack{
+                            VStack{
+                                Image(systemName: globalAudio.backgroundAudioOn == true ? "speaker.wave.3.fill" : "speaker.slash.fill")
+                                    .resizable()
+                                    .frame(width: 40, height: 40)
+                                    .foregroundStyle(.white)
+                                    .padding(.leading, 20)
+                                    .background(
+                                        Image(systemName: globalAudio.backgroundAudioOn == true ? "speaker.wave.3.fill" : "speaker.slash.fill")
+                                            .resizable()
+                                            .frame(width: 40, height:40)
+                                            .foregroundStyle(.gray)
+                                            .padding(.leading, 20)
+                                            .offset(y:4)
+                                    )
+
+                                    .onTapGesture {
+                                        // Toggle Volume on and off
+                                        globalAudio.backgroundAudioOn.toggle()
+                                        
+                                        if globalAudio.backgroundAudioOn == false {
+                                            globalAudio.setVolume(forAll: 0.0)
+                                        } else { globalAudio.setVolume(forAll: 1.0) }
+                                    }
+                                Spacer()
+                                    .frame(height: 30)
+                                ZStack {
+                                    if globalAudio.soundEffectAudioOn {
+                                        Image(systemName: "hand.tap.fill")
+                                            .resizable()
+                                            .frame(width: 40, height: 40)
+                                            .foregroundStyle(.white)
+                                            .padding(.leading, 20)
+                                            .background(
+                                                Image(systemName: "hand.tap.fill")
+                                                    .resizable()
+                                                    .frame(width: 40, height: 40)
+                                                    .foregroundStyle(.gray)
+                                                    .padding(.leading, 20)
+                                                    .offset(y: 3)
+                                            )
+                                    }
+                                    else {
+                                        handTapOffView(isBackgroundView: false, isHomeScreen: true)
+                                            .padding(.leading, 20)
+                                            .background(
+                                                handTapOffView(isBackgroundView: true, isHomeScreen: true)
+                                                    .padding(.leading, 20)
+                                                    .offset(y: 3)
+                                            )
+                                    }
+                                }
+                                .onTapGesture {
+                                    globalAudio.soundEffectAudioOn.toggle()
+                                }
+                            }
+                            Spacer()
+                        }
+                        Spacer()
+                        
+                    }
                     VStack{
                         HStack(alignment: .firstTextBaseline){
-                            VStack{
-                                HStack{
-                                    Image(systemName: globalAudio.audioOn == true ? "speaker.wave.3.fill" : "speaker.slash.fill")
-                                        .resizable()
-                                        .frame(width: 40, height: 40)
-                                        .foregroundStyle(.white)
-                                        .padding(.leading, 20)
-                                        .background(
-                                            Image(systemName: globalAudio.audioOn == true ? "speaker.wave.3.fill" : "speaker.slash.fill")
-                                                .resizable()
-                                                .frame(width: 40, height:40)
-                                                .foregroundStyle(.gray)
-                                                .padding(.leading, 20)
-                                                .offset(y:4)
-                                        )
-                                        .onTapGesture {
-                                            // Toggle Volume on and off
-                                            globalAudio.audioOn.toggle()
-                                            
-                                            if globalAudio.audioOn == false {
-                                                globalAudio.setVolume(forAll: 0.0)
-                                            } else { globalAudio.setVolume(forAll: 1.0) }
-                                        }
-                                }
-                                
-                            }
+
                             Spacer()
                             
                             VStack(alignment: .trailing) {
@@ -116,7 +153,7 @@ struct HomeView: View {
                         }
                         .frame(height: screen.height * 0.17)
                         Spacer()
-                            .frame(height: 20)
+                            .frame(height: 10)
                         
                         HStack(alignment: .top){
                             Spacer()
@@ -193,7 +230,7 @@ struct HomeView: View {
                                             
                                     )
                                     .hidden()
-                                if var level = currentLevel?.level {
+                                if let level = currentLevel?.level {
                                     ZStack{
                                         Text("Level \(level + 1)")
                                             .foregroundStyle(.white)
@@ -238,7 +275,6 @@ struct HomeView: View {
                                         
                                     }
                                 )
-//                                .matchedTransitionSource(id: "tutorial", in: tutorialAnimation)
                                 .background(
                                     Circle()
                                         .fill(.gray)
@@ -307,13 +343,8 @@ struct HomeView: View {
                 }
                 .task{
                     initializeAppData()
-
-                    if globalAudio.audioOn && globalAudio.playingBackgroundMusic == false{
-                        print("attempt to play audio ")
+                    if globalAudio.audioPlayerList.count == 0 {
                         globalAudio.playMusic(for: "BackgroundMusic", backgroundMusic: true)
-                        globalAudio.playingBackgroundMusic = true
-                    } else {
-                        print("not playing background music ")
                     }
                     currentLevel = userData.findCurrentLevel(levels: levels)
                     print("currentLevel \(currentLevel!.level) Score: \(currentLevel!.score) Unlocked? \(currentLevel!.unlocked)")
@@ -330,6 +361,7 @@ struct HomeView: View {
                         wordTiles = []
                         print("Failed to load level tiles or current level is out of bounds.")
                     }
+
                     
                 }
                 .onDisappear{
@@ -467,14 +499,14 @@ class DisableSwipeBackViewController: UIViewController {
 
 
 #Preview {
-    
+    @Previewable @StateObject var globalAudio = GlobalAudioSettings()
     let config = ModelConfiguration(for: Level.self, Pack.self, isStoredInMemoryOnly: true)
     
         let container = try! ModelContainer(for: Level.self, Pack.self, configurations: config)
 
         let userData = UserData()
         
-        container.mainContext.insert(Level(level: 0, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
+        container.mainContext.insert(Level(level: 0, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
         container.mainContext.insert(Level(level: 1, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
         container.mainContext.insert(Level(level: 2, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
         container.mainContext.insert(Level(level: 3, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
@@ -491,6 +523,7 @@ class DisableSwipeBackViewController: UIViewController {
         return HomeView(firstLoad: .constant(false))
                 .modelContainer(container)
                 .environmentObject(userData)
+                .environmentObject(globalAudio)
     
     
     
