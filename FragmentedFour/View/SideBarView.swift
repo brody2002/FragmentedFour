@@ -12,6 +12,7 @@ import AVFoundation
 struct SideBarView: View {
     @Binding var shouldRestartLevel: Bool
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var globalAudio: GlobalAudioSettings
     @State private var audioPlayer: AVAudioPlayer?
     @Binding var navPath: NavigationPath
     
@@ -40,7 +41,7 @@ struct SideBarView: View {
                 
                 HStack{
                     Button(action:{
-                        GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                        globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                         if navPath.count == 2 {
                             navPath.removeLast(2)
                         } else {
@@ -66,17 +67,17 @@ struct SideBarView: View {
                     
                     
                     
-                    Image(systemName: GlobalAudioSettings.shared.audioOn == true ? "speaker.wave.3.fill" : "speaker.slash.fill")
+                    Image(systemName: globalAudio.audioOn == true ? "speaker.wave.3.fill" : "speaker.slash.fill")
                         .foregroundStyle(.white)
                         .padding()
                         .frame(width: 60, height: 50)
                         .onTapGesture {
                             // Toggle Volume on and off
-                            GlobalAudioSettings.shared.audioOn.toggle()
+                            globalAudio.audioOn.toggle()
                             
-                            if GlobalAudioSettings.shared.audioOn == false {
-                                GlobalAudioSettings.shared.setVolume(forAll: 0.0)
-                            } else { GlobalAudioSettings.shared.setVolume(forAll: 1.0) }
+                            if globalAudio.audioOn == false {
+                                globalAudio.setVolume(forAll: 0.0)
+                            } else { globalAudio.setVolume(forAll: 1.0) }
                         }
                         .background(
                             RoundedRectangle(cornerRadius: 10)
@@ -106,7 +107,7 @@ struct SideBarView: View {
                     )
                     .onTapGesture {
                         //dismiss back to LevelSelectView
-                        GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                        globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                         if navPath.count == 2 {
                             navPath.removeLast(1)
                         }
@@ -117,7 +118,7 @@ struct SideBarView: View {
                 
                 Button(action: {
                     shouldRestartLevel.toggle()
-                    GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                    globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                     
                 }, label:{
                     Text("Restart")

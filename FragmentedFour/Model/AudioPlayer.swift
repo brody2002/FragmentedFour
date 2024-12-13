@@ -11,7 +11,6 @@ import SwiftUI
 
 @Observable
 class GlobalAudioSettings: ObservableObject {
-    static let shared = GlobalAudioSettings()
     var audioOn: Bool = true
     var audioPlayerList: [AVAudioPlayer] = []
     var playingBackgroundMusic: Bool = false
@@ -21,14 +20,12 @@ class GlobalAudioSettings: ObservableObject {
     }
     
     func playSoundEffect(for inputString: String, audioPlayer: inout AVAudioPlayer?) {
-        guard GlobalAudioSettings.shared.audioOn == true else { return }
+        guard audioOn == true else { return }
         let extensionType = "m4a"
         if let url = Bundle.main.url(forResource: inputString, withExtension: extensionType){
             
                 audioPlayer = try? AVAudioPlayer(contentsOf: url)
                 audioPlayer?.play()
-            
-            
         }
         else {
             print("couldn't locate file: \(inputString).\(extensionType)")

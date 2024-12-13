@@ -13,6 +13,7 @@ struct LevelView: View {
     @Environment(\.modelContext) var modelContext
     @Query(sort: [SortDescriptor(\Level.level)]) var levels: [Level]
     @EnvironmentObject var userData: UserData
+    @EnvironmentObject var globalAudio: GlobalAudioSettings
     @Environment(\.dismiss) var dismiss
     @State private var audioPlayer: AVAudioPlayer?
     @State private var mainColor: Color = AppColors.coreBlue
@@ -50,7 +51,7 @@ struct LevelView: View {
                                         .padding(.leading, 20)
                                         .onTapGesture {
                                             dismiss()
-                                            GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                                            globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                                         }
                                     Spacer()
                                 }
@@ -135,10 +136,10 @@ struct LevelView: View {
                                 LevelTileView(level: level.level, completed: level.completed, unlocked: level.unlocked, score:  level.score, redeemed: level.redeemed)
                                     .onTapGesture {
                                         if level.unlocked{
-                                            GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                                            globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                                             navPath.append(DestinationStruct.Destination.levelDestination(level: level, comingFromFastTravel: false))
                                         } else if !level.unlocked && level.redeemed {
-                                            GlobalAudioSettings.shared.playSoundEffect(for: "IncorrectSound", audioPlayer: &audioPlayer)
+                                            globalAudio.playSoundEffect(for: "IncorrectSound", audioPlayer: &audioPlayer)
                                             shakeStates[level.level] = true
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.8){
                                                 shakeStates[level.level] = false

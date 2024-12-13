@@ -35,6 +35,7 @@ struct StoreView: View {
     
     // UserData
     @EnvironmentObject var userData: UserData
+    @EnvironmentObject var globalAudio: GlobalAudioSettings
     @Environment(\.modelContext) var modelContext
     @Query var levels: [Level]
     @State private var rankLocal: String?
@@ -93,7 +94,7 @@ struct StoreView: View {
                                     )
                                     .padding(.leading, 20)
                                     .onTapGesture {
-                                        GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                                        globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                                         dismiss()
                                     }
                                 Spacer()
@@ -212,7 +213,7 @@ struct StoreView: View {
                                 DispatchQueue.main.asyncAfter(deadline: .now()) {
                                     withAnimation(.spring(response: 0.3)) {
                                         showWindow = true
-                                        GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                                        globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                                     }
                                 }
                             }
@@ -248,7 +249,7 @@ struct StoreView: View {
                             )
                             .onTapGesture {
                                 withAnimation(.spring(response: 0.3)) {
-                                    GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                                    globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                                     showWindow = false
                                 }
                             }
@@ -332,7 +333,7 @@ struct StoreView: View {
     
     func purchasePack() {
         guard let pack = pressedPack, totalPtsLocal ?? 0 >= pack.price else {
-            GlobalAudioSettings.shared.playSoundEffect(for: "IncorrectSound", audioPlayer: &audioPlayer)
+            globalAudio.playSoundEffect(for: "IncorrectSound", audioPlayer: &audioPlayer)
             return
         }
         userData.unlockedLevels += 5
@@ -344,7 +345,7 @@ struct StoreView: View {
             pack.unlocked = true
         }
         print("The levels have been redeemed and can now be unlocked!")
-        GlobalAudioSettings.shared.playSoundEffect(for: "Quartile", audioPlayer: &audioPlayer)
+        globalAudio.playSoundEffect(for: "Quartile", audioPlayer: &audioPlayer)
         
         withAnimation(.spring(response: 0.3)) {
             showWindow = false

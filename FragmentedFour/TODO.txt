@@ -10,8 +10,11 @@ important : update theme.... App looks poor
     - make levels easier and scale more
     - Make 50 levels to start
 14. Make Pack for the new Levels
-15. Redo Images for the tutorial slide
+
 16. Make Purchasable Packs
+17. Split Audio Settings from music and sound effects
+18. Audio Settings Resets after termination of app
+    - Store it in App Storage? 
 
 
 Done:
@@ -22,6 +25,7 @@ Done:
 12. SETTINGS VIEW
     - Audio Toggle
     - Achievment's? -> total fragments found,
+15. Redo Images for the tutorial slide
 
 
 

@@ -16,6 +16,7 @@ struct ContentView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) var Dismiss
     @EnvironmentObject var userData: UserData
+    @EnvironmentObject var globalAudio: GlobalAudioSettings
     @Environment(\.requestReview) var requestReview
     @Query var LevelClass: [Level]
 
@@ -35,7 +36,7 @@ struct ContentView: View {
     @State private var foundQuartile: Bool = false
     @State private var makeTilesLarge: Bool = false
     
-    @State private var isGroupingQuartiles = false
+    @State private var isGroupingQuartiles = true
     
     // Pass through vals from LevelView
     @State var score: Int
@@ -129,7 +130,7 @@ struct ContentView: View {
                     ZStack(alignment: .leading) {
                         Button(
                             action: {
-                                GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                                globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                                 withAnimation(.easeOut(duration: 0.2)) {
                                             if showSideBarView {
                                                 showSideBarView = false
@@ -251,7 +252,7 @@ struct ContentView: View {
                                 .frame(minHeight: 80)
                                 .frame(minHeight: 80)
                         }
-                        .onAppear(perform: {GlobalAudioSettings.shared.playSoundEffect(for: "Victory", audioPlayer: &audioPlayer)})
+                        .onAppear(perform: {globalAudio.playSoundEffect(for: "Victory", audioPlayer: &audioPlayer)})
                         
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                         .frame(maxWidth: .infinity, minHeight: 400, maxHeight: 400)
@@ -295,7 +296,7 @@ struct ContentView: View {
                                 
                                 Button("Clear", systemImage: "xmark.circle", action: {
                                     clearSelected()
-                                    GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                                    globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                                 })
                                     .opacity(showX ? 1.0 : 0.0)
                                     .animation(nil, value: showX)
@@ -394,7 +395,7 @@ struct ContentView: View {
             }
             .onDisappear {
                 print("stopping audio?")
-                GlobalAudioSettings.shared.stopAudio(&audioPlayer)
+                globalAudio.stopAudio(&audioPlayer)
             }
             .onChange(of: shouldRestartLevel){
                 restartLevel()
@@ -426,11 +427,11 @@ struct ContentView: View {
         guard selectedTiles.contains(tile) == false else { return }
         
         selectedTiles.append(tile)
-        GlobalAudioSettings.shared.playSoundEffect(for: bubbleSoundList.randomElement()!, audioPlayer: &audioPlayer)
+        globalAudio.playSoundEffect(for: bubbleSoundList.randomElement()!, audioPlayer: &audioPlayer)
     }
     func deselect(_ tile: String){
         selectedTiles.removeAll { $0 == tile }
-        GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+        globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
     }
     func shuffletiles() {
         withAnimation{
@@ -443,14 +444,14 @@ struct ContentView: View {
     func combineTiles(completion: @escaping () -> Void) {
         guard selectedTiles.count > 1 else {
             if quartileCount == 4{
-                GlobalAudioSettings.shared.playSoundEffect(for: "Quartile", audioPlayer: &audioPlayer)
+                globalAudio.playSoundEffect(for: "Quartile", audioPlayer: &audioPlayer)
                 withAnimation(.spring(response: 0.2)){
                     foundQuartile = true
                     
                 }
             }
             if quartileCount == 1{
-                GlobalAudioSettings.shared.playSoundEffect(for: "CorrectSound", audioPlayer: &audioPlayer)
+                globalAudio.playSoundEffect(for: "CorrectSound", audioPlayer: &audioPlayer)
             }
             quartileCount = 1
             completion()
@@ -463,7 +464,7 @@ struct ContentView: View {
        
         withAnimation(.spring(response: 0.3, dampingFraction: 0.4)){
             selectedTiles.insert(firstTwoCombined, at: 0)
-            GlobalAudioSettings.shared.playSoundEffect(for: "CorrectSound", audioPlayer: &audioPlayer)
+            globalAudio.playSoundEffect(for: "CorrectSound", audioPlayer: &audioPlayer)
         }
       
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
@@ -567,7 +568,7 @@ struct ContentView: View {
                 
             }
             turnRed = true
-            GlobalAudioSettings.shared.playSoundEffect(for: "IncorrectSound", audioPlayer: &audioPlayer)
+            globalAudio.playSoundEffect(for: "IncorrectSound", audioPlayer: &audioPlayer)
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
                 

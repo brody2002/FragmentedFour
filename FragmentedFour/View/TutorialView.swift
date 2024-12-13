@@ -12,6 +12,7 @@ struct TutorialView: View {
     // For View
     @State private var audioPlayer: AVAudioPlayer?
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var globalAudio: GlobalAudioSettings
     
     // Assets
     @State private var textPreview1: String = "The goal of the game is to create words using the fragments of text seen on the screen"
@@ -47,7 +48,7 @@ struct TutorialView: View {
                         )
                         .padding(.leading, 20)
                         .onTapGesture {
-                            GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                            globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                             dismiss()
                         }
                     Spacer()

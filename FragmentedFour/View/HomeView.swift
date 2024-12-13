@@ -28,6 +28,7 @@ struct HomeView: View {
     @Query(sort: [SortDescriptor(\Level.level)]) var levels: [Level]
     @Environment(\.modelContext) var modelContext
     @EnvironmentObject var userData: UserData
+    @EnvironmentObject var globalAudio: GlobalAudioSettings
     
     // Previewable Game
     let gridLayout = Array(repeating:  GridItem.init(.flexible(minimum: 50, maximum: 100)), count: 4)
@@ -57,13 +58,13 @@ struct HomeView: View {
                         HStack(alignment: .firstTextBaseline){
                             VStack{
                                 HStack{
-                                    Image(systemName: GlobalAudioSettings.shared.audioOn == true ? "speaker.wave.3.fill" : "speaker.slash.fill")
+                                    Image(systemName: globalAudio.audioOn == true ? "speaker.wave.3.fill" : "speaker.slash.fill")
                                         .resizable()
                                         .frame(width: 40, height: 40)
                                         .foregroundStyle(.white)
                                         .padding(.leading, 20)
                                         .background(
-                                            Image(systemName: GlobalAudioSettings.shared.audioOn == true ? "speaker.wave.3.fill" : "speaker.slash.fill")
+                                            Image(systemName: globalAudio.audioOn == true ? "speaker.wave.3.fill" : "speaker.slash.fill")
                                                 .resizable()
                                                 .frame(width: 40, height:40)
                                                 .foregroundStyle(.gray)
@@ -72,11 +73,11 @@ struct HomeView: View {
                                         )
                                         .onTapGesture {
                                             // Toggle Volume on and off
-                                            GlobalAudioSettings.shared.audioOn.toggle()
+                                            globalAudio.audioOn.toggle()
                                             
-                                            if GlobalAudioSettings.shared.audioOn == false {
-                                                GlobalAudioSettings.shared.setVolume(forAll: 0.0)
-                                            } else { GlobalAudioSettings.shared.setVolume(forAll: 1.0) }
+                                            if globalAudio.audioOn == false {
+                                                globalAudio.setVolume(forAll: 0.0)
+                                            } else { globalAudio.setVolume(forAll: 1.0) }
                                         }
                                 }
                                 
@@ -124,7 +125,7 @@ struct HomeView: View {
                             Button(
                                 action: {
                                     // Level Select
-                                        GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                                        globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                                         navPath.append(DestinationStruct.Destination.selectLevel)
                                 },
                                 label: {
@@ -150,7 +151,7 @@ struct HomeView: View {
                             Button(
                                 action: {
                                     // Store
-                                        GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                                        globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                                         navPath.append(DestinationStruct.Destination.store)
                                     
                                 },
@@ -246,7 +247,7 @@ struct HomeView: View {
                                         
                                 )
                                 .onTapGesture {
-                                    GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                                    globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                                     navPath.append(DestinationStruct.Destination.tutorial)
                                     
                                 }
@@ -298,7 +299,7 @@ struct HomeView: View {
                             .padding(.horizontal)
                             .frame(height: screen.height * 0.05)
                             .onTapGesture {
-                                GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                                globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                                 navPath.append(DestinationStruct.Destination.levelDestination(level: currentLevel!, comingFromFastTravel: true))
                             }
                         Spacer()
@@ -307,10 +308,10 @@ struct HomeView: View {
                 .task{
                     initializeAppData()
 
-                    if GlobalAudioSettings.shared.audioOn && GlobalAudioSettings.shared.playingBackgroundMusic == false{
+                    if globalAudio.audioOn && globalAudio.playingBackgroundMusic == false{
                         print("attempt to play audio ")
-                        GlobalAudioSettings.shared.playMusic(for: "BackgroundMusic", backgroundMusic: true)
-                        GlobalAudioSettings.shared.playingBackgroundMusic = true
+                        globalAudio.playMusic(for: "BackgroundMusic", backgroundMusic: true)
+                        globalAudio.playingBackgroundMusic = true
                     } else {
                         print("not playing background music ")
                     }
