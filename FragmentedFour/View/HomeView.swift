@@ -323,13 +323,16 @@ struct HomeView: View {
                         let mixedTiles = loadedTiles[currentLevel!.level].shuffled() // shuffle before animation
                         withAnimation {
                             wordTiles = mixedTiles
-                        }
+                        } 
                     } else {
                         levelTiles = []
                         wordTiles = []
                         print("Failed to load level tiles or current level is out of bounds.")
                     }
                     
+                }
+                .onDisappear{
+                    wordTiles = [] // doing this gets rid of the shuffle effect every time i go back into view
                 }
                 
                 .navigationDestination(for: DestinationStruct.Destination.self, destination: { dest in

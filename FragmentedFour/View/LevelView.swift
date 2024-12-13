@@ -138,6 +138,7 @@ struct LevelView: View {
                                             GlobalAudioSettings.shared.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                                             navPath.append(DestinationStruct.Destination.levelDestination(level: level, comingFromFastTravel: false))
                                         } else if !level.unlocked && level.redeemed {
+                                            GlobalAudioSettings.shared.playSoundEffect(for: "IncorrectSound", audioPlayer: &audioPlayer)
                                             shakeStates[level.level] = true
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.8){
                                                 shakeStates[level.level] = false
