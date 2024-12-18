@@ -15,12 +15,13 @@ struct FragmentedFourApp: App {
     @StateObject private var userData = UserData()
     @StateObject private var globalAudio = GlobalAudioSettings()
     @AppStorage("firstLoad") private var firstLoad: Bool = true // Loads data on first load of installing app
-//    @AppStorage("lastLoadedVersion") private var lastLoadedVersion: String = "1"
+    @AppStorage("update1.1.0") private var update1_1_0: Bool = true
+    @AppStorage("lastLoadedVersion") private var lastLoadedVersion: String = "1.0"
     
     var body: some Scene {
         WindowGroup {
             ZStack{
-                HomeView(firstLoad: $firstLoad)
+                HomeView(firstLoad: $firstLoad, update1_1_0: $update1_1_0, lastLoadedVersion: $lastLoadedVersion)
             }
             .interactiveDismissDisabled()
             .environmentObject(userData)

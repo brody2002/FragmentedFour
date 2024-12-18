@@ -17,8 +17,6 @@ import NavigationTransitions
 struct HomeView: View {
     @State private var screen = UIScreen.main.bounds
     
-    // Loading InitialData
-    @Binding var firstLoad: Bool
     
     // Navigation
     @State var navPath = NavigationPath()
@@ -37,6 +35,12 @@ struct HomeView: View {
     
     // Audio Player
     @State var audioPlayer: AVAudioPlayer?
+    
+    // Verision Control
+    @Binding var firstLoad: Bool
+    @Binding var update1_1_0: Bool
+    @Binding var lastLoadedVersion: String
+    
     
     
     var body: some View {
@@ -345,10 +349,31 @@ struct HomeView: View {
                     }
                 }
                 .task{
-                    initializeAppData()
-                    if globalAudio.audioPlayerList.count == 0 {
-                        globalAudio.playMusic(for: "BackgroundMusic", backgroundMusic: true)
+                    // Check Version Number of App
+                    print("firstLoad -> \(firstLoad)")
+                    print("needs 1.1.0 -> \(update1_1_0)")
+                    
+                    let currentVersion: String = (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "1" // Should be 1.1
+                    if lastLoadedVersion.compare(currentVersion, options: .numeric) == .orderedAscending{
+                        initializeVersion1_1_0()
                     }
+                    
+                   
+                    
+                    initializeAppData()
+                    
+                    print("after intialLoad")
+                    print("firstLoad -> \(firstLoad)")
+                    print("needs 1.1.0 -> \(update1_1_0)")
+                    
+                    
+                    
+                    
+                    
+                    // Manage Audio on Start Up
+                    if globalAudio.audioPlayerList.count == 0 { globalAudio.playMusic(for: "BackgroundMusic", backgroundMusic: true) }
+                    
+                    // HomeView Level Preview
                     currentLevel = userData.findCurrentLevel(levels: levels)
                     print("currentLevel \(currentLevel!.level) Score: \(currentLevel!.score) Unlocked? \(currentLevel!.unlocked)")
                     
@@ -405,6 +430,7 @@ struct HomeView: View {
         print("Initializing app data for first launch...")
         let levels: [[String]] = Bundle.main.decode("levels.json")
         
+        // Clear modelContext just in case...
         do {
             let existingLevels: [Level] = try modelContext.fetch(FetchDescriptor<Level>())
             let existingPacks: [Pack] = try modelContext.fetch(FetchDescriptor<Pack>())
@@ -426,23 +452,41 @@ struct HomeView: View {
         }
         
         
-        
-        
-        
         //Load Levels in context
         for (index, _) in levels.enumerated() {
             if index == 0 {
-                modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
+                modelContext.insert(Level(level: index,
+                                          foundWords: [[String]](),
+                                          foundQuartiles: [String](),
+                                          completed: false,
+                                          rank: "Novice",
+                                          score: 0,
+                                          unlocked: true))
+                
             } else {
                 if (1...4).contains(index){
-                    modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
+                    modelContext.insert(Level(level: index,
+                                              foundWords: [[String]](),
+                                              foundQuartiles: [String](),
+                                              completed: false,
+                                              rank: "Novice",
+                                              score: 0,
+                                              unlocked: false))
                 } else{
-                    modelContext.insert(Level(level: index, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false, redeemed: false))
+                    modelContext.insert(Level(level: index,
+                                              foundWords: [[String]](),
+                                              foundQuartiles: [String](),
+                                              completed: false,
+                                              rank: "Novice",
+                                              score: 0,
+                                              unlocked: false,
+                                              redeemed: false))
                 }
                 
             }
             print("Level \(index) inserted...")
         }
+        print("\nInserted Levels 1-50\n")
         
         // Insert Packs to the model Context
         modelContext.insert(Pack(name: "6-10", unlocked: false, price: 200, id: 1, levels: [5, 6, 7, 8, 9]))
@@ -450,6 +494,12 @@ struct HomeView: View {
         modelContext.insert(Pack(name: "16-20", unlocked: false, price: 1000, id: 3, levels: [15, 16, 17, 18, 19]))
         modelContext.insert(Pack(name: "21-25", unlocked: false, price: 1300, id: 4, levels: [20, 21, 22, 23, 24]))
         
+        modelContext.insert(Pack(name: "26-30", unlocked: false, price: 1850, id: 5, levels: [25, 26, 27, 28, 29]))
+        modelContext.insert(Pack(name: "31-35", unlocked: false, price: 2350, id: 6, levels: [30, 31, 32, 33, 34]))
+        modelContext.insert(Pack(name: "36-40", unlocked: false, price: 2850, id: 7, levels: [35, 36, 37, 38, 39]))
+        modelContext.insert(Pack(name: "41-45", unlocked: false, price: 3300, id: 8, levels: [40, 41, 42, 43, 44]))
+        modelContext.insert(Pack(name: "46-50", unlocked: false, price: 3700, id: 9, levels: [45, 46, 47, 48, 49]))
+        print("\nInserted Packs 1-50\n")
         
         // Save the context to persist the data
         do {
@@ -461,10 +511,71 @@ struct HomeView: View {
         print(modelContext.container)
         
         firstLoad = false
+        update1_1_0 = false // no need for udpate
+        
+    }
+    // How to handle for firstload users and current users
+    func initializeVersion1_1_0 () {
+        print("Checking for update? ")
+        guard firstLoad == false && update1_1_0 else { return } // if isn't first load and it needs update 1.1.0
+        print("Updating and Injecting new levels/packs for version 1.1.0 ")
+        
+        // Load Levels in context for levels 26 through 50
+        // Reminder: (0 indexed!)
+        for index in 25...49 {
+            modelContext.insert(Level(level: index,
+                                      foundWords: [[String]](),
+                                      foundQuartiles: [String](),
+                                      completed: false,
+                                      rank: "Novice",
+                                      score: 0,
+                                      unlocked: false,
+                                      redeemed: false))
+            
+            print("Level \(index) inserted... from version update function")
+        }
+        // Insert Packs
+        modelContext.insert(Pack(name: "26-30", unlocked: false, price: 1850, id: 5, levels: [25, 26, 27, 28, 29]))
+        modelContext.insert(Pack(name: "31-35", unlocked: false, price: 2350, id: 6, levels: [30, 31, 32, 33, 34]))
+        modelContext.insert(Pack(name: "36-40", unlocked: false, price: 2850, id: 7, levels: [35, 36, 37, 38, 39]))
+        modelContext.insert(Pack(name: "41-45", unlocked: false, price: 3300, id: 8, levels: [40, 41, 42, 43, 44]))
+        modelContext.insert(Pack(name: "46-50", unlocked: false, price: 3700, id: 9, levels: [45, 46, 47, 48, 49]))
+        print("\nInserted Levels 26-50\n")
+        
+        // Fetch Levels that were changed and reset score and saved data.
+        let level10 = fetchLevel(levelNumber: 9, context: modelContext)
+        let level13 = fetchLevel(levelNumber: 12, context: modelContext)
+        resetLevel(level10)
+        resetLevel(level13)
+        
+        update1_1_0 = false
+        lastLoadedVersion = "1.1.0"
         
     }
     
+    func fetchLevel(levelNumber: Int, context: ModelContext) -> Level? {
+        let descriptor = FetchDescriptor<Level>(
+            predicate: #Predicate { $0.level == levelNumber }
+        )
+        do {
+            let results = try context.fetch(descriptor)
+            return results.first // Return the first match, or nil if not found
+        } catch {
+            print("Failed to fetch level: \(error)")
+            return nil
+        }
+    }
     
+    func resetLevel(_ inputLevel: Level?) {
+        guard let inputLevel = inputLevel else { return }
+        inputLevel.score = 0
+        inputLevel.levelThreshhold = 15
+        inputLevel.completed = false
+        inputLevel.foundAllWords = false
+        inputLevel.foundQuartiles = [String]()
+        inputLevel.foundWords = [[String]]()
+        inputLevel.rank = "Novice"
+    }
     
 }
 
@@ -525,7 +636,7 @@ class DisableSwipeBackViewController: UIViewController {
     container.mainContext.insert(Pack(name: "21-25", unlocked: false, price: 1300, id: 4, levels: [20, 21, 22, 23, 24]))
     
     
-    return HomeView(firstLoad: .constant(false))
+    return HomeView(firstLoad: .constant(false), update1_1_0: .constant(true), lastLoadedVersion: .constant("1.0"))
         .modelContainer(container)
         .environmentObject(userData)
         .environmentObject(globalAudio)

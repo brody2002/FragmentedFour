@@ -12,19 +12,20 @@ Update:
 14. Make Pack for the new Levels
 16. Make Purchasable Packs
 
-Release: 
+
+Release:
 17. Split Audio Settings from music and sound effects
 18. Audio Settings Resets after termination of app
     - Store it in App Storage?
     
-    
+
 Update version 1.01
 X - Purchase packs font for 4 didget numbers
 X - Turning to master mode and 100 points at the same time bug
 X - Added Levels
 X - Certain text on Victory Screen is too small
 X - Edit Step 3 of sldieshow
-X- When correct input can click submit again and it says its wrong
+X - When correct input can click submit again and it says its wrong
 X - Create model Packs for the newly added levels
 
 
@@ -32,6 +33,7 @@ Done:
 8. cancel audio when leaving view
 9. fix sold png
 10. I feel like for most people the game would end once all the quartiles are made... make a win screen for this case.
+
 
 12. SETTINGS VIEW
     - Audio Toggle
