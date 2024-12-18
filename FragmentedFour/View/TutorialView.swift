@@ -17,7 +17,7 @@ struct TutorialView: View {
     // Assets
     @State private var textPreview1: String = "The goal of the game is to create words using the fragments of text seen on the screen"
     @State private var textPreview2: String = "Words can be made from groups of fragments ranging from sizes of 1-4."
-    @State private var textPreview3: String = "Words that form the color red mean that that they do not exist!"
+    @State private var textPreview3: String = "Words that form the color red mean that the word does not exist or has already been entered!"
     @State private var textPreview4: String = "Words that form the color green mean that you have successfully found a word. If you find 5 fragments of length 4, you are granted an additional 40 points!"
     @State private var textPreview5: String = "Tap the Shuffle Button and The Found Fragment 4s Button in order to shuffle the fragments and see your found Fragments of Length 4"
     @State private var textPreview6: String = "Build Fragment Points in order to unlock more levels!"

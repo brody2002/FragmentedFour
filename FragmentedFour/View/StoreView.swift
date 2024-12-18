@@ -272,7 +272,7 @@ struct StoreView: View {
                                 .foregroundStyle(.black)
                             HStack {
                                 Text("\(pressedPackPrice)")
-                                    .font(.title3.bold())
+                                    .font(pressedPackPrice < 999 ? .system(size: 24).bold() : .system(size: 18).bold())
                                     .foregroundStyle(.black)
                                     .padding(.leading, 20)
                                 MoneyView()

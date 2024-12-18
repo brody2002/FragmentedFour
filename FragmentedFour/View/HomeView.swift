@@ -12,7 +12,7 @@ import SwiftUI
 
 import SwiftUIIntrospect
 import NavigationTransitions
-    // from https://github.com/davdroman/swiftui-navigation-transitions
+// from https://github.com/davdroman/swiftui-navigation-transitions
 
 struct HomeView: View {
     @State private var screen = UIScreen.main.bounds
@@ -69,7 +69,7 @@ struct HomeView: View {
                                             .padding(.leading, 20)
                                             .offset(y:4)
                                     )
-
+                                
                                     .onTapGesture {
                                         // Toggle Volume on and off
                                         globalAudio.backgroundAudioOn.toggle()
@@ -117,7 +117,7 @@ struct HomeView: View {
                     }
                     VStack{
                         HStack(alignment: .firstTextBaseline){
-
+                            
                             Spacer()
                             
                             VStack(alignment: .trailing) {
@@ -161,8 +161,8 @@ struct HomeView: View {
                             Button(
                                 action: {
                                     // Level Select
-                                        globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
-                                        navPath.append(DestinationStruct.Destination.selectLevel)
+                                    globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                                    navPath.append(DestinationStruct.Destination.selectLevel)
                                 },
                                 label: {
                                     RoundedRectangle(cornerRadius: 10)
@@ -187,8 +187,8 @@ struct HomeView: View {
                             Button(
                                 action: {
                                     // Store
-                                        globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
-                                        navPath.append(DestinationStruct.Destination.store)
+                                    globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                                    navPath.append(DestinationStruct.Destination.store)
                                     
                                 },
                                 label: {
@@ -226,7 +226,7 @@ struct HomeView: View {
                                         RoundedRectangle(cornerRadius: 10)
                                             .fill(Color.gray.opacity(0.3))
                                             .frame(height: UIScreen.main.bounds.height * 0.06)
-                                            
+                                        
                                     )
                                     .hidden()
                                 if let level = currentLevel?.level {
@@ -248,7 +248,7 @@ struct HomeView: View {
                                         RoundedRectangle(cornerRadius: 10)
                                             .fill(AppColors.coreBlue)
                                             .frame(height: UIScreen.main.bounds.height * 0.06)
-                                            
+                                        
                                     )
                                     
                                 }
@@ -258,38 +258,42 @@ struct HomeView: View {
                             
                             Spacer()
                             Spacer()
-                            Circle()
-                                .fill(.white)
-                                .frame(width: 120, height: 120)
-                                .overlay(
-                                    ZStack{
-                                        Image(systemName: "book")
-                                            .resizable()
-                                            .frame(width: 70, height: 70)
-                                        Image(systemName: "hand.point.up.fill")
-                                            .resizable()
-                                            .frame(width: 40, height: 40)
-                                            .foregroundStyle(AppColors.coreBlue)
-                                            .offset(x: 25, y: 20)
+                            ZStack{
+                                Circle()
+                                    .fill(.white)
+                                    .frame(width: 120, height: 120)
+                                    .overlay(
+                                        ZStack{
+                                            Image(systemName: "book")
+                                                .resizable()
+                                                .frame(width: 70, height: 70)
+                                            Image(systemName: "hand.point.up.fill")
+                                                .resizable()
+                                                .frame(width: 40, height: 40)
+                                                .foregroundStyle(AppColors.coreBlue)
+                                                .offset(x: 25, y: 20)
+                                            
+                                        }
+                                    )
+                                    .background(
+                                        Circle()
+                                            .fill(.gray)
+                                            .frame(width: 120, height: 120)
+                                            .offset(y: 4)
+                                        
+                                    )
+                                    .onTapGesture {
+                                        globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+                                        navPath.append(DestinationStruct.Destination.tutorial)
                                         
                                     }
-                                )
-                                .background(
-                                    Circle()
-                                        .fill(.gray)
-                                        .frame(width: 120, height: 120)
-                                        .offset(y: 4)
-                                        
-                                )
-                                .onTapGesture {
-                                    globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
-                                    navPath.append(DestinationStruct.Destination.tutorial)
-                                    
-                                }
+                            }
+                            .offset(y: UIScreen.main.bounds.height * 0.02)
+                            
                         }
                         .padding(.horizontal)
                         Spacer()
-                            .frame(height: 20)
+                            .frame(height: 30)
                         RoundedRectangle(cornerRadius: 10)
                             .fill(AppColors.body)
                             .overlay(
@@ -314,7 +318,7 @@ struct HomeView: View {
                                 
                                 
                             )
-                            
+                        
                             .padding(.horizontal)
                             .frame(height: screen.height * 0.3)
                         Spacer()
@@ -354,15 +358,15 @@ struct HomeView: View {
                         let mixedTiles = loadedTiles[currentLevel!.level].shuffled() // shuffle before animation
                         withAnimation {
                             wordTiles = mixedTiles
-                        } 
+                        }
                     } else {
                         levelTiles = []
                         wordTiles = []
                         print("Failed to load level tiles or current level is out of bounds.")
                     }
                     
-//                    wordTiles =     ["cr","oss","ro","ad","hap","pi","ne","ss","ima","gin","ati","on","sk","ate","bo","ard","pu","zz","le","rs"]
-
+                    //                    wordTiles =     ["cr","oss","ro","ad","hap","pi","ne","ss","ima","gin","ati","on","sk","ate","bo","ard","pu","zz","le","rs"]
+                    
                     
                 }
                 .onDisappear{
@@ -404,8 +408,8 @@ struct HomeView: View {
         do {
             let existingLevels: [Level] = try modelContext.fetch(FetchDescriptor<Level>())
             let existingPacks: [Pack] = try modelContext.fetch(FetchDescriptor<Pack>())
-
-
+            
+            
             for level in existingLevels {
                 modelContext.delete(level)
             }
@@ -413,7 +417,7 @@ struct HomeView: View {
             for pack in existingPacks {
                 modelContext.delete(pack)
             }
-
+            
             // Save after deletion to persist the cleared context
             try modelContext.save()
             print("Existing data cleared.")
@@ -445,7 +449,7 @@ struct HomeView: View {
         modelContext.insert(Pack(name: "11-15", unlocked: false, price: 600, id: 2, levels: [10, 11, 12, 13, 14]))
         modelContext.insert(Pack(name: "16-20", unlocked: false, price: 1000, id: 3, levels: [15, 16, 17, 18, 19]))
         modelContext.insert(Pack(name: "21-25", unlocked: false, price: 1300, id: 4, levels: [20, 21, 22, 23, 24]))
-
+        
         
         // Save the context to persist the data
         do {
@@ -503,28 +507,28 @@ class DisableSwipeBackViewController: UIViewController {
     @Previewable @StateObject var globalAudio = GlobalAudioSettings()
     let config = ModelConfiguration(for: Level.self, Pack.self, isStoredInMemoryOnly: true)
     
-        let container = try! ModelContainer(for: Level.self, Pack.self, configurations: config)
-
-        let userData = UserData()
-        
-        container.mainContext.insert(Level(level: 0, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
-        container.mainContext.insert(Level(level: 1, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
-        container.mainContext.insert(Level(level: 2, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
-        container.mainContext.insert(Level(level: 3, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
-        container.mainContext.insert(Level(level: 4, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
-        container.mainContext.insert(Level(level: 5, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
-        container.mainContext.insert(Level(level: 1, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false, redeemed: false))
-        
-        container.mainContext.insert(Pack(name: "6-10", unlocked: false, price: 200, id: 1, levels: [5, 6, 7, 8, 9]))
-        container.mainContext.insert(Pack(name: "11-15", unlocked: false, price: 600, id: 2, levels: [10, 11, 12, 13, 14]))
-        container.mainContext.insert(Pack(name: "16-20", unlocked: false, price: 1000, id: 3, levels: [15, 16, 17, 18, 19]))
-        container.mainContext.insert(Pack(name: "21-25", unlocked: false, price: 1300, id: 4, levels: [20, 21, 22, 23, 24]))
-            
-
-        return HomeView(firstLoad: .constant(false))
-                .modelContainer(container)
-                .environmentObject(userData)
-                .environmentObject(globalAudio)
+    let container = try! ModelContainer(for: Level.self, Pack.self, configurations: config)
+    
+    let userData = UserData()
+    
+    container.mainContext.insert(Level(level: 0, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: true))
+    container.mainContext.insert(Level(level: 1, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
+    container.mainContext.insert(Level(level: 2, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
+    container.mainContext.insert(Level(level: 3, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
+    container.mainContext.insert(Level(level: 4, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
+    container.mainContext.insert(Level(level: 5, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
+    container.mainContext.insert(Level(level: 1, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false, redeemed: false))
+    
+    container.mainContext.insert(Pack(name: "6-10", unlocked: false, price: 200, id: 1, levels: [5, 6, 7, 8, 9]))
+    container.mainContext.insert(Pack(name: "11-15", unlocked: false, price: 600, id: 2, levels: [10, 11, 12, 13, 14]))
+    container.mainContext.insert(Pack(name: "16-20", unlocked: false, price: 1000, id: 3, levels: [15, 16, 17, 18, 19]))
+    container.mainContext.insert(Pack(name: "21-25", unlocked: false, price: 1300, id: 4, levels: [20, 21, 22, 23, 24]))
+    
+    
+    return HomeView(firstLoad: .constant(false))
+        .modelContainer(container)
+        .environmentObject(userData)
+        .environmentObject(globalAudio)
     
     
     

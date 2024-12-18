@@ -19,7 +19,7 @@ struct ContentView: View {
     @EnvironmentObject var globalAudio: GlobalAudioSettings
     @Environment(\.requestReview) var requestReview
     @Query var LevelClass: [Level]
-
+    
     let levels: [[String]] = Bundle.main.decode("levels.json")
     @State private var currentLVL: Level?
     
@@ -58,7 +58,7 @@ struct ContentView: View {
     @Binding var navPath: NavigationPath
     
     var bubbleSoundList: [String] = ["BubbleSound1", "BubbleSound2", "BubbleSound3", "BubbleSound4"]
-
+    
     
     let gridLayout = Array(repeating:  GridItem.init(.flexible(minimum: 50, maximum: 100)), count: 4)
     
@@ -103,7 +103,7 @@ struct ContentView: View {
                                                 withAnimation(.easeOut(duration: 0.2)) {
                                                     sideBarDragOffset.width = -UIScreen.main.bounds.width
                                                     showSideBarView.toggle()
-//                                                    print("showSideBarView -> \(showSideBarView)")
+                                                    //                                                    print("showSideBarView -> \(showSideBarView)")
                                                     
                                                 }
                                             } else {
@@ -113,7 +113,7 @@ struct ContentView: View {
                                             }
                                         }
                                 )
-                                
+                            
                             Spacer()
                         }
                     }
@@ -132,13 +132,13 @@ struct ContentView: View {
                             action: {
                                 globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                                 withAnimation(.easeOut(duration: 0.2)) {
-                                            if showSideBarView {
-                                                showSideBarView = false
-                                            } else {
-                                                sideBarDragOffset = .zero // Reset offset
-                                                showSideBarView = true
-                                            }
-                                        }
+                                    if showSideBarView {
+                                        showSideBarView = false
+                                    } else {
+                                        sideBarDragOffset = .zero // Reset offset
+                                        showSideBarView = true
+                                    }
+                                }
                             },
                             label: {
                                 Image(systemName: "equal")
@@ -169,13 +169,13 @@ struct ContentView: View {
                     
                     ZStack(alignment: .leading){
                         (
-                        Text("Level ")
-                            .font(.title.bold())
-                            .foregroundStyle(.white)
-                        +
-                        Text("\(currentLevel + 1)")
-                            .font(currentLevel < 9 ? .title.bold() : .title3.bold())
-                            .foregroundStyle(.white)
+                            Text("Level ")
+                                .font(.title.bold())
+                                .foregroundStyle(.white)
+                            +
+                            Text("\(currentLevel + 1)")
+                                .font(currentLevel < 9 ? .title.bold() : .title3.bold())
+                                .foregroundStyle(.white)
                         )
                         .offset(y: -70)
                         .background(
@@ -214,7 +214,7 @@ struct ContentView: View {
                             VStack(spacing: 5){
                                 Text("Congratulations")
                                     .font(.title.bold())
-                                Text(foundAllQuartiles && score <= 100 ? "You have found all the intended Fragment 4s!" : score <= 100 ? "You reached the highest rank!" : "You scored enough points!")
+                                Text(foundAllQuartiles && score <= 100 ? "You have found all Fragment 4s!" : score <= 100 ? "You scored enough points!" : "You reached the highest rank!")
                                     .font(.body.bold())
                                     .foregroundColor(.black.opacity(0.5))
                                 Text("Proceed to the next level?")
@@ -280,7 +280,7 @@ struct ContentView: View {
                             if selectedTiles.isEmpty{
                                 // hidden tile so that the UI doesnt move...
                                 SelectedTileView(text: "aa", turnRed: $turnRed, turnGreen: $turnGreen, mainColor: mainColor)
-                                    
+                                
                                     .hidden()
                             } else {
                                 ForEach(selectedTiles, id:
@@ -289,7 +289,7 @@ struct ContentView: View {
                                         deselect(tile)
                                     } label : {
                                         SelectedTileView(text: tile, turnRed: $turnRed, turnGreen: $turnGreen, mainColor: mainColor)
-                                            
+                                        
                                         
                                     }
                                 }
@@ -298,12 +298,12 @@ struct ContentView: View {
                                     clearSelected()
                                     globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
                                 })
-                                    .opacity(showX ? 1.0 : 0.0)
-                                    .animation(nil, value: showX)
-                                    .labelStyle(.iconOnly)
-                                    .symbolVariant(.fill)
-                                    .foregroundStyle(turnGreen ? .green : mainColor)
-                                    
+                                .opacity(showX ? 1.0 : 0.0)
+                                .animation(nil, value: showX)
+                                .labelStyle(.iconOnly)
+                                .symbolVariant(.fill)
+                                .foregroundStyle(turnGreen ? .green : mainColor)
+                                
                             }
                         }
                         Spacer()
@@ -313,7 +313,7 @@ struct ContentView: View {
                             ForEach(orderedTiles, id: \.self){ tile in
                                 Button {
                                     select(tile)
-//                                    playSound(for: bubbleSoundList.randomElement())
+                                    //                                    playSound(for: bubbleSoundList.randomElement())
                                 } label: {
                                     TileView(
                                         text: tile,
@@ -327,7 +327,7 @@ struct ContentView: View {
                                 }
                                 //Custom Style preventing button from going gray on disable
                                 .buttonStyle(NoGrayOutButtonStyle())
-        
+                                
                                 .disabled(submissionState)
                                 
                                 
@@ -346,7 +346,7 @@ struct ContentView: View {
                             }
                             .buttonStyle(.bordered)
                             .buttonBorderShape(.circle)
-                
+                            
                             
                             Spacer()
                             
@@ -359,6 +359,7 @@ struct ContentView: View {
                             .buttonStyle(.borderedProminent)
                             .buttonBorderShape(.circle)
                             .disabled(selectedTiles.isEmpty)
+                            .disabled(submissionState)
                             
                             
                             Spacer()
@@ -406,13 +407,13 @@ struct ContentView: View {
         .navigationBarBackButtonHidden(true)
         .interactiveDismissDisabled()
         
-            
-    
+        
+        
         
         
     }
     
-
+    
     
     func loadLevel(){
         tiles = levels[currentLevel].shuffled()
@@ -434,7 +435,7 @@ struct ContentView: View {
         globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
     }
     func shuffletiles() {
-//        globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+        //        globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
         withAnimation{
             tiles.shuffle()
             orderedTiles = tiles
@@ -462,12 +463,12 @@ struct ContentView: View {
         let firstTwoCombined = selectedTiles[0] + selectedTiles[1]
         selectedTiles.removeFirst(2)
         
-       
+        
         withAnimation(.spring(response: 0.3, dampingFraction: 0.4)){
             selectedTiles.insert(firstTwoCombined, at: 0)
             globalAudio.playSoundEffect(for: "CorrectSound", audioPlayer: &audioPlayer)
         }
-      
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             self.combineTiles(completion: completion)
         }
@@ -482,7 +483,7 @@ struct ContentView: View {
             level.completed = true
             level.levelThreshhold = 100
             userData.incrementReviewCount(reviewAction: requestReview)
-
+            
             if let nextLVL = fetchLevel(levelNumber: currentLevel + 1, context: modelContext) {
                 if nextLVL.redeemed{
                     nextLVL.unlocked = true
@@ -491,11 +492,12 @@ struct ContentView: View {
                 print("There is no next level")
             }
         }
-        // Finds all the quartiles on the view for the first time. 
+        // Finds all the quartiles on the view for the first time.
         else if currentLVL!.foundAllWords == false && currentLVL!.foundQuartiles.count / 4 == 5 {
             print("Show View for finding all the quartiles")
             currentLVL!.foundAllWords = true
             foundAllQuartiles = true
+            if score >= 100 { withAnimation(.spring(response: 0.5)){ mainColor = AppColors.masterRed } }
             withAnimation(.spring(response: 0.3, dampingFraction: 0.5)){
                 showWinScreenView.toggle()
             }
@@ -511,7 +513,7 @@ struct ContentView: View {
             }
         }
     }
-
+    
     func submit() {
         submissionState = true
         // Correct Input
@@ -535,7 +537,7 @@ struct ContentView: View {
                         
                         score += 40
                         currentLVL!.score = score
-     
+                        
                         
                     }
                     
@@ -597,7 +599,7 @@ struct ContentView: View {
     
     
     func toggleGrouping(){
-//        globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
+        //        globalAudio.playSoundEffect(for: "BackBubble", audioPlayer: &audioPlayer)
         withAnimation{
             isGroupingQuartiles.toggle()
             if isGroupingQuartiles{
@@ -607,7 +609,7 @@ struct ContentView: View {
             }
         }
         
-        
+                    
     }
     
     func groupQuartiles() {
@@ -654,6 +656,7 @@ struct ContentView: View {
             currentLVL!.foundQuartiles = [String]()
             mainColor = AppColors.coreBlue
             userData.updatePtsAndRank(levels: LevelClass)
+            foundAllQuartiles = false
         }
     }
     
@@ -669,16 +672,16 @@ struct ContentView: View {
             return nil
         }
     }
-
+    
     
     func findIntendWords(for inputWords: [String]){
+        intendedWords.removeAll()
         var wordsList = levels[currentLevel] // has 16 strings in [String]
         for _ in 0...4 {
             let word = wordsList[0] + wordsList[1] + wordsList[2] + wordsList[3]
             wordsList.removeFirst(4)
             intendedWords.append(word)
         }
-        print("intendedWords: \(intendedWords)")
         
     }
 }
@@ -689,20 +692,20 @@ struct ContentView: View {
     @Previewable @StateObject var globalAudio = GlobalAudioSettings()
     @Previewable @State var navPath = NavigationPath()
     
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        let container = try! ModelContainer(for: Level.self, configurations: config)
-        container.mainContext.insert(Level(level: 0, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
-        container.mainContext.insert(Level(level: 1, foundWords: [[String]](), foundQuartiles: [String](), completed: true, rank: "Master", score: 101,unlocked: true))
-        container.mainContext.insert(Level(level: 2, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Master", score: 101, unlocked: true))
-        container.mainContext.insert(Level(level: 3, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Master", score: 101, unlocked: true))
-        container.mainContext.insert(Level(level: 4, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Master", score: 101, unlocked: true))
-        container.mainContext.insert(Level(level: 5, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Master", score: 101, unlocked: false))
-        container.mainContext.insert(Level(level: 6, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Master", score: 101, unlocked: false))
-        return ContentView(score: 0, currentLevel: 0, foundWords: [[String]](), foundQuartiles: [String](), navPath: $navPath)
-            .environment(userData)
-            .modelContainer(container)
-            
-//    } catch {
-//        return Text("Failed to create container: \(error.localizedDescription)")
-//    }
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: Level.self, configurations: config)
+    container.mainContext.insert(Level(level: 0, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Novice", score: 0, unlocked: false))
+    container.mainContext.insert(Level(level: 1, foundWords: [[String]](), foundQuartiles: [String](), completed: true, rank: "Master", score: 101,unlocked: true))
+    container.mainContext.insert(Level(level: 2, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Master", score: 101, unlocked: true))
+    container.mainContext.insert(Level(level: 3, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Master", score: 101, unlocked: true))
+    container.mainContext.insert(Level(level: 4, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Master", score: 101, unlocked: true))
+    container.mainContext.insert(Level(level: 5, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Master", score: 101, unlocked: false))
+    container.mainContext.insert(Level(level: 6, foundWords: [[String]](), foundQuartiles: [String](), completed: false, rank: "Master", score: 101, unlocked: false))
+    return ContentView(score: 0, currentLevel: 0, foundWords: [[String]](), foundQuartiles: [String](), navPath: $navPath)
+        .environment(userData)
+        .modelContainer(container)
+    
+    //    } catch {
+    //        return Text("Failed to create container: \(error.localizedDescription)")
+    //    }
 }

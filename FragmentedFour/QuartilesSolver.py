@@ -55,6 +55,7 @@ def scoreCalc(inputLevel: list[str]) -> bool:
     # Debug output for missing quartiles
     if missing_quartiles:
         print("The following intended quartiles didn't make it:", missing_quartiles)
+        return False
 
     # Debug output for quartiles
     if len(quartileList) < 5:
