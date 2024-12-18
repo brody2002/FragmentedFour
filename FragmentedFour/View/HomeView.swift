@@ -357,17 +357,7 @@ struct HomeView: View {
                     if lastLoadedVersion.compare(currentVersion, options: .numeric) == .orderedAscending{
                         initializeVersion1_1_0()
                     }
-                    
-                   
-                    
                     initializeAppData()
-                    
-                    print("after intialLoad")
-                    print("firstLoad -> \(firstLoad)")
-                    print("needs 1.1.0 -> \(update1_1_0)")
-                    
-                    
-                    
                     
                     
                     // Manage Audio on Start Up
@@ -512,6 +502,7 @@ struct HomeView: View {
         
         firstLoad = false
         update1_1_0 = false // no need for udpate
+        lastLoadedVersion = "1.1.0"
         
     }
     // How to handle for firstload users and current users

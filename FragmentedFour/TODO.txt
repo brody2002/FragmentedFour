@@ -19,7 +19,7 @@ Release:
     - Store it in App Storage?
     
 
-Update version 1.01
+Update version 1.1.0
 X - Purchase packs font for 4 didget numbers
 X - Turning to master mode and 100 points at the same time bug
 X - Added Levels
