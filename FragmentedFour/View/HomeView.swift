@@ -276,6 +276,17 @@ struct HomeView: View {
                                                 .frame(width: 40, height: 40)
                                                 .foregroundStyle(AppColors.coreBlue)
                                                 .offset(x: 25, y: 20)
+                                            Text("?")
+                                                .fontDesign(.rounded)
+                                                .foregroundStyle(.black)
+                                                .font(.system(size: 20).bold())
+                                                .offset(x: 0, y: -43)
+                                                .hidden()
+                                            Image(systemName: "questionmark.circle.fill")
+                                                .offset(x: 0, y: -43)
+                                                .foregroundStyle(.black)
+                                            
+                                            
                                             
                                         }
                                     )
@@ -291,6 +302,10 @@ struct HomeView: View {
                                         navPath.append(DestinationStruct.Destination.tutorial)
                                         
                                     }
+                               
+                                
+                                    
+                                    
                             }
                             .offset(y: UIScreen.main.bounds.height * 0.02)
                             
@@ -380,7 +395,7 @@ struct HomeView: View {
                         print("Failed to load level tiles or current level is out of bounds.")
                     }
                     
-                    //                    wordTiles =     ["cr","oss","ro","ad","hap","pi","ne","ss","ima","gin","ati","on","sk","ate","bo","ard","pu","zz","le","rs"]
+//                                        wordTiles =     ["cr","oss","ro","ad","hap","pi","ne","ss","ima","gin","ati","on","sk","ate","bo","ard","pu","zz","le","rs"]
                     
                     
                 }

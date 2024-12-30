@@ -335,8 +335,8 @@ struct StoreView: View {
             globalAudio.playSoundEffect(for: "IncorrectSound", audioPlayer: &audioPlayer)
             return
         }
-        userData.unlockedLevels += 5
         checkAvailableLevelsUnlocked(context: modelContext)
+        userData.unlockedLevels += 5
         for (_, num) in pack.levels.enumerated() {
             fetchLevelAndRedeem(num, context: modelContext)
         }
@@ -376,11 +376,13 @@ struct StoreView: View {
     func checkAvailableLevelsUnlocked (context: ModelContext){
         let unlockedLevels = userData.unlockedLevels
         let completedLevels = userData.completedLevels
+        print("completedLevels = \(userData.completedLevels)")
         print("unlockedLevels amount \(unlockedLevels)")
         
-        if unlockedLevels - completedLevels == 5 {
+        if unlockedLevels - completedLevels == 0 {
+            print("Entered conditional for unlocking first level of pack")
             let descriptor = FetchDescriptor<Level>(
-                predicate: #Predicate { $0.level == unlockedLevels - 5 }
+                predicate: #Predicate { $0.level == unlockedLevels } // apply zero index
             )
             do {
                 let results = try context.fetch(descriptor)
@@ -393,6 +395,9 @@ struct StoreView: View {
                 print("Failed to fetch level: \(error)")
             }
             
+        }
+        else{
+            print("nothing happened")
         }
     }
     

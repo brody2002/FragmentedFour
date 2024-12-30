@@ -682,6 +682,7 @@ struct ContentView: View {
             wordsList.removeFirst(4)
             intendedWords.append(word)
         }
+        print("Intended Words: \(intendedWords)")
         
     }
 }
