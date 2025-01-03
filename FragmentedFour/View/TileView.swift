@@ -27,6 +27,7 @@ struct TileView: View {
             
         } else {
             Text(text)
+                .foregroundStyle(.black)
                 .frame(maxWidth: .infinity, minHeight: 44, maxHeight: 64)
                 .background(Color.white)
                 .clipShape(.rect(cornerRadius: 10))

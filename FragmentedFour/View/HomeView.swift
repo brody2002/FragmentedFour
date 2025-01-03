@@ -223,44 +223,38 @@ struct HomeView: View {
                             .frame(height: 50)
                         
                         HStack{
-                            ZStack(alignment: .leading){
+                            ZStack{
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(AppColors.coreBlue)
+                                
                                 Text("Level ___") // Hidden Level PlaceHolder
                                     .font(.title.bold())
                                     .background(
                                         RoundedRectangle(cornerRadius: 10)
                                             .fill(Color.gray.opacity(0.3))
-                                            .frame(height: UIScreen.main.bounds.height * 0.06)
                                         
                                     )
                                     .hidden()
                                 if let level = currentLevel?.level {
                                     ZStack{
-                                        Text("Level \(level + 1)")
+                                        Text("Level \(level + 1) Preview")
                                             .foregroundStyle(.white)
-                                            .font(.title.bold())
+                                            .font(.system(size: 24).bold())
                                             .fontDesign(.rounded)
                                             .background(
-                                                Text("Level \(level + 1)")
+                                                Text("Level \(level + 1) Preview")
                                                     .foregroundStyle(.gray)
-                                                    .font(.title.bold())
+                                                    .font(.system(size: 24).bold())
                                                     .fontDesign(.rounded)
                                                     .offset(y:3)
                                             )
                                     }
-                                    .padding()
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 10)
-                                            .fill(AppColors.coreBlue)
-                                            .frame(height: UIScreen.main.bounds.height * 0.06)
-                                        
-                                    )
-                                    
                                 }
                             }
-                            .offset(y: UIScreen.main.bounds.height * 0.06)
+                            .frame(width: UIScreen.main.bounds.width * 0.52, height: 55)
+                            .offset(y: UIScreen.main.bounds.height * 0.05)
                             
                             
-                            Spacer()
                             Spacer()
                             ZStack{
                                 Circle()
@@ -270,6 +264,7 @@ struct HomeView: View {
                                         ZStack{
                                             Image(systemName: "book")
                                                 .resizable()
+                                                .foregroundStyle(.black)
                                                 .frame(width: 70, height: 70)
                                             Image(systemName: "hand.point.up.fill")
                                                 .resizable()
@@ -345,7 +340,7 @@ struct HomeView: View {
                         RoundedRectangle(cornerRadius: 10)
                             .fill(.white)
                             .overlay(
-                                Text("Proceed Current Level")
+                                Text("Proceed to Current Level")
                                     .foregroundStyle(.black)
                                     .bold()
                             )
@@ -368,9 +363,12 @@ struct HomeView: View {
                     print("firstLoad -> \(firstLoad)")
                     print("needs 1.1.0 -> \(update1_1_0)")
                     
-                    let currentVersion: String = (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "1" // Should be 1.1
+                    let currentVersion: String = (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "1" // Should be 1.1.0
+                    print("currentVersion: \(currentVersion)")
                     if lastLoadedVersion.compare(currentVersion, options: .numeric) == .orderedAscending{
                         initializeVersion1_1_0()
+                    } else {
+                        print("version 1.1.0 not needed...")
                     }
                     initializeAppData()
                     

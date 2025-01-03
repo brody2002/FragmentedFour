@@ -16,7 +16,7 @@ struct FragmentedFourApp: App {
     @StateObject private var globalAudio = GlobalAudioSettings()
     @AppStorage("firstLoad") private var firstLoad: Bool = true // Loads data on first load of installing app
     @AppStorage("update1.1.0") private var update1_1_0: Bool = true
-    @AppStorage("lastLoadedVersion") private var lastLoadedVersion: String = "1.0"
+    @AppStorage("lastLoadedVersion") private var lastLoadedVersion: String = "1.1.0"
     
     var body: some Scene {
         WindowGroup {

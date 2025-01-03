@@ -122,10 +122,12 @@ struct StoreView: View {
                                                     Text("Avg Rank     ")
                                                         .bold()
                                                         .font(.system(size:14))
+                                                        .foregroundStyle(.black)
                                                     + Text("\(rankLocal ?? "Novice")")
                                                         .bold()
                                                         .font(.system(size: 28))
                                                         .foregroundStyle(mainColor)
+                                                        .foregroundStyle(.black)
                                                     
                                                     
                                                         
@@ -135,6 +137,7 @@ struct StoreView: View {
                                                         Text("Total Fragments") //place holder score for now
                                                             .bold()
                                                             .font(.system(size:14))
+                                                            .foregroundStyle(.black)
                                                         Spacer()
                                                             .frame(width: 0)
                                                         MoneyView()
@@ -189,11 +192,13 @@ struct StoreView: View {
                                     .bold()
                                     .fontDesign(.rounded)
                                     .font(.system(size: 24))
+                                    .foregroundStyle(.black)
                                 Spacer().frame(height: 40)
                                 PackPile_View(name: pack.name)
                                 //HELP WITH THIS
                                 HStack(alignment: .center) {
                                     Text("\(pack.price)")
+                                        .foregroundStyle(.black)
                                         .font(.system(size: 16))
                                         .bold()
                                         .frame(minWidth: 50)
@@ -382,7 +387,7 @@ struct StoreView: View {
         if unlockedLevels - completedLevels == 0 {
             print("Entered conditional for unlocking first level of pack")
             let descriptor = FetchDescriptor<Level>(
-                predicate: #Predicate { $0.level == unlockedLevels } // apply zero index
+                predicate: #Predicate { $0.level == unlockedLevels} // apply zero index
             )
             do {
                 let results = try context.fetch(descriptor)
