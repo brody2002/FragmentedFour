@@ -609,7 +609,7 @@ struct ContentView: View {
             }
         }
         
-                    
+        
     }
     
     func groupQuartiles() {

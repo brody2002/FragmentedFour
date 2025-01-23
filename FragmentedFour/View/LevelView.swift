@@ -79,6 +79,7 @@ struct LevelView: View {
                                                         Text("Avg Rank   ")
                                                             .bold()
                                                             .font(.system(size:14))
+                                                            .foregroundStyle(.black)
                                                         + Text("\(userData.avgRank)")
                                                             .bold()
                                                             .font(.system(size: 28))
@@ -90,6 +91,7 @@ struct LevelView: View {
                                                             Text("Total Fragmnets") //place holder score for now
                                                                 .bold()
                                                                 .font(.system(size:14))
+                                                                .foregroundStyle(.black)
                                                             MoneyView()
                                                                 .offset(x: -35)
                                                                 .scaleEffect(0.5)

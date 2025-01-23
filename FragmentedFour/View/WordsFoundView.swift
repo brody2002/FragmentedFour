@@ -65,41 +65,45 @@ struct WordsFoundView: View {
             )
             
             if isExpanded {
-                LazyVGrid(columns: wordLayout) {
-                    ForEach(0..<words.count, id: \.self) { index in
-                        let word = words[index]
-                        VStack{
-                            HStack{
-                                Text(word.joined())
-                                
-                                Spacer()
-                                
-                                if word.score == 8 {
-                                    Text(String(word.score))
-                                        .padding(1)
-                                        .padding(.horizontal)
-                                        .foregroundStyle(.white)
-                                        .background(AppColors.coreBlue)
-                                        .cornerRadius(10)
+                ScrollView{
+                    LazyVGrid(columns: wordLayout) {
+                        ForEach(0..<words.count, id: \.self) { index in
+                            let word = words[index]
+                            VStack{
+                                HStack{
+                                    Text(word.joined())
                                     
-                                } else {
-                                    Text(String(word.score))
-                                        .padding(.horizontal)
-                                        .foregroundStyle(AppColors.coreBlue)
+                                    Spacer()
+                                    
+                                    if word.score == 8 {
+                                        Text(String(word.score))
+                                            .padding(1)
+                                            .padding(.horizontal)
+                                            .foregroundStyle(.white)
+                                            .background(AppColors.coreBlue)
+                                            .cornerRadius(10)
+                                        
+                                    } else {
+                                        Text(String(word.score))
+                                            .padding(.horizontal)
+                                            .foregroundStyle(AppColors.coreBlue)
+                                    }
+                                    
+                                    
                                 }
-                                
-                                
-                            }
-                            if hasRowBelow(index: index){
-                                Divider()
-                            } else {
-                                Divider().hidden()
+                                if hasRowBelow(index: index){
+                                    Divider()
+                                } else {
+                                    Divider().hidden()
+                                }
                             }
                         }
                     }
+                    .frame(maxWidth: .infinity)
+                    .font(.body)
                 }
-                .frame(maxWidth: .infinity)
-                .font(.body)
+                .frame(maxHeight: 300)
+                
             }
         }
         .frame(maxWidth: .infinity)
